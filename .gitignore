@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.local
+env.local
+*.png
+drafts/draft_*
+report_*.md
+plan_*.md
+.claude/

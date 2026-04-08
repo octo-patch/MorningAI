@@ -1,0 +1,5 @@
+{
+  "name": "ai-tracker",
+  "version": "1.0.0",
+  "description": "Unified AI news tracker. Tracks products, models, benchmarks, and funding by default (types can be excluded). Collects AI industry updates from the past 24 hours and generates a Markdown daily report with an infographic.",
+}
