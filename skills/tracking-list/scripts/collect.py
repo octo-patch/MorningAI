@@ -5,7 +5,7 @@ Runs all collectors concurrently, normalizes, scores, deduplicates,
 and outputs a structured JSON report.
 
 Usage:
-    python3 skills/tracking-list/collect.py [--date YYYY-MM-DD] [--depth quick|default|deep] [--output PATH]
+    python3 skills/tracking-list/scripts/collect.py [--date YYYY-MM-DD] [--depth quick|default|deep] [--output PATH]
 """
 
 import argparse

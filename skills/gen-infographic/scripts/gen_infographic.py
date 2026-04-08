@@ -5,13 +5,13 @@ Supports single-image mode (--prompt) and batch mode (--batch manifest.json).
 
 Usage:
     # Single image
-    python3 skills/gen-infographic/gen_infographic.py --prompt "16:9 infographic, AI News Daily ..." -o cover.png
+    python3 skills/gen-infographic/scripts/gen_infographic.py --prompt "16:9 infographic, AI News Daily ..." -o cover.png
 
     # Batch mode (multiple images from manifest)
-    python3 skills/gen-infographic/gen_infographic.py --batch manifest.json
+    python3 skills/gen-infographic/scripts/gen_infographic.py --batch manifest.json
 
     # Pipe prompt via stdin
-    echo "prompt text" | python3 skills/gen-infographic/gen_infographic.py --provider gpt
+    echo "prompt text" | python3 skills/gen-infographic/scripts/gen_infographic.py --provider gpt
 
 Manifest JSON format:
     [
