@@ -76,7 +76,7 @@ X_HANDLES = {
     "Udio": ["udiomusic"],
     "Suno": ["SunoAIMusic"],
 
-    # === Benchmarks & KOL ===
+    # === Benchmarks ===
     "LMSYS": ["laboramsys"],
     "LMArena": ["arena"],
     "Artificial Analysis": ["ArtificialAnlys"],
@@ -84,7 +84,8 @@ X_HANDLES = {
     "Scale AI": ["scale_AI"],
     "vLLM": ["vllm_project"],
     "Replicate": ["replicate"],
-    # KOL
+
+    # === KOL ===
     "Andrej Karpathy": ["karpathy"],
     "AK": ["_akhaliq"],
     "Andrew Ng": ["AndrewYNg"],

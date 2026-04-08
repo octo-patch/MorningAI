@@ -93,7 +93,8 @@ python3 skills/tracking-list/collect.py --date 2026-04-08 --output report.json
 | **coding-tools** | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, Augment, Aider, Devin, browser-use | 10 |
 | **ai-apps** | v0, bolt.new, Lovable, Replit, Lovart, Manus, Genspark, Character.ai | 8 |
 | **vision-media** | Midjourney, FLUX, Ideogram, Adobe Firefly, Leonardo AI, Stability AI, Lightricks, Runway, Pika, Luma AI, ElevenLabs, Udio/Suno | 12 |
-| **benchmarks-academic** | LMSYS, LMArena, Artificial Analysis, HuggingFace, Scale AI SEAL, OpenCompass, vLLM, LiveBench, WildBench, Replicate, 8 KOLs, 5 paper channels, 2 Reddit communities, 4 industry media | 30+ |
+| **benchmarks-academic** | LMSYS, LMArena, Artificial Analysis, HuggingFace, Scale AI SEAL, OpenCompass, vLLM, LiveBench, WildBench, Replicate, 5 paper channels, 2 Reddit communities, 4 industry media | 20+ |
+| **kol** | Andrej Karpathy, AK, Andrew Ng, Rowan Cheung, Ben Tossell, Elie Bakouch, Swyx, Simon Willison | 8 |
 | **trending-discovery** | GitHub Trending, Product Hunt, Hacker News, Reddit | 4 sources |
 
 All items are classified into 4 types: **Product**, **Model**, **Benchmark**, **Funding**.

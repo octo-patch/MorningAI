@@ -1,6 +1,6 @@
 # Benchmarks & Academic Entity Registry
 
-Entity registry for benchmark organizations, opinion leaders, academic research channels, and industry media.
+Entity registry for benchmark organizations, academic research channels, and industry media.
 
 
 ---
@@ -27,21 +27,6 @@ Entity registry for benchmark organizations, opinion leaders, academic research 
 |------|--------|------|
 | HuggingFace | [@huggingface](https://x.com/huggingface) | Model releases, trends |
 | Replicate | [@replicate](https://x.com/replicate) | Model deployment, trends |
-
-### Key Opinion Leaders (KOL)
-
-| Name | X Account | Description |
-|------|--------|------|
-| Andrej Karpathy | [@karpathy](https://x.com/karpathy) | Former Tesla AI / OpenAI founding member |
-| AK (Paper digest) | [@_akhaliq](https://x.com/_akhaliq) | Real-time AI paper releases, HuggingFace member |
-| Andrew Ng | [@AndrewYNg](https://x.com/AndrewYNg) | AI pioneer |
-| Rowan Cheung | [@rowancheung](https://x.com/rowancheung) | The Rundown AI Founder |
-| Ben Tossell | [@bentossell](https://x.com/bentossell) | Ben's Bites Founder |
-| Elie Bakouch | [@eliebakouch](https://x.com/eliebakouch) | AI news blogger |
-| Swyx | [@swyx](https://x.com/swyx) | Latent Space Host, AI engineering advocate |
-| Simon Willison | [@simonw](https://x.com/simonw) | Django Co-creator, in-depth AI tool reviews |
-
-> **Note**: KOL information must be traced back to official channels for confirmation, cannot be used directly as a primary source
 
 ### Paper Channels
 
