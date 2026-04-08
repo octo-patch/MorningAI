@@ -1,14 +1,21 @@
 ---
 name: morning-ai
 version: "1.0.0"
-description: "AI news tracking system. Tracks 76+ AI entities across 9 data sources and generates daily structured Markdown reports with optional cover infographics."
-argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep'
+description: "Daily-scheduled AI news tracker. Collects updates from 76+ AI entities across 9 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
+argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --schedule "0 9 * * *"'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
 repository: https://github.com/octo-patch/MorningAI
 author: octo-patch
 license: MIT
 user-invocable: true
+schedule:
+  frequency: daily
+  default-cron: "0 8 * * *"
+  timezone: "Asia/Shanghai"
+  idempotent: true
+  unattended: true
+  estimated-duration: "2-5min"
 metadata:
   openclaw:
     emoji: "📰"
@@ -39,6 +46,10 @@ metadata:
       - benchmark
       - funding
       - multi-source
+      - scheduled
+      - cron
+      - automated
+      - unattended
       - ai-skill
       - clawhub
 ---
@@ -214,6 +225,52 @@ The `entities/` directory contains detailed entity registries organized by track
 | `entities/trending-discovery.md` | Trending Discovery | GitHub Trending, Product Hunt, Hacker News, Reddit |
 
 Each file lists X/Twitter accounts, key people, official blogs, changelogs, GitHub repos, and other source URLs for every tracked entity. Read these files when you need to verify or supplement the automated collection.
+
+---
+
+## Scheduling
+
+Morning-AI is designed for daily automated execution. Each run produces date-stamped files (`report_YYYY-MM-DD.md`, `data_YYYY-MM-DD.json`), making it safe to run on a recurring schedule.
+
+### Schedule Configuration
+
+Use `--schedule` to set a custom cron expression (default: `0 8 * * *`):
+
+| Parameter | Format | Default | Example |
+|-----------|--------|---------|---------|
+| `--schedule` | Cron expression (5-field) | `0 8 * * *` (daily 8am) | `0 9 * * 1-5` (weekdays 9am) |
+
+The schedule is passed to the agent's native scheduler (CronCreate, /loop, system cron, etc.). Morning-AI itself does not run a scheduler — it relies on the host agent or system to trigger runs.
+
+### Unattended Behavior
+
+- **Idempotent**: Re-running on the same date overwrites previous output — no duplicate accumulation
+- **No interactive prompts**: All steps run without user input when API keys are configured
+- **Partial success**: If some sources fail, the report generates with available data and logs warnings
+- **Timeout**: Allow 3 min (default depth) or 5 min (deep)
+
+### Agent Integration Examples
+
+**Claude Code** (CronCreate / loop):
+```
+/loop 24h /morning-ai
+```
+
+With custom schedule:
+```
+/morning-ai --schedule "0 9 * * 1-5"
+```
+
+**System cron** (manual setup):
+```bash
+0 8 * * * cd /path/to/workspace && claude -p "/morning-ai"
+```
+
+**OpenClaw / always-on bot**:
+```yaml
+schedule: "0 8 * * *"
+skill: morning-ai
+```
 
 ---
 

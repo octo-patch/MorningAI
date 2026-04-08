@@ -9,7 +9,7 @@
   "homepage": "https://github.com/octo-patch/MorningAI",
   "repository": "https://github.com/octo-patch/MorningAI",
   "license": "MIT",
-  "keywords": ["ai", "news", "tracking", "daily-report", "model", "product", "benchmark", "funding"],
+  "keywords": ["ai", "news", "tracking", "daily-report", "model", "product", "benchmark", "funding", "scheduled", "cron", "automated"],
   "skills": ["./"],
   "hooks": {}
 }
