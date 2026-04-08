@@ -11,8 +11,8 @@ TARGETS=(
     "$HOME/.codex/skills/morning-ai"
 )
 
-SYNC_DIRS=(lib skills entities templates hooks scripts)
-SYNC_FILES=(SKILL.md gemini-extension.json .clawhubignore)
+SYNC_DIRS=(lib skills entities templates hooks scripts .codex-plugin .agents .claude-plugin)
+SYNC_FILES=(SKILL.md AGENTS.md gemini-extension.json .clawhubignore)
 
 for target in "${TARGETS[@]}"; do
     echo "Syncing to $target ..."

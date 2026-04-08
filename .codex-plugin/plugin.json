@@ -1,0 +1,13 @@
+{
+  "name": "morning-ai",
+  "version": "1.0.0",
+  "description": "AI news tracking system. Tracks 76+ AI entities across 9 data sources and generates daily structured reports.",
+  "author": {
+    "name": "octo-patch",
+    "url": "https://github.com/octo-patch"
+  },
+  "homepage": "https://github.com/octo-patch/MorningAI",
+  "repository": "https://github.com/octo-patch/MorningAI",
+  "license": "MIT",
+  "skills": ["./"]
+}

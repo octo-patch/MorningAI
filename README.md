@@ -54,9 +54,17 @@ gemini extensions install https://github.com/octo-patch/MorningAI.git
 
 ### OpenAI Codex
 
+If cloned or forked, Codex auto-discovers the plugin via `.codex-plugin/plugin.json` and `AGENTS.md` — no manual setup needed.
+
+Or install as a skill:
+
 ```bash
 git clone https://github.com/octo-patch/MorningAI.git ~/.agents/skills/morning-ai
 ```
+
+### Other Tools (Cursor, Amp, Jules, etc.)
+
+`AGENTS.md` at the repo root is an open standard recognized by Codex, Cursor, Amp, Jules, and more. Clone the repo and the tool will auto-discover it.
 
 ### Manual (any tool)
 
