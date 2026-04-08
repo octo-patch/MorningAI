@@ -24,10 +24,19 @@ The Python collector runs 9 sources concurrently (X/Twitter, Reddit, HN, GitHub,
 ### Claude Code
 
 ```bash
-# Marketplace
+# Step 1: Add marketplace source
 marketplace add octo-patch/MorningAI
 
-# Or manual install
+# Step 2: Install the plugin
+/plugin install morning-ai
+
+# Step 3: Restart Claude Code, then use
+/morning-ai
+```
+
+Or manual install:
+
+```bash
 git clone https://github.com/octo-patch/MorningAI.git ~/.claude/skills/morning-ai
 ```
 
