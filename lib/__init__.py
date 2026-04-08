@@ -1,1 +1,1 @@
-# ai-tracker data collection library
+# morning-ai data collection library

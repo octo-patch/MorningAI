@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# ai-tracker configuration check — runs on session start
+# morning-ai configuration check — runs on session start
 set -euo pipefail
 
-PROJECT_ENV=".claude/ai-tracker.env"
-GLOBAL_ENV="$HOME/.config/ai-tracker/.env"
+PROJECT_ENV=".claude/morning-ai.env"
+GLOBAL_ENV="$HOME/.config/morning-ai/.env"
 
 # Find active config
 ACTIVE_ENV=""
@@ -34,7 +34,7 @@ fi
 [[ -n "${BRAVE_API_KEY:-}" || -n "${EXA_API_KEY:-}" ]] && SOURCES=$((SOURCES + 1))
 
 if [[ -z "$ACTIVE_ENV" ]]; then
-    echo "ai-tracker: No config found. Run /ai-tracker to set up. ($SOURCES free sources available)"
+    echo "morning-ai: No config found. Run /morning-ai to set up. ($SOURCES free sources available)"
 else
-    echo "ai-tracker: $SOURCES/9 sources active (config: $ACTIVE_ENV)"
+    echo "morning-ai: $SOURCES/9 sources active (config: $ACTIVE_ENV)"
 fi

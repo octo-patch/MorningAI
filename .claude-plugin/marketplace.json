@@ -8,7 +8,7 @@
   },
   "plugins": [
     {
-      "name": "ai-tracker",
+      "name": "morning-ai",
       "description": "Track 76+ AI entities across X, Reddit, HN, GitHub, HuggingFace, arXiv, YouTube, Discord, and web search. Generates scored, deduplicated daily Markdown reports.",
       "version": "1.0.0",
       "author": {

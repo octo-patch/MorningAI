@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ai-tracker data collection orchestrator.
+"""morning-ai data collection orchestrator.
 
 Runs all collectors concurrently, normalizes, scores, deduplicates,
 and outputs a structured JSON report.
@@ -241,7 +241,7 @@ def run_collection(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ai-tracker data collection")
+    parser = argparse.ArgumentParser(description="morning-ai data collection")
     parser.add_argument("--date", default=datetime.now().strftime("%Y-%m-%d"),
                         help="Target date (default: today)")
     parser.add_argument("--depth", default="default", choices=["quick", "default", "deep"],

@@ -1,4 +1,4 @@
-"""YouTube collector for ai-tracker (YouTube Data API v3).
+"""YouTube collector for morning-ai (YouTube Data API v3).
 
 Checks official YouTube channels for new video uploads within the time window.
 """

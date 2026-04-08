@@ -1,4 +1,4 @@
-"""Hacker News collector for ai-tracker (Algolia API, free).
+"""Hacker News collector for morning-ai (Algolia API, free).
 
 Adapted from last30days hackernews.py.
 """

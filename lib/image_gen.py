@@ -1,4 +1,4 @@
-"""Pluggable image generation for ai-tracker.
+"""Pluggable image generation for morning-ai.
 
 Dispatches to external APIs (Gemini, GPT, MiniMax) or skips (none).
 Provider is selected via IMAGE_GEN_PROVIDER env var.

@@ -1,8 +1,8 @@
 ---
-name: ai-tracker
+name: morning-ai
 version: "1.0.0"
 description: "AI news tracking system. Tracks 76+ AI entities across 9 data sources and generates daily structured Markdown reports with optional cover infographics."
-argument-hint: 'ai-tracker, ai-tracker --exclude Funding, ai-tracker --depth deep'
+argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
 repository: https://github.com/octo-patch/MorningAI
@@ -43,9 +43,9 @@ metadata:
       - clawhub
 ---
 
-# ai-tracker: AI News Daily Report Generator
+# morning-ai: AI News Daily Report Generator
 
-> **Permissions overview:** Collects public data from X/Twitter, Reddit, Hacker News, GitHub, HuggingFace, arXiv, YouTube, Discord, and web search. Requires API keys configured in `.env` or `~/.config/ai-tracker/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
+> **Permissions overview:** Collects public data from X/Twitter, Reddit, Hacker News, GitHub, HuggingFace, arXiv, YouTube, Discord, and web search. Requires API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
 
 Track 76+ AI entities across 9 data sources. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
 
@@ -55,7 +55,7 @@ Track 76+ AI entities across 9 data sources. Collect updates from the past 24 ho
 
 **Before first run, check if the configuration is ready.**
 
-1. Check if `~/.config/ai-tracker/.env` or `.env` exists in the skill directory
+1. Check if `~/.config/morning-ai/.env` or `.env` exists in the skill directory
 2. If neither exists, guide the user to set up API keys:
 
 ```
@@ -76,7 +76,7 @@ Image generation (for cover infographic, optional):
   MINIMAX_API_KEY         — MiniMax API key
 ```
 
-3. Write the keys to `~/.config/ai-tracker/.env` in `KEY=value` format
+3. Write the keys to `~/.config/morning-ai/.env` in `KEY=value` format
 4. Without any API keys, the following free sources still work: **Reddit** (public JSON), **Hacker News** (Algolia API), **HuggingFace** (public API), **arXiv** (public API)
 
 ---
@@ -223,12 +223,12 @@ Each file lists X/Twitter accounts, key people, official blogs, changelogs, GitH
 
 1. **Environment variables** (highest priority)
 2. **Project config**: `.env` in skill directory
-3. **Global config**: `~/.config/ai-tracker/.env`
+3. **Global config**: `~/.config/morning-ai/.env`
 
 ### Config File Format
 
 ```bash
-# ~/.config/ai-tracker/.env
+# ~/.config/morning-ai/.env
 SCRAPECREATORS_API_KEY=your_key
 GITHUB_TOKEN=ghp_xxx
 YOUTUBE_API_KEY=your_key

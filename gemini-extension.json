@@ -1,5 +1,5 @@
 {
-  "name": "ai-tracker",
+  "name": "morning-ai",
   "version": "1.0.0",
   "description": "AI news tracking system. Tracks 76+ AI entities across 9 data sources and generates daily structured reports.",
   "settings": [

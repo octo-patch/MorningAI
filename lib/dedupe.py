@@ -1,4 +1,4 @@
-"""Near-duplicate detection for ai-tracker.
+"""Near-duplicate detection for morning-ai.
 
 Adapted from last30days dedupe.py.
 Supports within-source dedup and cross-source linking.

@@ -1,4 +1,4 @@
-"""Caching utilities for ai-tracker (adapted from last30days)."""
+"""Caching utilities for morning-ai (adapted from last30days)."""
 
 import hashlib
 import json
@@ -8,19 +8,19 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-CACHE_DIR = Path.home() / ".cache" / "ai-tracker"
+CACHE_DIR = Path.home() / ".cache" / "morning-ai"
 DEFAULT_TTL_HOURS = 12  # shorter TTL for daily tracking
 
 
 def ensure_cache_dir():
     global CACHE_DIR
-    env_dir = os.environ.get("AI_TRACKER_CACHE_DIR")
+    env_dir = os.environ.get("MORNING_AI_CACHE_DIR")
     if env_dir:
         CACHE_DIR = Path(env_dir)
     try:
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
     except PermissionError:
-        CACHE_DIR = Path(tempfile.gettempdir()) / "ai-tracker" / "cache"
+        CACHE_DIR = Path(tempfile.gettempdir()) / "morning-ai" / "cache"
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 

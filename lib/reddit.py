@@ -1,4 +1,4 @@
-"""Reddit collector for ai-tracker (public JSON, no API key needed).
+"""Reddit collector for morning-ai (public JSON, no API key needed).
 
 Adapted from last30days reddit_public.py.
 """
@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional
 
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_REDDIT
 
-USER_AGENT = "ai-tracker/1.0 (AI Industry Tracker)"
+USER_AGENT = "morning-ai/1.0 (AI Industry Tracker)"
 
 DEPTH_LIMITS = {
     "quick": 10,

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# sync.sh — Deploy ai-tracker skill to multiple AI tool directories
+# sync.sh — Deploy morning-ai skill to multiple AI tool directories
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 TARGETS=(
-    "$HOME/.claude/skills/ai-tracker"
-    "$HOME/.agents/skills/ai-tracker"
-    "$HOME/.codex/skills/ai-tracker"
+    "$HOME/.claude/skills/morning-ai"
+    "$HOME/.agents/skills/morning-ai"
+    "$HOME/.codex/skills/morning-ai"
 )
 
 SYNC_DIRS=(lib skills entities templates hooks scripts)

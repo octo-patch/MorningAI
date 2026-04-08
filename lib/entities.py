@@ -1,7 +1,7 @@
-"""Entity registry for ai-tracker.
+"""Entity registry for morning-ai.
 
 Maps all 76+ tracked entities to their information sources across platforms.
-Derived from ai-tracker/entities/*.md definitions.
+Derived from morning-ai/entities/*.md definitions.
 """
 
 # X/Twitter handles per entity (without @)

@@ -1,4 +1,4 @@
-"""GitHub collector for ai-tracker.
+"""GitHub collector for morning-ai.
 
 Monitors releases, trending repos, and commit activity via GitHub API.
 New collector — no last30days equivalent.

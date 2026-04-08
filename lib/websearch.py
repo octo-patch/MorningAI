@@ -1,4 +1,4 @@
-"""Web search collector for ai-tracker (Brave + Exa backends).
+"""Web search collector for morning-ai (Brave + Exa backends).
 
 Adapted from last30days brave_search.py and exa_search.py.
 Used to monitor official blogs, changelogs, and news sites.

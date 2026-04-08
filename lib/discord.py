@@ -1,4 +1,4 @@
-"""Discord collector for ai-tracker.
+"""Discord collector for morning-ai.
 
 Monitors Discord announcement channels for new messages.
 Uses Discord Bot API to read channel history.

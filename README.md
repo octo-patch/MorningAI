@@ -28,13 +28,13 @@ The Python collector runs 9 sources concurrently (X/Twitter, Reddit, HN, GitHub,
 /plugin marketplace add octo-patch/MorningAI
 
 # Or manual install
-git clone https://github.com/octo-patch/MorningAI.git ~/.claude/skills/ai-tracker
+git clone https://github.com/octo-patch/MorningAI.git ~/.claude/skills/morning-ai
 ```
 
 ### ClawHub
 
 ```bash
-clawhub install ai-tracker
+clawhub install morning-ai
 ```
 
 ### Gemini CLI
@@ -46,7 +46,7 @@ gemini extensions install https://github.com/octo-patch/MorningAI.git
 ### OpenAI Codex
 
 ```bash
-git clone https://github.com/octo-patch/MorningAI.git ~/.agents/skills/ai-tracker
+git clone https://github.com/octo-patch/MorningAI.git ~/.agents/skills/morning-ai
 ```
 
 ### Manual (any tool)
@@ -58,7 +58,7 @@ cd MorningAI
 
 ## Setup
 
-Create a config file at `~/.config/ai-tracker/.env`:
+Create a config file at `~/.config/morning-ai/.env`:
 
 ```env
 SCRAPECREATORS_API_KEY=your_key    # X/Twitter (required for X source)
@@ -75,7 +75,7 @@ Without any API keys, 4 free sources work out of the box: **Reddit**, **Hacker N
 Invoke the skill in your AI tool:
 
 ```
-/ai-tracker
+/morning-ai
 ```
 
 Or run the collector standalone:

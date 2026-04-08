@@ -1,4 +1,4 @@
-"""Environment and configuration management for ai-tracker."""
+"""Environment and configuration management for morning-ai."""
 
 import os
 from pathlib import Path
@@ -11,10 +11,10 @@ SKILL_SEARCH_PATHS: List[Optional[str]] = [
     os.environ.get("CLAUDE_PLUGIN_ROOT"),           # Claude Code plugin
     os.environ.get("GEMINI_EXTENSION_DIR"),         # Gemini CLI extension
     str(Path.home() / ".claude" / "plugins" / "marketplaces" / "MorningAI"),
-    str(Path.home() / ".claude" / "skills" / "ai-tracker"),
-    str(Path.home() / ".agents" / "skills" / "ai-tracker"),
-    str(Path.home() / ".codex" / "skills" / "ai-tracker"),
-    str(Path.home() / ".gemini" / "extensions" / "ai-tracker"),
+    str(Path.home() / ".claude" / "skills" / "morning-ai"),
+    str(Path.home() / ".agents" / "skills" / "morning-ai"),
+    str(Path.home() / ".codex" / "skills" / "morning-ai"),
+    str(Path.home() / ".gemini" / "extensions" / "morning-ai"),
 ]
 
 
@@ -48,10 +48,10 @@ def load_env_file(path: str) -> Dict[str, str]:
 def get_config() -> Dict[str, Any]:
     """Load config from environment + .env files.
 
-    Priority: env vars > project .env > project .claude/ai-tracker.env > global config
+    Priority: env vars > project .env > project .claude/morning-ai.env > global config
     """
-    global_env = load_env_file(str(Path.home() / ".config" / "ai-tracker" / ".env"))
-    project_claude_env = load_env_file(".claude/ai-tracker.env")
+    global_env = load_env_file(str(Path.home() / ".config" / "morning-ai" / ".env"))
+    project_claude_env = load_env_file(".claude/morning-ai.env")
     project_env = load_env_file(".env")
     local_env = load_env_file(".env.local")
 
@@ -60,7 +60,7 @@ def get_config() -> Dict[str, Any]:
     config.update(project_claude_env)
     config.update(project_env)
     config.update(local_env)
-    config.update({k: v for k, v in os.environ.items() if k.startswith(("AI_TRACKER_", "SCRAPECREATORS_", "BRAVE_", "EXA_", "GITHUB_", "YOUTUBE_", "DISCORD_", "AUTH_TOKEN", "CT0", "IMAGE_GEN_", "OPENAI_", "GEMINI_", "MINIMAX_"))})
+    config.update({k: v for k, v in os.environ.items() if k.startswith(("MORNING_AI_", "SCRAPECREATORS_", "BRAVE_", "EXA_", "GITHUB_", "YOUTUBE_", "DISCORD_", "AUTH_TOKEN", "CT0", "IMAGE_GEN_", "OPENAI_", "GEMINI_", "MINIMAX_"))})
 
     return config
 

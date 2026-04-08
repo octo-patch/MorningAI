@@ -1,4 +1,4 @@
-"""X/Twitter collector for ai-tracker.
+"""X/Twitter collector for morning-ai.
 
 Searches X via public JSON endpoints or ScrapeCreators API.
 Adapted from last30days bird_x.py and scrapecreators_x.py.

@@ -1,4 +1,4 @@
-"""arXiv collector for ai-tracker.
+"""arXiv collector for morning-ai.
 
 Searches arXiv papers via the Atom/XML API (free, no auth).
 New collector — no last30days equivalent.

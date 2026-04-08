@@ -1,6 +1,6 @@
-"""Scoring module for ai-tracker.
+"""Scoring module for morning-ai.
 
-Maps collector relevance scores to ai-tracker's 1-10 importance scale.
+Maps collector relevance scores to morning-ai's 1-10 importance scale.
 Combines engagement, source reliability, and content relevance.
 Adapted from last30days score.py composite scoring approach.
 """
@@ -21,7 +21,7 @@ SOURCE_RELIABILITY = {
     SOURCE_HACKERNEWS: 0.55,
 }
 
-# Scoring component weights (matching ai-tracker's 5-dimension system)
+# Scoring component weights (matching morning-ai's 5-dimension system)
 # Impact 30%, Differentiation 25%, Innovation 20%, Coverage 15%, Timeliness 10%
 WEIGHT_RELEVANCE = 0.35
 WEIGHT_ENGAGEMENT = 0.30
@@ -134,7 +134,7 @@ def score_items(items: List[TrackerItem]) -> List[TrackerItem]:
 
 
 def apply_verification_bonus(items: List[TrackerItem]) -> List[TrackerItem]:
-    """Apply cross-verification bonus per ai-tracker rules.
+    """Apply cross-verification bonus per morning-ai rules.
 
     Items with 2+ cross-references get a verification bonus.
     Items scoring 7+ with <2 independent sources get a penalty.
@@ -152,7 +152,7 @@ def apply_verification_bonus(items: List[TrackerItem]) -> List[TrackerItem]:
             item.verified = True
             item.importance = min(10.0, item.importance + 0.5)
         elif item.importance >= 7.0 and num_refs < 2:
-            # High-score items need verification per ai-tracker rules
+            # High-score items need verification per morning-ai rules
             item.importance = max(6.9, item.importance - 0.5)
             item.verified = False
 

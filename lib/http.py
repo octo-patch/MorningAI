@@ -1,4 +1,4 @@
-"""HTTP utilities for ai-tracker (stdlib only, adapted from last30days)."""
+"""HTTP utilities for morning-ai (stdlib only, adapted from last30days)."""
 
 import json
 import os
@@ -12,8 +12,8 @@ from urllib.parse import urlencode
 DEFAULT_TIMEOUT = 30
 MAX_RETRIES = 5
 RETRY_DELAY = 2.0
-USER_AGENT = "ai-tracker/1.0 (AI Industry Tracker)"
-DEBUG = os.environ.get("AI_TRACKER_DEBUG", "").lower() in ("1", "true", "yes")
+USER_AGENT = "morning-ai/1.0 (AI Industry Tracker)"
+DEBUG = os.environ.get("MORNING_AI_DEBUG", "").lower() in ("1", "true", "yes")
 
 
 def log(msg: str):

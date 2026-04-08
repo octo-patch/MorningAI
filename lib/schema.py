@@ -1,4 +1,4 @@
-"""Data schema for ai-tracker items."""
+"""Data schema for morning-ai items."""
 
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
@@ -73,7 +73,7 @@ class TrackerItem:
     raw_text: str = ""
     engagement: Engagement = field(default_factory=Engagement)
     relevance: float = 0.0  # 0-1 from collector
-    importance: float = 0.0  # 1-10 ai-tracker scale (set by scoring)
+    importance: float = 0.0  # 1-10 morning-ai scale (set by scoring)
     cross_refs: List[str] = field(default_factory=list)
     verified: bool = False
     verify_sources: List[str] = field(default_factory=list)

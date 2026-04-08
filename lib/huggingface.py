@@ -1,4 +1,4 @@
-"""HuggingFace collector for ai-tracker.
+"""HuggingFace collector for morning-ai.
 
 Monitors model/space/dataset updates via HuggingFace API.
 New collector — no last30days equivalent.
