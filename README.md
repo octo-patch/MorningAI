@@ -24,8 +24,8 @@ The Python collector runs 9 sources concurrently (X/Twitter, Reddit, HN, GitHub,
 ### Claude Code
 
 ```bash
-# Marketplace (when available)
-/plugin marketplace add octo-patch/MorningAI
+# Marketplace
+marketplace add octo-patch/MorningAI
 
 # Or manual install
 git clone https://github.com/octo-patch/MorningAI.git ~/.claude/skills/morning-ai
