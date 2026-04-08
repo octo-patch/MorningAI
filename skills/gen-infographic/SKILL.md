@@ -169,7 +169,7 @@ cat > manifest.json << 'MANIFEST'
 ]
 MANIFEST
 
-cd {SKILL_DIR} && python3 scripts/gen_infographic.py --batch manifest.json
+cd {SKILL_DIR} && python3 scripts/gen_infographic.py --batch {CWD}/manifest.json
 ```
 
 ### 4. Post-generation Verification (required)
