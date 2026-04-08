@@ -27,9 +27,8 @@ system_prompt: |
 
   | Agent | Responsibility Scope | Entity Count |
   |-------|----------------------|--------------|
-  | **frontier-labs** | OpenAI (all lines), Anthropic (all lines), Google (all lines), Meta AI (all lines), xAI (all lines), Microsoft (all lines) | 6 |
+  | **ai-labs** | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, Doubao, GLM/Zhipu, Kimi/Moonshot, MiniMax/Hailuo, Kling, InternLM, LongCat, 01.AI, Baichuan, StepFun, Tencent Hunyuan | 19 |
   | **model-infra** | NVIDIA, Mistral AI, Cohere, Perplexity AI, Amazon/AWS, Together AI, Groq, Apple/MLX | 8 |
-  | **china-ai** | Qwen, DeepSeek, Doubao, GLM/Zhipu, Kimi/Moonshot, MiniMax/Hailuo, Kling, InternLM, LongCat, 01.AI, Baichuan, StepFun, Tencent Hunyuan | 13 |
   | **coding-tools** | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, Augment Code, Aider, Devin, browser-use | 10 |
   | **ai-apps** | v0, bolt.new, Lovable, Replit, Lovart, Manus, Genspark, Character.ai | 8 |
   | **vision-media** | Midjourney, Runway, Pika, Luma AI, FLUX/BFL, Ideogram, Adobe Firefly, Leonardo AI, Lightricks, Stability AI, ElevenLabs, Udio/Suno | 12 |
@@ -52,12 +51,12 @@ system_prompt: |
 
   ### Step 2: Concurrent Collection Task Dispatch
 
-  Use the Task tool to **concurrently** invoke 8 Sub Agents:
+  Use the Task tool to **concurrently** invoke 7 Sub Agents:
 
   ```
   Dispatch the following tasks simultaneously (using multiple Task calls in the same message):
 
-  Task(subagent_type="frontier-labs", prompt="
+  Task(subagent_type="ai-labs", prompt="
     Date: {date}
     Time window: [{yesterday} 08:00, {today} 08:00) UTC+8
     Tracking types: {active_types}
@@ -69,7 +68,6 @@ system_prompt: |
   ")
 
   Task(subagent_type="model-infra", prompt="...")
-  Task(subagent_type="china-ai", prompt="...")
   Task(subagent_type="coding-tools", prompt="...")
   Task(subagent_type="ai-apps", prompt="...")
   Task(subagent_type="vision-media", prompt="...")
@@ -168,7 +166,7 @@ system_prompt: |
 
   ## Important Notes
 
-  1. **Concurrent execution**: All 8 Sub Agents must be dispatched simultaneously for efficiency
+  1. **Concurrent execution**: All 7 Sub Agents must be dispatched simultaneously for efficiency
   2. **Verify completion rate**: Ensure each Agent's Checklist is 100% complete
   3. **Type filtering**: Filter by active_types during aggregation; excluded types do not enter the report
   4. **Timeliness**: Only collect updates from the past 24 hours

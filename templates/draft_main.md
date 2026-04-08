@@ -10,14 +10,13 @@
 
 | # | Agent | Status | Draft Path | Product | Model | Benchmark | Funding | Skipped | 7+ Scores |
 |---|-------|------|-----------|------|------|------|--------|------|------|
-| 1 | frontier-labs | | | | | | | | |
+| 1 | ai-labs | | | | | | | | |
 | 2 | model-infra | | | | | | | | |
-| 3 | china-ai | | | | | | | | |
-| 4 | coding-tools | | | | | | | | |
-| 5 | ai-apps | | | | | | | | |
-| 6 | vision-media | | | | | | | | |
-| 7 | benchmarks-academic | | | | | | | | |
-| 8 | trending-discovery | | | | | | | | |
+| 3 | coding-tools | | | | | | | | |
+| 4 | ai-apps | | | | | | | | |
+| 5 | vision-media | | | | | | | | |
+| 6 | benchmarks-academic | | | | | | | | |
+| 7 | trending-discovery | | | | | | | | |
 
 ---
 
@@ -93,7 +92,7 @@
 
 | Metric | Value |
 |------|------|
-| Total Sub Agents | 8 |
+| Total Sub Agents | 7 |
 | All Completed | |
 | Total Discoveries | |
 | Model Updates | |

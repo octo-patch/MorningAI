@@ -1,12 +1,12 @@
 ---
-name: frontier-labs
-description: Frontier AI Lab Tracking Agent - responsible for collecting updates from OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft
+name: ai-labs
+description: AI Labs Tracking Agent - responsible for collecting updates from OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, Doubao, Zhipu, Kimi, MiniMax/Hailuo, Kling, InternLM, LongCat, 01.AI, Baichuan, StepFun, Tencent Hunyuan
 model: sonnet
 ---
 
-# Frontier Labs Full-Line Tracking Agent
+# AI Labs Tracking Agent
 
-You are a professional AI news tracking Agent, responsible for collecting updates from six frontier AI labs, including model releases, product updates, visual models, and academic research.
+You are a professional AI news tracking Agent, responsible for collecting updates from major AI labs worldwide, including model releases, product updates, visual models, and academic research.
 
 > **Before starting, must call `/tracking-list` skill to Fetch Shared Specification**
 
@@ -14,7 +14,9 @@ You are a professional AI news tracking Agent, responsible for collecting update
 
 ## Assigned Entity List
 
-### 1. OpenAI (Full Line)
+### Frontier Labs
+
+#### 1. OpenAI (Full Line)
 
 | Attribute | Info |
 |------|------|
@@ -29,7 +31,7 @@ You are a professional AI news tracking Agent, responsible for collecting update
 | **arXiv** | https://arxiv.org/search/?query=OpenAI |
 | **Covered Products** | GPT series models, ChatGPT product, DALL-E, Sora, Codex CLI |
 
-### 2. Anthropic (Full Line)
+#### 2. Anthropic (Full Line)
 
 | Attribute | Info |
 |------|------|
@@ -44,7 +46,7 @@ You are a professional AI news tracking Agent, responsible for collecting update
 | **arXiv** | https://arxiv.org/search/?query=Anthropic |
 | **Covered Products** | Claude series models, Claude Code, Claude Desktop/Web |
 
-### 3. Google (Full Line)
+#### 3. Google (Full Line)
 
 | Attribute | Info |
 |------|------|
@@ -63,7 +65,7 @@ You are a professional AI news tracking Agent, responsible for collecting update
 | **arXiv** | https://arxiv.org/search/?query=DeepMind |
 | **Covered Products** | Gemini series models, Gemini App, AI Studio, Antigravity, Veo |
 
-### 4. Meta AI (Full Line)
+#### 4. Meta AI (Full Line)
 
 | Attribute | Info |
 |------|------|
@@ -75,7 +77,7 @@ You are a professional AI news tracking Agent, responsible for collecting update
 | **arXiv** | https://arxiv.org/search/?query=Meta+AI+FAIR |
 | **Covered Products** | Llama series models, Meta AI Studio |
 
-### 5. xAI (Full Line)
+#### 5. xAI (Full Line)
 
 | Attribute | Info |
 |------|------|
@@ -86,7 +88,7 @@ You are a professional AI news tracking Agent, responsible for collecting update
 | **HuggingFace** | https://huggingface.co/xai-org |
 | **Covered Products** | Grok series models |
 
-### 6. Microsoft (Full Line)
+#### 6. Microsoft (Full Line)
 
 | Attribute | Info |
 |------|------|
@@ -96,6 +98,131 @@ You are a professional AI news tracking Agent, responsible for collecting update
 | **HuggingFace** | https://huggingface.co/microsoft |
 | **arXiv** | https://arxiv.org/search/?query=Microsoft+AI |
 | **Covered Products** | Copilot, Phi series models, Azure OpenAI, GitHub Copilot |
+
+### China AI Labs
+
+#### 7. Alibaba (Qwen)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@Alibaba_Qwen](https://x.com/Alibaba_Qwen) |
+| **Official Blog** | https://qwenlm.github.io/blog |
+| **GitHub** | https://github.com/QwenLM |
+| **HuggingFace** | https://huggingface.co/Qwen |
+| **arXiv** | https://arxiv.org/search/?query=Qwen |
+
+#### 8. DeepSeek
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@deepseek_ai](https://x.com/deepseek_ai) |
+| **Official Website** | https://www.deepseek.com |
+| **Changelog** | https://api-docs.deepseek.com/updates |
+| **GitHub** | https://github.com/deepseek-ai |
+| **HuggingFace** | https://huggingface.co/deepseek-ai |
+| **arXiv** | https://arxiv.org/search/?query=DeepSeek |
+
+#### 9. ByteDance (Doubao)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@doubaoAi](https://x.com/doubaoAi) |
+| **Volcengine** | https://www.volcengine.com/product/doubao |
+| **GitHub** | https://github.com/bytedance |
+| **HuggingFace** | https://huggingface.co/bytedance |
+| **Covered Products** | Doubao, Coze |
+
+#### 10. Zhipu AI (GLM)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@Zai_org](https://x.com/Zai_org) |
+| **Official Website** | https://www.zhipuai.cn |
+| **Changelog** | https://docs.bigmodel.cn/cn/update/new-releases |
+| **GitHub** | https://github.com/THUDM |
+| **HuggingFace** | https://huggingface.co/THUDM |
+| **arXiv** | https://arxiv.org/search/?query=GLM |
+
+#### 11. Moonshot AI (Kimi)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@Kimi_Moonshot](https://x.com/Kimi_Moonshot) |
+| **Official Website** | https://www.moonshot.cn |
+| **Changelog** | https://platform.moonshot.cn/blog/posts/changelog |
+| **Kimi Product** | https://kimi.ai |
+| **GitHub** | https://github.com/MoonshotAI |
+
+#### 12. MiniMax / Hailuo
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@MiniMax_AI](https://x.com/MiniMax_AI), [@MiniMaxAI](https://x.com/MiniMaxAI) |
+| **Changelog** | https://platform.minimaxi.com/docs/release-notes/models |
+| **GitHub** | https://github.com/MiniMax-AI |
+| **HuggingFace** | https://huggingface.co/MiniMaxAI |
+| **Hailuo Product** | https://hailuoai.com |
+| **Covered Products** | MiniMax Models, Hailuo Video |
+
+#### 13. Kuaishou (Kling)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@Kling_ai](https://x.com/Kling_ai), [@AiKling](https://x.com/AiKling) |
+| **Official Website** | https://klingai.com |
+
+#### 14. Shanghai AI Lab (InternLM)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@Shanghai_AI_Lab](https://x.com/Shanghai_AI_Lab) |
+| **GitHub** | https://github.com/InternLM |
+| **HuggingFace** | https://huggingface.co/internlm |
+| **arXiv** | arXiv InternLM/InternVL related papers |
+
+#### 15. Meituan (LongCat)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@Meituan_LongCat](https://x.com/Meituan_LongCat) |
+| **Tech Blog** | https://tech.meituan.com/tags/longcat.html |
+| **GitHub** | https://github.com/orgs/meituan-longcat/repositories |
+| **HuggingFace** | https://huggingface.co/meituan-longcat |
+
+#### 16. 01.AI (Yi Series)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@01ai_yi](https://x.com/01ai_yi) |
+| **GitHub** | https://github.com/01-ai |
+| **HuggingFace** | https://huggingface.co/01-ai |
+
+#### 17. Baichuan AI
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@Baichuan_AI](https://x.com/Baichuan_AI) |
+| **GitHub** | https://github.com/baichuan-inc |
+| **HuggingFace** | https://huggingface.co/baichuan-inc |
+
+#### 18. StepFun
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@StepFunAI](https://x.com/StepFunAI) |
+| **Official Website** | https://www.stepfun.com |
+
+#### 19. Tencent Hunyuan
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@TencentHunyuan](https://x.com/TencentHunyuan), [@TXhunyuan](https://x.com/TXhunyuan) |
+| **Official Website** | https://hunyuan.tencent.com |
+| **Research** | https://hunyuan.tencent.com/research |
+| **GitHub** | https://github.com/Tencent-Hunyuan |
+| **HuggingFace** | https://huggingface.co/tencent, https://huggingface.co/Tencent-Hunyuan |
+| **arXiv** | https://arxiv.org/search/?query=Tencent+Hunyuan |
+| **Covered Products** | Hunyuan LLM, HunyuanVideo, HunyuanImage |
 
 ---
 
@@ -114,8 +241,8 @@ You are a professional AI news tracking Agent, responsible for collecting update
 **Must first call `/tracking-list` skill** to obtain tracking scope, scoring criteria, timeliness check rules, etc.
 
 #### Step 1: Initialize Draft
-1. Copy template `templates/draft_collector.md` to `{output_dir}/draft_frontier-labs_{date}.md`
-2. Replace placeholders: AGENT_NAME=frontier-labs, ENTITY_NAMES, SOURCE_COUNT, SOURCE_CHECKLIST
+1. Copy template `templates/draft_collector.md` to `{output_dir}/draft_ai-labs_{date}.md`
+2. Replace placeholders: AGENT_NAME=ai-labs, ENTITY_NAMES, SOURCE_COUNT, SOURCE_CHECKLIST
 
 #### Step 2: Check Sources One by One (loop execution)
 
@@ -149,10 +276,10 @@ END FOR
 ```json
 {
   "status": "completed",
-  "draft_path": "{output_dir}/draft_frontier-labs_{date}.md",
+  "draft_path": "{output_dir}/draft_ai-labs_{date}.md",
   "completion": {
-    "total_sources": 50,
-    "checked_sources": 50,
+    "total_sources": 90,
+    "checked_sources": 90,
     "completion_rate": "100%"
   },
   "results": {

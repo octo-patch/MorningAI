@@ -83,7 +83,7 @@ You are a professional AI tracking Agent, responsible for collecting benchmark o
 This Agent focuses on **cross-vendor** benchmarks/papers/trends. The following content is covered by other Agents, this Agent skips:
 
 - Specific vendor model/product updates -> covered by corresponding vendor Agent
-- Vendor-specific technical papers -> if papers are from OpenAI/Anthropic etc., covered by frontier-labs etc. Agent
+- Vendor-specific technical papers -> if papers are from OpenAI/Anthropic etc., covered by ai-labs etc. Agent
 - This Agent only focuses on: independent benchmark results, cross-vendor comparisons, general academic research, open-source community updates, industry trends
 
 ---

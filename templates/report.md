@@ -103,9 +103,8 @@
 
 | Agent | Discoveries | 7+ Scores | Completion Rate |
 |-------|--------|------|--------|
-| frontier-labs | | | |
+| ai-labs | | | |
 | model-infra | | | |
-| china-ai | | | |
 | coding-tools | | | |
 | ai-apps | | | |
 | vision-media | | | |
