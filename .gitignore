@@ -9,4 +9,5 @@ drafts/draft_*
 report_*.md
 plan_*.md
 data_*.json
+data/leaderboard.db
 .claude/

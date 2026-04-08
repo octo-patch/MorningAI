@@ -95,10 +95,67 @@ Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, a
 #### Step 1: Initialize Draft
 Copy `templates/draft_collector.md` to `{output_dir}/draft_benchmarks-academic_{date}.md`
 
-#### Step 2: Check Sources One by One
+#### Step 2: Leaderboard Change Detection
+
+Actively check each leaderboard for new model entries and ranking changes. Uses **two complementary methods**: change signal detection + snapshot diff.
+
+##### Method A: Change Signals
 
 ```
-FOR each source in Checklist:
+FOR each leaderboard in Benchmark Organizations:
+    1. Check change signals (in priority order):
+       a. Changelog / update log on the leaderboard site (e.g. LMSYS blog, HF space commit history)
+       b. X/Twitter posts from the leaderboard's official account announcing new models or ranking updates
+       c. Leaderboard "recent additions" or "last updated" section, if available
+    2. For each detected change:
+       - Confirm the date of first appearance / ranking change (NOT current access date)
+       - Timeliness check against [time_window_start, time_window_end)
+       - Record as Benchmark type with Event Type = "Leaderboard change" or "New model entry"
+       - Include anonymous / unnamed models if announced (e.g. mystery models in Chatbot Arena)
+    3. Check Checkbox + save Draft
+END FOR
+```
+
+##### Method B: Snapshot Diff (automated detection)
+
+After extracting the current leaderboard state, save a snapshot and diff against the previous one to catch changes that lack explicit announcements.
+
+```
+FOR each leaderboard in Benchmark Organizations:
+    1. Extract current top models from the leaderboard (model name, rank, score)
+    2. Call snapshot tool:
+       python3 scripts/leaderboard_snapshot.py save \
+         --leaderboard {leaderboard_id} \
+         --date {date} \
+         --data '[{"model":"...","rank":N,"score":X.X}, ...]'
+    3. Read the JSON output:
+       - new_models → record each as Event Type = "New model entry"
+       - rank_changes → record significant moves as Event Type = "Leaderboard change"
+       - score_changes → note if meaningful
+       - is_initial = true → first run, skip diff (all entries are baseline)
+    4. Deduplicate against Method A results (don't record the same change twice)
+END FOR
+```
+
+> **Leaderboard IDs**: Use lowercase, e.g. `lmsys`, `lmarena`, `artificial_analysis`, `hf_open_llm`, `scale_seal`, `opencompass`, `livebench`, `wildbench`
+
+| Leaderboard | What to check | URL |
+|-------------|--------------|-----|
+| LMSYS Chatbot Arena | New models entering arena, Elo ranking shifts | https://lmsys.org |
+| LMArena | New battle results, ranking changes | @arena on X |
+| Artificial Analysis | New models benchmarked, quality/speed ranking changes | https://artificialanalysis.ai |
+| HuggingFace Open LLM | New model submissions, score changes in top ranks | https://huggingface.co/spaces/open-llm-leaderboard |
+| Scale AI SEAL | New evaluation results, ranking updates | https://scale.com/leaderboard |
+| OpenCompass | New multimodal benchmark entries | https://opencompass.org.cn |
+| LiveBench | New real-time evaluation results | https://livebench.ai |
+| WildBench | New model evaluations | https://huggingface.co/spaces/allenai/WildBench |
+
+> **Key**: A model "currently on the list" does NOT mean it was "just added". Always verify the date of first entry via changelog, announcement, or X post.
+
+#### Step 3: Check Remaining Sources
+
+```
+FOR each source in Checklist (excluding leaderboards already checked):
     1. Check source -> timeliness check
     2. Classify and tag type labels (mainly "Benchmark")
     3. KOL info -> must trace to official channels
@@ -107,7 +164,7 @@ FOR each source in Checklist:
 END FOR
 ```
 
-#### Step 3: Final Review
+#### Step 4: Final Review
 Confirm completion rate = 100%.
 
 ### Output Format
