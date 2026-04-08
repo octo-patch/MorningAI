@@ -122,7 +122,11 @@ def _generate_minimax(prompt: str, output_path: str, config: Dict[str, Any]) -> 
         raise ImageGenError("MINIMAX_API_KEY not configured")
 
     model = get_key(config, "MINIMAX_IMAGE_MODEL") or "image-01"
-    url = "https://api.minimax.chat/v1/image_generation"
+    region = (get_key(config, "MINIMAX_API_REGION") or "intl").strip().lower()
+    if region == "cn":
+        url = "https://api.minimaxi.com/v1/image_generation"
+    else:
+        url = "https://api.minimax.io/v1/image_generation"
 
     headers = {
         "Authorization": f"Bearer {api_key}",

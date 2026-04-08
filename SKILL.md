@@ -85,6 +85,7 @@ Image generation (for cover infographic, optional):
   GEMINI_API_KEY          — Google Gemini/Imagen API key
   OPENAI_API_KEY          — OpenAI API key (for gpt-image-1)
   MINIMAX_API_KEY         — MiniMax API key
+  MINIMAX_API_REGION      — MiniMax region: intl (default) | cn (国内)
 ```
 
 3. Write the keys to `~/.config/morning-ai/.env` in `KEY=value` format
