@@ -6,7 +6,7 @@
 
 ---
 
-![Cover Image](news_infographic_{DATE}.png)
+<!-- Insert cover image here if generated: ![Cover Image](news_infographic_{DATE}.png) -->
 
 ---
 
@@ -21,6 +21,8 @@
 ---
 
 ## Model Updates
+
+<!-- Insert type image if generated: ![Model Updates](news_infographic_{DATE}_model.png) -->
 
 ### Major Releases (9-10 Scores)
 
@@ -45,6 +47,8 @@
 
 ## Product Updates
 
+<!-- Insert type image if generated: ![Product Updates](news_infographic_{DATE}_product.png) -->
+
 ### Major Updates (9-10 Scores)
 
 ### Important Updates (7-8 Scores)
@@ -60,6 +64,8 @@
 
 ## Benchmarks & Research
 
+<!-- Insert type image if generated: ![Benchmark Updates](news_infographic_{DATE}_benchmark.png) -->
+
 ### Major Benchmarks (7+ Scores)
 
 ### Academic Papers
@@ -71,6 +77,8 @@
 ---
 
 ## Funding
+
+<!-- Insert type image if generated: ![Funding Updates](news_infographic_{DATE}_funding.png) -->
 
 ### Major Events (7+ Scores)
 

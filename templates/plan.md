@@ -63,13 +63,16 @@ Dispatch 7 Sub Agents concurrently:
 
 ---
 
-## Phase 5: Generate Cover Infographic
+## Phase 5: Generate Infographics (Optional)
 
 - [ ] Call `/gen-infographic` skill to get specification
-- [ ] Select top 4-5 updates to build Prompt
-- [ ] Call gen_images to generate 16:9 PNG
-- [ ] Verify image content
-- [ ] Insert at report beginning
+- [ ] Build cover prompt (top 4-5 across all types)
+- [ ] Build per-type prompts (for types with 7+ items)
+- [ ] Generate all images (via native tool OR `python3 scripts/gen_infographic.py --batch`)
+- [ ] Verify image content (if generated)
+- [ ] Insert cover at report beginning, per-type at section tops (if generated)
+
+> Skip this phase if `IMAGE_GEN_PROVIDER=none` or no image generation capability is available.
 
 ---
 
@@ -77,7 +80,7 @@ Dispatch 7 Sub Agents concurrently:
 
 - [ ] All phase checkboxes checked
 - [ ] report_{date}.md complete
-- [ ] news_infographic_{date}.png correct
+- [ ] news_infographic_{date}.png correct (if generated)
 - [ ] Mark as "Status: Completed"
 
 **Status**: ⏳ In Progress
@@ -87,4 +90,5 @@ Dispatch 7 Sub Agents concurrently:
 ## Final Deliverables
 
 - 📄 `report_{DATE}.md` - Daily Report Markdown
-- 🖼️ `news_infographic_{DATE}.png` - Cover Infographic
+- 🖼️ `news_infographic_{DATE}.png` - Cover Infographic (if image generation is configured)
+- 🖼️ `news_infographic_{DATE}_{type}.png` - Per-type Infographics (if configured)

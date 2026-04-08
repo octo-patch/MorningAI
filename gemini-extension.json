@@ -37,6 +37,26 @@
       "name": "Exa API Key",
       "envVar": "EXA_API_KEY",
       "sensitive": true
+    },
+    {
+      "name": "Image Generation Provider (gemini/gpt/minimax/none)",
+      "envVar": "IMAGE_GEN_PROVIDER",
+      "sensitive": false
+    },
+    {
+      "name": "Gemini/Imagen API Key",
+      "envVar": "GEMINI_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "OpenAI API Key (for image generation)",
+      "envVar": "OPENAI_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "MiniMax API Key",
+      "envVar": "MINIMAX_API_KEY",
+      "sensitive": true
     }
   ]
 }

@@ -66,6 +66,12 @@ Optional (unlock more sources):
   DISCORD_TOKEN           — Discord announcement channels
   BRAVE_API_KEY           — Brave web search
   EXA_API_KEY             — Exa web search
+
+Image generation (for cover infographic, optional):
+  IMAGE_GEN_PROVIDER      — Provider: gemini | gpt | minimax | none (default: none)
+  GEMINI_API_KEY          — Google Gemini/Imagen API key
+  OPENAI_API_KEY          — OpenAI API key (for gpt-image-1)
+  MINIMAX_API_KEY         — MiniMax API key
 ```
 
 3. Write the keys to `~/.config/ai-tracker/.env` in `KEY=value` format
@@ -157,23 +163,36 @@ For lower-score items (3-6), use compact table format.
 
 ---
 
-## Step 4: Generate Cover Infographic (Optional)
+## Step 4: Generate Infographics (Optional)
 
-**This step requires image generation capability. If your tool does not support image generation, skip this step.**
+**This step is optional. Skip if no image generation capability is available or configured.**
 
 1. Read the infographic specification:
    ```
    Read {SKILL_DIR}/skills/gen-infographic/SKILL.md
    ```
 
-2. From the report, sort by score and select the **top 4-5** updates (across all types)
+2. **Cover image**: Sort by score and select the **top 4-5** updates (across all types). Build prompt using the Cover Prompt Template.
 
-3. Build the prompt following the specification:
-   - Each card title must include: Entity name + Event subject + Core event
-   - Determine point count based on score (3-5 for 7+, 2-3 for lower)
-   - Use the style template from the specification
+3. **Per-type images**: For each type (Model/Product/Benchmark/Funding), check if it has 7+ score items. If yes, build a prompt using the Per-Type Prompt Template.
+   - Default (`IMAGE_GEN_TYPES=auto`): only types with 7+ score items
+   - Set `IMAGE_GEN_TYPES=all` for all types, `none` for cover only
 
-4. Generate a 16:9 landscape image and insert at the beginning of the report
+4. Generate 16:9 landscape images using one of:
+
+   **Option A** — Native tool (Claude Code or other tools with built-in image generation):
+   Use your tool's built-in image generation capability (e.g. `gen_images`), one call per image.
+
+   **Option B** — Python script batch mode (any environment, requires `IMAGE_GEN_PROVIDER` configured):
+   Build a manifest JSON with all prompts and outputs, then run:
+   ```bash
+   cd {SKILL_DIR} && python3 scripts/gen_infographic.py --batch manifest.json
+   ```
+   Supported providers: `gemini`, `gpt`, `minimax`. See [Configuration](#configuration) for API keys.
+
+5. Insert images into the report:
+   - Cover image at the beginning
+   - Per-type images at the top of each type section
 
 ---
 
