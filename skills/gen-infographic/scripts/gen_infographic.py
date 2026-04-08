@@ -27,7 +27,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Add project root to path for imports
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from lib import env
 from lib.image_gen import generate, generate_batch, list_providers, ImageGenError
