@@ -9,17 +9,19 @@ Entity registry for benchmark organizations, academic research channels, and ind
 
 ### Benchmark Organizations
 
-| Name | X Account | Website | Description |
-|------|--------|------|------|
-| LMArena | [@arena](https://x.com/arena) | - | Model battle ranking |
-| Artificial Analysis | [@ArtificialAnlys](https://x.com/ArtificialAnlys) | https://artificialanalysis.ai | Model speed/quality comparison |
-| HuggingFace Open LLM | [@huggingface](https://x.com/huggingface) | https://huggingface.co/spaces/open-llm-leaderboard | Open-source model leaderboard |
-| Scale AI SEAL | [@scale_AI](https://x.com/scale_AI) | https://scale.com/leaderboard | Scale Benchmark |
-| LMSYS Chatbot Arena | [@laboramsys](https://x.com/laboramsys) | https://lmsys.org | Chatbot Arena / VLM Arena |
-| OpenCompass | - | https://opencompass.org.cn | Multimodal benchmark |
-| vLLM | [@vllm_project](https://x.com/vllm_project) | - | Inference performance |
-| LiveBench | - | https://livebench.ai | Real-time benchmark |
-| WildBench | - | https://huggingface.co/spaces/allenai/WildBench | Allen AI Benchmark |
+| Name | X Account | Website | Modality | Description |
+|------|--------|------|------|------|
+| LMArena | [@arena](https://x.com/arena) | - | Text, Vision | Model battle ranking |
+| Artificial Analysis | [@ArtificialAnlys](https://x.com/ArtificialAnlys) | https://artificialanalysis.ai | Text, Image, Video, Audio | Model speed/quality comparison |
+| HuggingFace Open LLM | [@huggingface](https://x.com/huggingface) | https://huggingface.co/spaces/open-llm-leaderboard | Text | Open-source model leaderboard |
+| Scale AI SEAL | [@scale_AI](https://x.com/scale_AI) | https://scale.com/leaderboard | Text | Scale Benchmark |
+| LMSYS Chatbot Arena | [@laboramsys](https://x.com/laboramsys) | https://lmsys.org | Text, Vision | Chatbot Arena / VLM Arena |
+| OpenCompass | - | https://opencompass.org.cn | Text, Multimodal | Multimodal benchmark |
+| LiveBench | - | https://livebench.ai | Text | Real-time benchmark |
+| WildBench | - | https://huggingface.co/spaces/allenai/WildBench | Text | Allen AI Benchmark |
+| Terminal-Bench | - | https://www.tbench.ai | Code | Terminal agent benchmark |
+| Vals AI | [@ValsAI](https://x.com/ValsAI) | https://www.vals.ai | Text | Domain-specific benchmark (law, finance, code) |
+| Design Arena | [@Designarena](https://x.com/Designarena) | https://www.designarena.ai/leaderboard | Code, Image, Video | Crowdsourced AI design benchmark |
 
 ### Additional Benchmark Sources
 

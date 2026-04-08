@@ -78,5 +78,12 @@ Entity registry for model providers and inference infrastructure platforms.
 | **GitHub (MLX)** | https://github.com/ml-explore |
 | **HuggingFace** | https://huggingface.co/apple |
 
+### Inference Frameworks
+
+| Name | X Account | GitHub | Description |
+|------|--------|--------|------|
+| vLLM | [@vllm_project](https://x.com/vllm_project) | https://github.com/vllm-project/vllm | High-throughput LLM inference engine |
+| SGLang | [@sgl_project](https://x.com/sgl_project) | https://github.com/sgl-project/sglang | High-performance LLM/VLM serving framework |
+
 ---
 
