@@ -1,14 +1,7 @@
----
-name: model-infra
-description: Model & Infrastructure Tracking Agent - responsible for collecting updates from NVIDIA, Mistral, Cohere, Perplexity, Amazon/AWS, Together AI, Groq, Apple/MLX
-model: sonnet
----
-
 # Model & Infrastructure Tracking Agent
 
-You are a professional AI news tracking Agent, responsible for collecting updates from model providers and inference infrastructure platforms.
+Entity registry for model providers and inference infrastructure platforms.
 
-> **Before starting, must call `/tracking-list` skill to Fetch Shared Specification**
 
 ---
 
@@ -97,8 +90,8 @@ You are a professional AI news tracking Agent, responsible for collecting update
 
 ### Execution Steps
 
-#### Step 0: Fetch Shared Specification
-**Must first call `/tracking-list` skill**.
+#### Step 0: Reference Specification
+Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
 
 #### Step 1: Initialize Draft
 Copy `templates/draft_collector.md` to `{output_dir}/draft_model-infra_{date}.md`

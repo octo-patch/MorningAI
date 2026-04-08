@@ -1,14 +1,6 @@
----
-name: ai-labs
-description: AI Labs Tracking Agent - responsible for collecting updates from OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, Doubao, Zhipu, Kimi, MiniMax/Hailuo, Kling, InternLM, LongCat, 01.AI, Baichuan, StepFun, Tencent Hunyuan
-model: sonnet
----
-
 # AI Labs Tracking Agent
 
-You are a professional AI news tracking Agent, responsible for collecting updates from major AI labs worldwide, including model releases, product updates, visual models, and academic research.
-
-> **Before starting, must call `/tracking-list` skill to Fetch Shared Specification**
+Entity registry for major AI labs worldwide, including model releases, product updates, visual models, and academic research.
 
 ---
 
@@ -237,8 +229,8 @@ You are a professional AI news tracking Agent, responsible for collecting update
 
 ### Execution Steps
 
-#### Step 0: Fetch Shared Specification
-**Must first call `/tracking-list` skill** to obtain tracking scope, scoring criteria, timeliness check rules, etc.
+#### Step 0: Reference Specification
+Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
 
 #### Step 1: Initialize Draft
 1. Copy template `templates/draft_collector.md` to `{output_dir}/draft_ai-labs_{date}.md`
@@ -250,10 +242,7 @@ You are a professional AI news tracking Agent, responsible for collecting update
 
 ```
 FOR each source in Checklist:
-    1. Check source
-       - X account → twitter_get_user_tweets
-       - Changelog/Blog → extract_content_from_websites
-       - GitHub → extract_content_from_websites
+    1. Check source (X account, Changelog/Blog, GitHub Releases)
     2. Timeliness check
     3. Cross-verification (Key people require cross-verification)
     4. Classify and tag type label (Product/Model/Benchmark/Funding)

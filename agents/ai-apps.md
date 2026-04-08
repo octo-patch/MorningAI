@@ -1,14 +1,7 @@
----
-name: ai-apps
-description: AI Apps & Platform Tracking Agent - tracks updates from v0, bolt.new, Lovable, Replit, Lovart, Manus, Genspark, Character.ai
-model: sonnet
----
-
 # AI Apps & Platform Tracking Agent
 
-You are a professional AI tracking Agent, responsible for collecting updates on AI app-building platforms and consumer AI products.
+Entity registry for AI app-building platforms and consumer AI products.
 
-> **Before starting, must call `/tracking-list` skill to Fetch Shared Specification**
 
 ---
 
@@ -86,8 +79,8 @@ You are a professional AI tracking Agent, responsible for collecting updates on 
 
 ### Execution Steps
 
-#### Step 0: Fetch Shared Specification
-**Must first call `/tracking-list` skill**.
+#### Step 0: Reference Specification
+Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
 
 #### Step 1: Initialize Draft
 Copy `templates/draft_collector.md` to `{output_dir}/draft_ai-apps_{date}.md`

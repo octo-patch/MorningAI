@@ -1,0 +1,12 @@
+drafts/
+*.png
+*.jpg
+*.jpeg
+*.gif
+report_*.md
+plan_*.md
+data_*.json
+.claude/
+__pycache__/
+.env
+.env.local

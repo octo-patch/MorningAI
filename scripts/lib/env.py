@@ -2,7 +2,28 @@
 
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
+
+
+# Skill root search paths (priority order)
+SKILL_SEARCH_PATHS: List[Optional[str]] = [
+    ".",                                           # Current checkout
+    os.environ.get("CLAUDE_PLUGIN_ROOT"),           # Claude Code plugin
+    os.environ.get("GEMINI_EXTENSION_DIR"),         # Gemini CLI extension
+    str(Path.home() / ".claude" / "plugins" / "marketplaces" / "MorningAI"),
+    str(Path.home() / ".claude" / "skills" / "ai-tracker"),
+    str(Path.home() / ".agents" / "skills" / "ai-tracker"),
+    str(Path.home() / ".codex" / "skills" / "ai-tracker"),
+    str(Path.home() / ".gemini" / "extensions" / "ai-tracker"),
+]
+
+
+def find_skill_root() -> str:
+    """Find the skill root directory by searching known install paths."""
+    for p in SKILL_SEARCH_PATHS:
+        if p and Path(p).is_dir() and (Path(p) / "SKILL.md").exists():
+            return str(Path(p).resolve())
+    return "."
 
 
 def load_env_file(path: str) -> Dict[str, str]:
@@ -27,14 +48,16 @@ def load_env_file(path: str) -> Dict[str, str]:
 def get_config() -> Dict[str, Any]:
     """Load config from environment + .env files.
 
-    Priority: env vars > project .env > global .env
+    Priority: env vars > project .env > project .claude/ai-tracker.env > global config
     """
     global_env = load_env_file(str(Path.home() / ".config" / "ai-tracker" / ".env"))
+    project_claude_env = load_env_file(".claude/ai-tracker.env")
     project_env = load_env_file(".env")
     local_env = load_env_file(".env.local")
 
     config = {}
     config.update(global_env)
+    config.update(project_claude_env)
     config.update(project_env)
     config.update(local_env)
     config.update({k: v for k, v in os.environ.items() if k.startswith(("AI_TRACKER_", "SCRAPECREATORS_", "BRAVE_", "EXA_", "GITHUB_", "YOUTUBE_", "DISCORD_", "AUTH_TOKEN", "CT0"))})

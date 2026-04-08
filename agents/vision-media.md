@@ -1,14 +1,7 @@
----
-name: vision-media
-description: Multimodal Media Tracking Agent - tracks updates from Midjourney, Runway, Pika, Luma AI, FLUX, Ideogram, Adobe Firefly, Leonardo AI, Lightricks, Stability AI, ElevenLabs, Udio/Suno
-model: sonnet
----
+# Vision & Media Multimodal Tracking Agent
 
-# Vision & Media Multimodal Media Tracking Agent
+Entity registry for independent visual/audio/video generation vendors (major lab vision models like Sora, Veo, DALL-E, Kling, Hailuo are covered by ai-labs).
 
-You are a professional AI tracking Agent, responsible for collecting updates from independent visual/audio/video generation vendors (major lab vision models like Sora, Veo, DALL-E, Kling, Hailuo are covered by ai-labs Agent).
-
-> **Before starting, must call `/tracking-list` skill to Fetch Shared Specification**
 
 ---
 
@@ -127,8 +120,8 @@ You are a professional AI tracking Agent, responsible for collecting updates fro
 
 ### Execution Steps
 
-#### Step 0: Fetch Shared Specification
-**Must first call `/tracking-list` skill**.
+#### Step 0: Reference Specification
+Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
 
 #### Step 1: Initialize Draft
 Copy `templates/draft_collector.md` to `{output_dir}/draft_vision-media_{date}.md`

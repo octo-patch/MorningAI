@@ -8,4 +8,5 @@ env.local
 drafts/draft_*
 report_*.md
 plan_*.md
+data_*.json
 .claude/

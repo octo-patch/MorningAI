@@ -1,73 +1,110 @@
 # MorningAI
 
-A multi-agent system that tracks 76+ AI entities, collects updates from 9 sources, and generates structured daily reports with cover infographics.
-
-Built as a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) plugin.
+A universal AI news tracking skill that works across Claude Code, OpenCode, OpenClaw, Codex, and Gemini CLI. Tracks 76+ AI entities across 9 data sources and generates daily structured reports with optional cover infographics.
 
 ## How It Works
 
 ```
-                 Coordinator Agent
-                /    |    |    \
-          ai-labs  model  coding  ai-apps  vision  benchmarks  trending
-                   infra  tools            media   academic    discovery
-            \      |      |      /        |        |          /
-             -------------------------------------------------------
-                        |                                  |
-                  collect.py (9 sources)          /tracking-list skill
-                        |                                  |
-                  score + dedupe                    /gen-infographic skill
-                        |                                  |
-                  report_{date}.md            news_infographic_{date}.png
+SKILL.md (loaded by any AI tool)
+    │
+    ├─ Step 1: python3 scripts/collect.py  →  data_{date}.json
+    │           (9 sources, concurrent, score + dedupe)
+    │
+    ├─ Step 2: Read skills/tracking-list/SKILL.md  →  scoring & format spec
+    │
+    ├─ Step 3: Write report_{date}.md  →  structured daily report
+    │
+    └─ Step 4: (optional) Read skills/gen-infographic/SKILL.md  →  cover image
 ```
 
-7 sub-agents run concurrently, each checking its assigned entities across X/Twitter, GitHub, HuggingFace, arXiv, Reddit, HN, YouTube, Discord, and web search. Results are scored (1-10), deduplicated, cross-verified, and aggregated into a Markdown report.
+The Python collector runs 9 sources concurrently (X/Twitter, Reddit, HN, GitHub, HuggingFace, arXiv, web search, YouTube, Discord), then scores, deduplicates, and cross-links results. The AI tool reads the JSON output and generates a formatted Markdown report.
 
-## Tracked Entities (76+)
+## Install
 
-| Agent | Entities | Count |
-|-------|----------|-------|
-| **ai-labs** | OpenAI, Anthropic, Google DeepMind, Meta AI, xAI, Microsoft, Qwen, DeepSeek, Doubao, GLM/Zhipu, Kimi, MiniMax, Kling, InternLM, LongCat, 01.AI, Baichuan, StepFun, Tencent Hunyuan | 19 |
-| **model-infra** | NVIDIA, Mistral AI, Cohere, Perplexity AI, AWS, Together AI, Groq, Apple/MLX | 8 |
-| **coding-tools** | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, Augment Code, Aider, Devin, browser-use | 10 |
-| **ai-apps** | v0, bolt.new, Lovable, Replit, Lovart, Manus, Genspark, Character.ai | 8 |
-| **vision-media** | Midjourney, Runway, Pika, Luma AI, FLUX, Ideogram, Adobe Firefly, Leonardo AI, Lightricks, Stability AI, ElevenLabs, Udio/Suno | 12 |
-| **benchmarks-academic** | LMSYS, LMArena, Artificial Analysis, HuggingFace, Scale AI, KOLs, arXiv channels, industry media | 20+ |
-| **trending-discovery** | GitHub Trending, Product Hunt, Hacker News, Reddit | 4 sources |
+### Claude Code
 
-All items are classified into 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
+```bash
+# Marketplace (when available)
+/plugin marketplace add octo-patch/MorningAI
 
-## Setup
+# Or manual install
+git clone https://github.com/octo-patch/MorningAI.git ~/.claude/skills/ai-tracker
+```
+
+### ClawHub
+
+```bash
+clawhub install ai-tracker
+```
+
+### Gemini CLI
+
+```bash
+gemini extensions install https://github.com/octo-patch/MorningAI.git
+```
+
+### OpenAI Codex
+
+```bash
+git clone https://github.com/octo-patch/MorningAI.git ~/.agents/skills/ai-tracker
+```
+
+### Manual (any tool)
 
 ```bash
 git clone https://github.com/octo-patch/MorningAI.git
 cd MorningAI
 ```
 
-Create a `.env` file with API keys:
+## Setup
+
+Create a config file at `~/.config/ai-tracker/.env`:
 
 ```env
-SCRAPECREATORS_API_KEY=your_key    # X/Twitter (required)
+SCRAPECREATORS_API_KEY=your_key    # X/Twitter (required for X source)
 GITHUB_TOKEN=ghp_xxx               # GitHub (optional)
 YOUTUBE_API_KEY=your_key            # YouTube (optional)
 DISCORD_TOKEN=your_token            # Discord (optional)
 BRAVE_API_KEY=your_key              # Web search (optional)
 ```
 
-Run inside Claude Code:
+Without any API keys, 4 free sources work out of the box: **Reddit**, **Hacker News**, **HuggingFace**, **arXiv**.
 
-```bash
-claude
+## Usage
+
+Invoke the skill in your AI tool:
+
 ```
-```
-Track today's AI updates and generate the daily report.
+/ai-tracker
 ```
 
 Or run the collector standalone:
 
 ```bash
-python3 scripts/collect.py --date 2026-04-07 --output report.json
+python3 scripts/collect.py --date 2026-04-08 --output report.json
 ```
+
+## Tracked Entities (76+)
+
+| Group | Entities | Count |
+|-------|----------|-------|
+| **ai-labs** | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, + 11 more | 19 |
+| **model-infra** | NVIDIA, Mistral AI, Cohere, Perplexity AI, AWS, Together AI, Groq, Apple/MLX | 8 |
+| **coding-tools** | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, Augment, Aider, Devin, browser-use | 10 |
+| **ai-apps** | v0, bolt.new, Lovable, Replit, Lovart, Manus, Genspark, Character.ai | 8 |
+| **vision-media** | Midjourney, Runway, Pika, FLUX, ElevenLabs, Stability AI, + 6 more | 12 |
+| **benchmarks-academic** | LMSYS, HuggingFace, arXiv channels, KOLs, industry media | 20+ |
+| **trending-discovery** | GitHub Trending, Product Hunt, Hacker News, Reddit | 4 sources |
+
+All items are classified into 4 types: **Product**, **Model**, **Benchmark**, **Funding**.
+
+## Deploy to Multiple Tools
+
+```bash
+bash scripts/sync.sh
+```
+
+Distributes the skill to `~/.claude/skills/`, `~/.agents/skills/`, and `~/.codex/skills/`.
 
 ## License
 

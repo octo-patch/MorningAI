@@ -5,9 +5,7 @@ description: Unified AI News Tracking Specification - covers Product/Model/Bench
 
 # AI News Tracking - Unified Specification
 
-This Skill defines the shared specification that all Agents and Sub Agents must follow.
-
-> **All Sub Agents must call this Skill before starting work to fetch the specification**
+This document defines the shared specification for scoring, formatting, and validating AI news items.
 
 ---
 
@@ -350,31 +348,17 @@ Timeliness Check:
 
 ## Workflow Specification
 
-### Workflow Sub Agents Must Follow
+### Data Collection Workflow
 
 ```
-1. [Required] Call /tracking-list skill to fetch this specification
-2. Copy templates/draft_collector.md template
-3. Check sources one by one per Checklist
-
-FOR each source in Checklist:
-    1️⃣ Check this source
-       - X account → twitter_get_user_tweets
-       - Changelog/Blog → extract_content_from_websites
-       - GitHub Releases → extract_content_from_websites
-       - YouTube → extract_content_from_websites
-       - Discord → Check announcement channel
-       - arXiv → extract_content_from_websites
+FOR each source:
+    1️⃣ Check source (X account, Changelog/Blog, GitHub Releases, YouTube, Discord, arXiv)
     2️⃣ Timeliness check (per time validation rules)
     3️⃣ Cross-verification (key people posts require cross-verification with official channels)
     4️⃣ Content classification → determine type label (Product/Model/Benchmark/Funding)
-    5️⃣ Valid content → immediately append to Draft corresponding type section's Collection Records
-    6️⃣ Irrelevant content → immediately append to Skipped Records
-    7️⃣ Check this source's Checkbox
-    8️⃣ Save Draft
+    5️⃣ Valid content → record with full format
+    6️⃣ Irrelevant content → record in skipped items with reason
 END FOR
-
-4. Final review, ensure completion rate = 100%
 ```
 
 ### Type Classification Guide

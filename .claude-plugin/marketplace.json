@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "MorningAI",
+  "description": "AI news tracking system. Tracks 76+ AI entities across 9 data sources and generates daily structured reports with optional cover infographics.",
+  "owner": {
+    "name": "octo-patch",
+    "url": "https://github.com/octo-patch"
+  },
+  "plugins": [
+    {
+      "name": "ai-tracker",
+      "description": "Track 76+ AI entities across X, Reddit, HN, GitHub, HuggingFace, arXiv, YouTube, Discord, and web search. Generates scored, deduplicated daily Markdown reports.",
+      "version": "1.0.0",
+      "author": {
+        "name": "octo-patch",
+        "url": "https://github.com/octo-patch"
+      },
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/octo-patch/MorningAI"
+    }
+  ]
+}

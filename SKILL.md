@@ -1,0 +1,236 @@
+---
+name: ai-tracker
+version: "1.0.0"
+description: "AI news tracking system. Tracks 76+ AI entities across 9 data sources and generates daily structured Markdown reports with optional cover infographics."
+argument-hint: 'ai-tracker, ai-tracker --exclude Funding, ai-tracker --depth deep'
+allowed-tools: Bash, Read, Write, Edit, WebSearch
+homepage: https://github.com/octo-patch/MorningAI
+repository: https://github.com/octo-patch/MorningAI
+author: octo-patch
+license: MIT
+user-invocable: true
+metadata:
+  openclaw:
+    emoji: "📰"
+    requires:
+      env:
+        - SCRAPECREATORS_API_KEY
+      optionalEnv:
+        - GITHUB_TOKEN
+        - YOUTUBE_API_KEY
+        - DISCORD_TOKEN
+        - BRAVE_API_KEY
+        - EXA_API_KEY
+      bins:
+        - python3
+    primaryEnv: SCRAPECREATORS_API_KEY
+    files:
+      - "scripts/*"
+    homepage: https://github.com/octo-patch/MorningAI
+    tags:
+      - ai
+      - news
+      - tracking
+      - daily-report
+      - model
+      - product
+      - benchmark
+      - funding
+      - multi-source
+      - ai-skill
+      - clawhub
+---
+
+# ai-tracker: AI News Daily Report Generator
+
+> **Permissions overview:** Collects public data from X/Twitter, Reddit, Hacker News, GitHub, HuggingFace, arXiv, YouTube, Discord, and web search. Requires API keys configured in `.env` or `~/.config/ai-tracker/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
+
+Track 76+ AI entities across 9 data sources. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
+
+---
+
+## Step 0: Configuration Check
+
+**Before first run, check if the configuration is ready.**
+
+1. Check if `~/.config/ai-tracker/.env` or `.env` exists in the skill directory
+2. If neither exists, guide the user to set up API keys:
+
+```
+Required:
+  SCRAPECREATORS_API_KEY  — X/Twitter data collection (get at scrapecreators.com)
+
+Optional (unlock more sources):
+  GITHUB_TOKEN            — GitHub releases and repos
+  YOUTUBE_API_KEY         — YouTube channel content
+  DISCORD_TOKEN           — Discord announcement channels
+  BRAVE_API_KEY           — Brave web search
+  EXA_API_KEY             — Exa web search
+```
+
+3. Write the keys to `~/.config/ai-tracker/.env` in `KEY=value` format
+4. Without any API keys, the following free sources still work: **Reddit** (public JSON), **Hacker News** (Algolia API), **HuggingFace** (public API), **arXiv** (public API)
+
+---
+
+## Step 1: Data Collection
+
+Run the Python collector to gather data from all available sources:
+
+```bash
+cd {SKILL_DIR} && python3 scripts/collect.py --date {YYYY-MM-DD} --depth default -o {SKILL_DIR}/data_{YYYY-MM-DD}.json
+```
+
+**Parameters:**
+- `--date`: Target date, default today (YYYY-MM-DD)
+- `--depth`: Collection depth — `quick` (fast, fewer results), `default`, or `deep` (comprehensive)
+- `--sources`: Specific sources only, e.g. `--sources reddit hackernews github`
+- `-o`: Output JSON file path
+
+**What it does:**
+- Runs 9 collectors concurrently (X, Reddit, HN, GitHub, HuggingFace, arXiv, web, YouTube, Discord)
+- Time window: `[Yesterday 08:00, Today 08:00) UTC+8`
+- Pipeline: collect → score (1-10) → deduplicate → cross-source link → verification bonus
+- Returns structured JSON with all items, stats, and collection metadata
+
+**Timeout:** Allow up to 3 minutes for default depth, 5 minutes for deep.
+
+If the user provides `--exclude` types (e.g. `--exclude Funding`), note which types to filter out in Step 3.
+
+---
+
+## Step 2: Read Specifications
+
+After data collection completes, read the tracking specification to understand scoring criteria, record format, and timeliness rules:
+
+```
+Read {SKILL_DIR}/skills/tracking-list/SKILL.md
+```
+
+This specification defines:
+- 4 tracking types (Product / Model / Benchmark / Funding) with include/exclude criteria
+- Source priority rankings
+- Scoring criteria (1-10 scale with 5 dimensions)
+- Timeliness validation rules (event date ≠ page date)
+- Cross-verification requirements (7+ scores need 2+ independent sources)
+- Record format for the report
+
+**Internalize the specification before writing the report.** Pay special attention to the scoring reference tables and type classification guide.
+
+---
+
+## Step 3: Generate Report
+
+1. Read the JSON output from Step 1
+2. Read the report template: `Read {SKILL_DIR}/templates/report.md`
+3. Generate `report_{YYYY-MM-DD}.md` in the working directory
+
+**Report generation rules:**
+- Filter out any excluded types (if `--exclude` was specified)
+- Sort items by score within each type section
+- **TLDR section**: Only items with score 7+ (across all types), sorted high to low
+- **Type sections**: Group by score range (9-10 / 7-8 / 5-6 / 3-4)
+- For items with score 7+, include multi-source verification if available
+- Use the record format from the tracking specification
+- Fill in the statistics summary table
+
+**Item format in report:**
+
+For high-score items (7+):
+```markdown
+### {Entity} - {Event description}
+
+| Field | Value |
+|-------|-------|
+| **Type** | Product / Model / Benchmark / Funding |
+| **Score** | X.X |
+| **Published** | YYYY-MM-DD HH:MM UTC+8 |
+| **Source** | [Source Name](URL) |
+
+**Summary:**
+- Key point 1
+- Key point 2
+- Key point 3
+```
+
+For lower-score items (3-6), use compact table format.
+
+---
+
+## Step 4: Generate Cover Infographic (Optional)
+
+**This step requires image generation capability. If your tool does not support image generation, skip this step.**
+
+1. Read the infographic specification:
+   ```
+   Read {SKILL_DIR}/skills/gen-infographic/SKILL.md
+   ```
+
+2. From the report, sort by score and select the **top 4-5** updates (across all types)
+
+3. Build the prompt following the specification:
+   - Each card title must include: Entity name + Event subject + Core event
+   - Determine point count based on score (3-5 for 7+, 2-3 for lower)
+   - Use the style template from the specification
+
+4. Generate a 16:9 landscape image and insert at the beginning of the report
+
+---
+
+## Entity Reference
+
+The `agents/` directory contains detailed entity registries organized by tracking group:
+
+| File | Scope | Entities |
+|------|-------|----------|
+| `agents/frontier-labs.md` | Frontier AI Labs | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft |
+| `agents/model-infra.md` | Model Infrastructure | NVIDIA, Mistral, Cohere, Perplexity, AWS, Together, Groq, Apple |
+| `agents/china-ai.md` | China AI Ecosystem | Qwen, DeepSeek, Doubao, GLM, Kimi, MiniMax, + 7 more |
+| `agents/coding-tools.md` | Coding Tools | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, + 4 more |
+| `agents/ai-apps.md` | AI Applications | v0, bolt.new, Lovable, Replit, Lovart, Manus, + 2 more |
+| `agents/vision-media.md` | Vision & Media | Midjourney, Runway, Pika, FLUX, ElevenLabs, + 7 more |
+| `agents/benchmarks-academic.md` | Benchmarks & Academic | LMSYS, HuggingFace, arXiv channels, KOLs, industry media |
+| `agents/trending-discovery.md` | Trending Discovery | GitHub Trending, Product Hunt, Hacker News, Reddit |
+
+Each file lists X/Twitter accounts, key people, official blogs, changelogs, GitHub repos, and other source URLs for every tracked entity. Read these files when you need to verify or supplement the automated collection.
+
+---
+
+## Configuration
+
+### Config File Locations (priority order)
+
+1. **Environment variables** (highest priority)
+2. **Project config**: `.env` in skill directory
+3. **Global config**: `~/.config/ai-tracker/.env`
+
+### Config File Format
+
+```bash
+# ~/.config/ai-tracker/.env
+SCRAPECREATORS_API_KEY=your_key
+GITHUB_TOKEN=ghp_xxx
+YOUTUBE_API_KEY=your_key
+DISCORD_TOKEN=your_token
+BRAVE_API_KEY=your_key
+EXA_API_KEY=your_key
+```
+
+### Free Sources (no API key needed)
+
+| Source | API | Rate Limit |
+|--------|-----|-----------|
+| Reddit | Public JSON | Generous |
+| Hacker News | Algolia API | Generous |
+| HuggingFace | Public API | Generous |
+| arXiv | Public API | Generous |
+
+---
+
+## Security & Permissions
+
+- **Data access**: Reads public web/platform data only. No private or authenticated content is accessed.
+- **API keys**: Stored locally in `.env` files. Never transmitted except to their respective APIs.
+- **File writes**: Only writes report files (`report_*.md`, `data_*.json`) and cache files to the skill/working directory.
+- **Network**: Outbound HTTP/HTTPS requests to public APIs (Twitter, Reddit, GitHub, etc.). No inbound connections.
+- **No telemetry**: No usage data is collected or sent anywhere.

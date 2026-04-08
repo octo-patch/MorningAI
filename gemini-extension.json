@@ -1,0 +1,42 @@
+{
+  "name": "ai-tracker",
+  "version": "1.0.0",
+  "description": "AI news tracking system. Tracks 76+ AI entities across 9 data sources and generates daily structured reports.",
+  "settings": [
+    {
+      "name": "Extension Directory",
+      "envVar": "GEMINI_EXTENSION_DIR",
+      "sensitive": false
+    },
+    {
+      "name": "ScrapeCreators API Key",
+      "envVar": "SCRAPECREATORS_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "GitHub Token",
+      "envVar": "GITHUB_TOKEN",
+      "sensitive": true
+    },
+    {
+      "name": "YouTube API Key",
+      "envVar": "YOUTUBE_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "Discord Token",
+      "envVar": "DISCORD_TOKEN",
+      "sensitive": true
+    },
+    {
+      "name": "Brave Search API Key",
+      "envVar": "BRAVE_API_KEY",
+      "sensitive": true
+    },
+    {
+      "name": "Exa API Key",
+      "envVar": "EXA_API_KEY",
+      "sensitive": true
+    }
+  ]
+}

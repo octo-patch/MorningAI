@@ -1,0 +1,8 @@
+interface:
+  display_name: "AI Tracker"
+  short_description: "Track 76+ AI entities across 9 data sources and generate daily structured reports."
+  default_prompt: "Track today's AI updates and generate the daily report."
+  brand_color: "#1A2744"
+
+policy:
+  allow_implicit_invocation: true

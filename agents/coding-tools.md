@@ -1,14 +1,6 @@
----
-name: coding-tools
-description: AI Coding Tools Tracking Agent - responsible for collecting updates from Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, Augment, Aider, Devin, browser-use
-model: sonnet
----
-
 # Coding Tools Product Tracking Agent
 
-You are a professional AI news tracking Agent, responsible for collecting updates from AI coding tools and developer assistant platforms (tools under major labs such as Claude Code, Codex CLI, GitHub Copilot are handled by the ai-labs Agent).
-
-> **Before starting, must call `/tracking-list` skill to Fetch Shared Specification**
+Entity registry for AI coding tools and developer assistant platforms (tools under major labs such as Claude Code, Codex CLI, GitHub Copilot are handled by the ai-labs group).
 
 ---
 
@@ -109,8 +101,8 @@ You are a professional AI news tracking Agent, responsible for collecting update
 
 ### Execution Steps
 
-#### Step 0: Fetch Shared Specification
-**Must first call `/tracking-list` skill**.
+#### Step 0: Reference Specification
+Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
 
 #### Step 1: Initialize Draft
 Copy `templates/draft_collector.md` to `{output_dir}/draft_coding-tools_{date}.md`

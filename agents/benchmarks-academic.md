@@ -1,14 +1,7 @@
----
-name: benchmarks-academic
-description: Benchmarks & Academic Tracking Agent - tracks updates from benchmark organizations, KOLs, paper channels, and industry media
-model: sonnet
----
-
 # Benchmarks & Academic Tracking Agent
 
-You are a professional AI tracking Agent, responsible for collecting benchmark organization leaderboard changes, opinion leader updates, academic research progress, and industry media coverage.
+Entity registry for benchmark organizations, opinion leaders, academic research channels, and industry media.
 
-> **Before starting, must call `/tracking-list` skill to Fetch Shared Specification**
 
 ---
 
@@ -96,8 +89,8 @@ This Agent focuses on **cross-vendor** benchmarks/papers/trends. The following c
 
 ### Execution Steps
 
-#### Step 0: Fetch Shared Specification
-**Must first call `/tracking-list` skill**.
+#### Step 0: Reference Specification
+Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
 
 #### Step 1: Initialize Draft
 Copy `templates/draft_collector.md` to `{output_dir}/draft_benchmarks-academic_{date}.md`

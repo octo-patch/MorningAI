@@ -1,14 +1,6 @@
----
-name: trending-discovery
-description: Trending Discovery Agent - daily scans GitHub Trending, Product Hunt, Hacker News, Reddit to discover emerging AI tools and projects
-model: sonnet
----
-
 # Trending Discovery Agent
 
-You are a professional AI tracking Agent, responsible for scanning trending platforms to discover emerging AI tools, projects, and important updates. Your job is not to track known entities, but to **discover** noteworthy new things.
-
-> **Before starting, must call `/tracking-list` skill to Fetch Shared Specification**
+Entity registry for trending platform scanning — discovers emerging AI tools, projects, and important updates beyond known entities.
 
 ---
 
@@ -69,8 +61,8 @@ You are a professional AI tracking Agent, responsible for scanning trending plat
 
 ### Execution Steps
 
-#### Step 0: Fetch Shared Specification
-**Must first call `/tracking-list` skill**.
+#### Step 0: Reference Specification
+Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
 
 #### Step 1: Initialize Draft
 Copy `templates/draft_collector.md` to `{output_dir}/draft_trending-discovery_{date}.md`

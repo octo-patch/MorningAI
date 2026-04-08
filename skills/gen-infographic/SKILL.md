@@ -11,7 +11,7 @@ Based on the **top 4-5** important updates from today's report, generate a 16:9 
 
 - **Size**: 16:9 landscape
 - **Format**: PNG
-- **Filename**: `/workspace/news_infographic_YYYY-MM-DD.png`
+- **Filename**: `news_infographic_YYYY-MM-DD.png`
 
 ---
 
@@ -103,15 +103,15 @@ Sort from report by score, select the **top 4-5** updates (across all types), re
 - Keep `CRITICAL RULES` section
 
 ### 3. Generate Infographic
-Use the `gen_images` tool to generate (set `aspect_ratio: "16:9"`)
+If your tool supports image generation, generate a 16:9 image using the prompt above.
 
-### 4. ⚠️ Post-generation Verification (required)
+### 4. Post-generation Verification (required)
 - Check card count equals N
 - Verify each card title includes complete three elements
 - Check if titles are truncated
 - Confirm no unprovided content
 - Confirm no `[MAJOR]`, `[MINOR]` or similar labels displayed
-- If issues found, use `edit_images` to fix or regenerate
+- If issues found, regenerate or manually correct
 
 ### 5. Insert into Report
 Insert verified image at report beginning

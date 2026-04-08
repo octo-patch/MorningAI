@@ -1,5 +1,15 @@
 {
   "name": "ai-tracker",
   "version": "1.0.0",
-  "description": "Unified AI news tracker. Tracks products, models, benchmarks, and funding by default (types can be excluded). Collects AI industry updates from the past 24 hours and generates a Markdown daily report with an infographic.",
+  "description": "AI news tracking system. Tracks 76+ AI entities across 9 data sources and generates daily structured reports.",
+  "author": {
+    "name": "octo-patch",
+    "url": "https://github.com/octo-patch"
+  },
+  "homepage": "https://github.com/octo-patch/MorningAI",
+  "repository": "https://github.com/octo-patch/MorningAI",
+  "license": "MIT",
+  "keywords": ["ai", "news", "tracking", "daily-report", "model", "product", "benchmark", "funding"],
+  "skills": ["./"],
+  "hooks": {}
 }
