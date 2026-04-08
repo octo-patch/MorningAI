@@ -206,7 +206,7 @@ The `entities/` directory contains detailed entity registries organized by track
 |------|-------|----------|
 | `entities/ai-labs.md` | Frontier AI Labs + China AI | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, + 11 more |
 | `entities/model-infra.md` | Model Infrastructure | NVIDIA, Mistral, Cohere, Perplexity, AWS, Together, Groq, Apple |
-| `entities/coding-tools.md` | Coding Tools | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, + 4 more |
+| `entities/coding-agent.md` | Coding Agent | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, + 5 more |
 | `entities/ai-apps.md` | AI Applications | v0, bolt.new, Lovable, Replit, Lovart, Manus, + 2 more |
 | `entities/vision-media.md` | Vision & Media | Midjourney, Runway, Pika, FLUX, ElevenLabs, + 7 more |
 | `entities/benchmarks-academic.md` | Benchmarks & Academic | LMSYS, HuggingFace, arXiv channels, industry media |

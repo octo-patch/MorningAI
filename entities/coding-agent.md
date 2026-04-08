@@ -1,6 +1,6 @@
-# Coding Tools Entity Registry
+# Coding Agent Entity Registry
 
-Entity registry for AI coding tools and developer assistant platforms (tools under major labs such as Claude Code, Codex CLI, GitHub Copilot are handled by the ai-labs group).
+Entity registry for AI coding agents and developer assistant platforms (agents under major labs such as Claude Code, Codex CLI, GitHub Copilot are handled by the ai-labs group).
 
 ---
 
@@ -90,6 +90,15 @@ Entity registry for AI coding tools and developer assistant platforms (tools und
 | **Changelog** | https://browser-use.com/changelog |
 | **GitHub** | https://github.com/browser-use/browser-use |
 | **GitHub Releases** | https://github.com/browser-use/browser-use/releases |
+
+### 11. Hermes Agent (Nous Research)
+
+| Attribute | Info |
+|------|------|
+| **X Official Account** | [@NousResearch](https://x.com/NousResearch) |
+| **Official Website** | https://hermes-agent.nousresearch.com |
+| **Docs** | https://hermes-agent.nousresearch.com/docs |
+| **GitHub** | https://github.com/NousResearch/hermes-agent |
 
 ---
 

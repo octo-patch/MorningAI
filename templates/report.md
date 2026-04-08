@@ -113,7 +113,7 @@
 |-------|--------|------|--------|
 | ai-labs | | | |
 | model-infra | | | |
-| coding-tools | | | |
+| coding-agent | | | |
 | ai-apps | | | |
 | vision-media | | | |
 | benchmarks-academic | | | |

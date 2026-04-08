@@ -1,6 +1,6 @@
 # MorningAI
 
-A universal AI news tracking skill that works across Claude Code, OpenCode, OpenClaw, Codex, and Gemini CLI. Tracks 76+ AI entities across 9 data sources and generates daily structured reports with optional cover infographics.
+A universal AI news tracking skill that works across Claude Code, OpenCode, OpenClaw, Codex, and Gemini CLI. Tracks 80+ AI entities across 9 data sources and generates daily structured reports with optional cover infographics.
 
 ## How It Works
 
@@ -84,16 +84,16 @@ Or run the collector standalone:
 python3 skills/tracking-list/scripts/collect.py --date 2026-04-08 --output report.json
 ```
 
-## Tracked Entities (76+)
+## Tracked Entities (80+)
 
 | Group | Entities | Count |
 |-------|----------|-------|
 | **ai-labs** | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, Doubao, GLM, Kimi, MiniMax, Kling, InternLM, LongCat, Yi, Baichuan, StepFun, Hunyuan | 19 |
-| **model-infra** | NVIDIA, Mistral AI, Cohere, Perplexity AI, AWS, Together AI, Groq, Apple/MLX | 8 |
-| **coding-tools** | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, Augment, Aider, Devin, browser-use | 10 |
+| **model-infra** | NVIDIA, Mistral AI, Cohere, Perplexity AI, AWS, Together AI, Groq, Apple/MLX, vLLM, SGLang, KTransformers | 11 |
+| **coding-agent** | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, Augment, Aider, Devin, browser-use, Hermes Agent | 11 |
 | **ai-apps** | v0, bolt.new, Lovable, Replit, Lovart, Manus, Genspark, Character.ai | 8 |
 | **vision-media** | Midjourney, FLUX, Ideogram, Adobe Firefly, Leonardo AI, Stability AI, Lightricks, Runway, Pika, Luma AI, ElevenLabs, Udio/Suno | 12 |
-| **benchmarks-academic** | LMSYS, LMArena, Artificial Analysis, HuggingFace, Scale AI SEAL, OpenCompass, vLLM, LiveBench, WildBench, Replicate, 5 paper channels, 2 Reddit communities, 4 industry media | 20+ |
+| **benchmarks-academic** | LMSYS, LMArena, Artificial Analysis, HuggingFace, Scale AI SEAL, OpenCompass, LiveBench, WildBench, Terminal-Bench, Vals AI, Design Arena, Vending-Bench, SimpleBench, Repo Bench, Replicate, 5 paper channels, 2 Reddit communities, 4 industry media | 20+ |
 | **kol** | Andrej Karpathy, AK, Andrew Ng, Rowan Cheung, Ben Tossell, Elie Bakouch, Swyx, Simon Willison | 8 |
 | **trending-discovery** | GitHub Trending, Product Hunt, Hacker News, Reddit | 4 sources |
 
