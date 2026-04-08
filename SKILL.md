@@ -198,18 +198,17 @@ For lower-score items (3-6), use compact table format.
 
 ## Entity Reference
 
-The `agents/` directory contains detailed entity registries organized by tracking group:
+The `entities/` directory contains detailed entity registries organized by tracking group:
 
 | File | Scope | Entities |
 |------|-------|----------|
-| `agents/frontier-labs.md` | Frontier AI Labs | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft |
-| `agents/model-infra.md` | Model Infrastructure | NVIDIA, Mistral, Cohere, Perplexity, AWS, Together, Groq, Apple |
-| `agents/china-ai.md` | China AI Ecosystem | Qwen, DeepSeek, Doubao, GLM, Kimi, MiniMax, + 7 more |
-| `agents/coding-tools.md` | Coding Tools | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, + 4 more |
-| `agents/ai-apps.md` | AI Applications | v0, bolt.new, Lovable, Replit, Lovart, Manus, + 2 more |
-| `agents/vision-media.md` | Vision & Media | Midjourney, Runway, Pika, FLUX, ElevenLabs, + 7 more |
-| `agents/benchmarks-academic.md` | Benchmarks & Academic | LMSYS, HuggingFace, arXiv channels, KOLs, industry media |
-| `agents/trending-discovery.md` | Trending Discovery | GitHub Trending, Product Hunt, Hacker News, Reddit |
+| `entities/ai-labs.md` | Frontier AI Labs + China AI | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, + 11 more |
+| `entities/model-infra.md` | Model Infrastructure | NVIDIA, Mistral, Cohere, Perplexity, AWS, Together, Groq, Apple |
+| `entities/coding-tools.md` | Coding Tools | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, + 4 more |
+| `entities/ai-apps.md` | AI Applications | v0, bolt.new, Lovable, Replit, Lovart, Manus, + 2 more |
+| `entities/vision-media.md` | Vision & Media | Midjourney, Runway, Pika, FLUX, ElevenLabs, + 7 more |
+| `entities/benchmarks-academic.md` | Benchmarks & Academic | LMSYS, HuggingFace, arXiv channels, KOLs, industry media |
+| `entities/trending-discovery.md` | Trending Discovery | GitHub Trending, Product Hunt, Hacker News, Reddit |
 
 Each file lists X/Twitter accounts, key people, official blogs, changelogs, GitHub repos, and other source URLs for every tracked entity. Read these files when you need to verify or supplement the automated collection.
 

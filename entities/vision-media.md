@@ -1,4 +1,4 @@
-# Vision & Media Multimodal Tracking Agent
+# Vision & Media Entity Registry
 
 Entity registry for independent visual/audio/video generation vendors (major lab vision models like Sora, Veo, DALL-E, Kling, Hailuo are covered by ai-labs).
 
@@ -112,48 +112,3 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 
 ---
 
-## Workflow
-
-### Input Parameters
-
-- `date`, `time_window_start`, `time_window_end`, `output_dir`
-
-### Execution Steps
-
-#### Step 0: Reference Specification
-Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
-
-#### Step 1: Initialize Draft
-Copy `templates/draft_collector.md` to `{output_dir}/draft_vision-media_{date}.md`
-
-#### Step 2: Check Sources One by One
-
-```
-FOR each source in Checklist:
-    1. Check source -> timeliness check -> verify
-    2. Classify and tag type labels (mainly "Model" and "Product")
-    3. Valid content -> append to corresponding type section
-    4. Check Checkbox + save Draft
-END FOR
-```
-
-#### Step 3: Final Review
-Confirm completion rate = 100%.
-
-### Output Format
-
-```json
-{
-  "status": "completed",
-  "draft_path": "{output_dir}/draft_vision-media_{date}.md",
-  "completion": {
-    "total_sources": 25,
-    "checked_sources": 25,
-    "completion_rate": "100%"
-  },
-  "results": {
-    "product": 0, "model": 0, "benchmark": 0, "funding": 0,
-    "skipped": 0, "high_value_count": 0
-  }
-}
-```

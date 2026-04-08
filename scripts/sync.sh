@@ -11,7 +11,7 @@ TARGETS=(
     "$HOME/.codex/skills/ai-tracker"
 )
 
-SYNC_DIRS=(scripts skills agents templates hooks)
+SYNC_DIRS=(scripts skills entities templates hooks)
 SYNC_FILES=(SKILL.md gemini-extension.json .clawhubignore)
 
 for target in "${TARGETS[@]}"; do

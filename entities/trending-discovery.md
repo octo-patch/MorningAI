@@ -1,4 +1,4 @@
-# Trending Discovery Agent
+# Trending Discovery Entity Registry
 
 Entity registry for trending platform scanning — discovers emerging AI tools, projects, and important updates beyond known entities.
 
@@ -53,50 +53,3 @@ Entity registry for trending platform scanning — discovers emerging AI tools, 
 
 ---
 
-## Workflow
-
-### Input Parameters
-
-- `date`, `time_window_start`, `time_window_end`, `output_dir`
-
-### Execution Steps
-
-#### Step 0: Reference Specification
-Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
-
-#### Step 1: Initialize Draft
-Copy `templates/draft_collector.md` to `{output_dir}/draft_trending-discovery_{date}.md`
-
-#### Step 2: Check each source
-
-```
-FOR each source in [GitHub Trending, Product Hunt, HN, Reddit]:
-    1. Fetch today's trending content
-    2. Filter AI/ML related entries
-    3. Exclude entities already covered by other Agents
-    4. Timeliness check (within 24h)
-    5. Valid discovery -> append to Draft
-    6. Check Checkbox + save Draft
-END FOR
-```
-
-#### Step 3: Final Review
-Confirm completion rate = 100%.
-
-### Output Format
-
-```json
-{
-  "status": "completed",
-  "draft_path": "{output_dir}/draft_trending-discovery_{date}.md",
-  "completion": {
-    "total_sources": 4,
-    "checked_sources": 4,
-    "completion_rate": "100%"
-  },
-  "results": {
-    "product": 0, "model": 0, "benchmark": 0, "funding": 0,
-    "skipped": 0, "high_value_count": 0
-  }
-}
-```

@@ -1,7 +1,7 @@
 """Entity registry for ai-tracker.
 
 Maps all 76+ tracked entities to their information sources across platforms.
-Derived from ai-tracker/agents/*.md definitions.
+Derived from ai-tracker/entities/*.md definitions.
 """
 
 # X/Twitter handles per entity (without @)

@@ -1,4 +1,4 @@
-# AI Labs Tracking Agent
+# AI Labs Entity Registry
 
 Entity registry for major AI labs worldwide, including model releases, product updates, visual models, and academic research.
 
@@ -218,66 +218,3 @@ Entity registry for major AI labs worldwide, including model releases, product u
 
 ---
 
-## Workflow
-
-### Input Parameters
-
-- `date`: Working date (YYYY-MM-DD)
-- `time_window_start`: Time window start (YYYY-MM-DD HH:MM UTC+8)
-- `time_window_end`: Time window end (YYYY-MM-DD HH:MM UTC+8)
-- `output_dir`: Output directory path
-
-### Execution Steps
-
-#### Step 0: Reference Specification
-Refer to `skills/tracking-list/SKILL.md` for tracking scope, scoring criteria, and timeliness check rules.
-
-#### Step 1: Initialize Draft
-1. Copy template `templates/draft_collector.md` to `{output_dir}/draft_ai-labs_{date}.md`
-2. Replace placeholders: AGENT_NAME=ai-labs, ENTITY_NAMES, SOURCE_COUNT, SOURCE_CHECKLIST
-
-#### Step 2: Check Sources One by One (loop execution)
-
-**Strictly follow the workflow specification from the shared specification:**
-
-```
-FOR each source in Checklist:
-    1. Check source (X account, Changelog/Blog, GitHub Releases)
-    2. Timeliness check
-    3. Cross-verification (Key people require cross-verification)
-    4. Classify and tag type label (Product/Model/Benchmark/Funding)
-    5. Valid content → immediately Append to corresponding type section in Draft
-    6. Irrelevant content → Append to skip records
-    7. Check Checkbox
-    8. Save Draft
-END FOR
-```
-
-#### Step 3: Final Review
-
-1. Verify all Checkboxes are checked
-2. Fill in completion statistics table
-3. Confirm completion rate = 100%
-4. Change status to "completed"
-
-### Output Format
-
-```json
-{
-  "status": "completed",
-  "draft_path": "{output_dir}/draft_ai-labs_{date}.md",
-  "completion": {
-    "total_sources": 90,
-    "checked_sources": 90,
-    "completion_rate": "100%"
-  },
-  "results": {
-    "product": 0,
-    "model": 0,
-    "benchmark": 0,
-    "funding": 0,
-    "skipped": 0,
-    "high_value_count": 0
-  }
-}
-```
