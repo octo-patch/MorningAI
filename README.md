@@ -88,12 +88,12 @@ python3 scripts/collect.py --date 2026-04-08 --output report.json
 
 | Group | Entities | Count |
 |-------|----------|-------|
-| **ai-labs** | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, + 11 more | 19 |
+| **ai-labs** | OpenAI, Anthropic, Google, Meta AI, xAI, Microsoft, Qwen, DeepSeek, Doubao, GLM, Kimi, MiniMax, Kling, InternLM, LongCat, Yi, Baichuan, StepFun, Hunyuan | 19 |
 | **model-infra** | NVIDIA, Mistral AI, Cohere, Perplexity AI, AWS, Together AI, Groq, Apple/MLX | 8 |
 | **coding-tools** | Cursor, Cline, OpenCode, Droid, OpenClaw, Windsurf, Augment, Aider, Devin, browser-use | 10 |
 | **ai-apps** | v0, bolt.new, Lovable, Replit, Lovart, Manus, Genspark, Character.ai | 8 |
-| **vision-media** | Midjourney, Runway, Pika, FLUX, ElevenLabs, Stability AI, + 6 more | 12 |
-| **benchmarks-academic** | LMSYS, HuggingFace, arXiv channels, KOLs, industry media | 20+ |
+| **vision-media** | Midjourney, FLUX, Ideogram, Adobe Firefly, Leonardo AI, Stability AI, Lightricks, Runway, Pika, Luma AI, ElevenLabs, Udio/Suno | 12 |
+| **benchmarks-academic** | LMSYS, LMArena, Artificial Analysis, HuggingFace, Scale AI SEAL, OpenCompass, vLLM, LiveBench, WildBench, Replicate, 8 KOLs, 5 paper channels, 2 Reddit communities, 4 industry media | 30+ |
 | **trending-discovery** | GitHub Trending, Product Hunt, Hacker News, Reddit | 4 sources |
 
 All items are classified into 4 types: **Product**, **Model**, **Benchmark**, **Funding**.
