@@ -84,6 +84,7 @@ Entity registry for model providers and inference infrastructure platforms.
 |------|--------|--------|------|
 | vLLM | [@vllm_project](https://x.com/vllm_project) | https://github.com/vllm-project/vllm | High-throughput LLM inference engine |
 | SGLang | [@sgl_project](https://x.com/sgl_project) | https://github.com/sgl-project/sglang | High-performance LLM/VLM serving framework |
+| KTransformers | - | https://github.com/kvcache-ai/ktransformers | Heterogeneous CPU/GPU inference framework |
 
 ---
 

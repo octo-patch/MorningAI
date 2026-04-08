@@ -22,6 +22,9 @@ Entity registry for benchmark organizations, academic research channels, and ind
 | Terminal-Bench | - | https://www.tbench.ai | Code | Terminal agent benchmark |
 | Vals AI | [@ValsAI](https://x.com/ValsAI) | https://www.vals.ai | Text | Domain-specific benchmark (law, finance, code) |
 | Design Arena | [@Designarena](https://x.com/Designarena) | https://www.designarena.ai/leaderboard | Code, Image, Video | Crowdsourced AI design benchmark |
+| Vending-Bench | [@andonlabs](https://x.com/andonlabs) | https://andonlabs.com/evals/vending-bench | Text | Long-term agent coherence benchmark |
+| SimpleBench | [@AIExplainedYT](https://x.com/AIExplainedYT) | https://simple-bench.com | Text | Commonsense reasoning benchmark |
+| Repo Bench | [@RepoPrompt](https://x.com/RepoPrompt) | https://repoprompt.com/bench | Code | Large context file editing benchmark |
 
 ### Additional Benchmark Sources
 
