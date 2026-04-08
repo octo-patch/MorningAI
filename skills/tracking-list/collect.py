@@ -5,7 +5,7 @@ Runs all collectors concurrently, normalizes, scores, deduplicates,
 and outputs a structured JSON report.
 
 Usage:
-    python3 scripts/collect.py [--date YYYY-MM-DD] [--depth quick|default|deep] [--output PATH]
+    python3 skills/tracking-list/collect.py [--date YYYY-MM-DD] [--depth quick|default|deep] [--output PATH]
 """
 
 import argparse
@@ -17,8 +17,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# Add parent dir to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add project root to path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from lib import env, cache
 from lib.schema import TrackerItem, CollectionResult, DailyReport

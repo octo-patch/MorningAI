@@ -7,7 +7,7 @@ A universal AI news tracking skill that works across Claude Code, OpenCode, Open
 ```
 SKILL.md (loaded by any AI tool)
     │
-    ├─ Step 1: python3 scripts/collect.py  →  data_{date}.json
+    ├─ Step 1: python3 skills/tracking-list/collect.py  →  data_{date}.json
     │           (9 sources, concurrent, score + dedupe)
     │
     ├─ Step 2: Read skills/tracking-list/SKILL.md  →  scoring & format spec
@@ -81,7 +81,7 @@ Invoke the skill in your AI tool:
 Or run the collector standalone:
 
 ```bash
-python3 scripts/collect.py --date 2026-04-08 --output report.json
+python3 skills/tracking-list/collect.py --date 2026-04-08 --output report.json
 ```
 
 ## Tracked Entities (76+)

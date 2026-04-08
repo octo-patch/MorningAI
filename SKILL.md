@@ -25,7 +25,9 @@ metadata:
         - python3
     primaryEnv: SCRAPECREATORS_API_KEY
     files:
-      - "scripts/*"
+      - "skills/*/collect.py"
+      - "skills/*/gen_infographic.py"
+      - "lib/*"
     homepage: https://github.com/octo-patch/MorningAI
     tags:
       - ai
@@ -84,7 +86,7 @@ Image generation (for cover infographic, optional):
 Run the Python collector to gather data from all available sources:
 
 ```bash
-cd {SKILL_DIR} && python3 scripts/collect.py --date {YYYY-MM-DD} --depth default -o {CWD}/data_{YYYY-MM-DD}.json
+cd {SKILL_DIR} && python3 skills/tracking-list/collect.py --date {YYYY-MM-DD} --depth default -o {CWD}/data_{YYYY-MM-DD}.json
 ```
 
 **Parameters:**
@@ -186,7 +188,7 @@ For lower-score items (3-6), use compact table format.
    **Option B** — Python script batch mode (any environment, requires `IMAGE_GEN_PROVIDER` configured):
    Build a manifest JSON with all prompts and outputs, then run:
    ```bash
-   cd {SKILL_DIR} && python3 scripts/gen_infographic.py --batch {CWD}/manifest.json
+   cd {SKILL_DIR} && python3 skills/gen-infographic/gen_infographic.py --batch {CWD}/manifest.json
    ```
    Supported providers: `gemini`, `gpt`, `minimax`. See [Configuration](#configuration) for API keys.
 

@@ -3,12 +3,12 @@
 
 Usage:
     # Save snapshot and print diff against previous
-    python3 scripts/leaderboard_snapshot.py save \\
+    python3 skills/leaderboard/leaderboard_snapshot.py save \\
         --leaderboard lmsys --date 2026-04-08 \\
         --data '[{"model":"GPT-4o","rank":1,"score":1287}]'
 
     # Show the latest saved snapshot
-    python3 scripts/leaderboard_snapshot.py latest --leaderboard lmsys
+    python3 skills/leaderboard/leaderboard_snapshot.py latest --leaderboard lmsys
 """
 
 import argparse
@@ -16,7 +16,7 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from lib.snapshots import diff_snapshot, get_latest_snapshot, save_snapshot
 
 

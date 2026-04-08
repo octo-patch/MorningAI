@@ -5,13 +5,13 @@ Supports single-image mode (--prompt) and batch mode (--batch manifest.json).
 
 Usage:
     # Single image
-    python3 scripts/gen_infographic.py --prompt "16:9 infographic, AI News Daily ..." -o cover.png
+    python3 skills/gen-infographic/gen_infographic.py --prompt "16:9 infographic, AI News Daily ..." -o cover.png
 
     # Batch mode (multiple images from manifest)
-    python3 scripts/gen_infographic.py --batch manifest.json
+    python3 skills/gen-infographic/gen_infographic.py --batch manifest.json
 
     # Pipe prompt via stdin
-    echo "prompt text" | python3 scripts/gen_infographic.py --provider gpt
+    echo "prompt text" | python3 skills/gen-infographic/gen_infographic.py --provider gpt
 
 Manifest JSON format:
     [
@@ -26,8 +26,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-# Add parent dir to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add project root to path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from lib import env
 from lib.image_gen import generate, generate_batch, list_providers, ImageGenError

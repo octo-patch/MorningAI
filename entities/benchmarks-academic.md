@@ -11,11 +11,11 @@ Entity registry for benchmark organizations, opinion leaders, academic research 
 
 | Name | X Account | Website | Description |
 |------|--------|------|------|
-| LMSYS Chatbot Arena | [@laboramsys](https://x.com/laboramsys) | https://lmsys.org | Chatbot Arena / VLM Arena |
 | LMArena | [@arena](https://x.com/arena) | - | Model battle ranking |
 | Artificial Analysis | [@ArtificialAnlys](https://x.com/ArtificialAnlys) | https://artificialanalysis.ai | Model speed/quality comparison |
 | HuggingFace Open LLM | [@huggingface](https://x.com/huggingface) | https://huggingface.co/spaces/open-llm-leaderboard | Open-source model leaderboard |
 | Scale AI SEAL | [@scale_AI](https://x.com/scale_AI) | https://scale.com/leaderboard | Scale Benchmark |
+| LMSYS Chatbot Arena | [@laboramsys](https://x.com/laboramsys) | https://lmsys.org | Chatbot Arena / VLM Arena |
 | OpenCompass | - | https://opencompass.org.cn | Multimodal benchmark |
 | vLLM | [@vllm_project](https://x.com/vllm_project) | - | Inference performance |
 | LiveBench | - | https://livebench.ai | Real-time benchmark |
