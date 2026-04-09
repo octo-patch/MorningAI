@@ -82,6 +82,7 @@ Optional (unlock more sources):
 
 Image generation (for cover infographic, optional):
   IMAGE_GEN_PROVIDER      — Provider: gemini | gpt | minimax | none (default: none)
+  IMAGE_STYLE             — Visual style: classic | dark | glassmorphism | newspaper | tech (default: classic)
   GEMINI_API_KEY          — Google Gemini/Imagen API key
   OPENAI_API_KEY          — OpenAI API key (for gpt-image-1)
   MINIMAX_API_KEY         — MiniMax API key
@@ -230,6 +231,10 @@ The `entities/` directory contains detailed entity registries organized by track
 | `entities/trending-discovery.md` | Trending Discovery | GitHub Trending, Product Hunt, Hacker News, Reddit |
 
 Each file lists X/Twitter accounts, key people, official blogs, changelogs, GitHub repos, and other source URLs for every tracked entity. Read these files when you need to verify or supplement the automated collection.
+
+### Custom Entities
+
+Users can add their own tracked entities by placing markdown files in `entities/custom/` (or `~/.config/morning-ai/entities/`, or a path set via `CUSTOM_ENTITIES_DIR`). Custom entity files use a simplified format — see `entities/custom-example.md` for the template. Custom entities are automatically merged into the built-in registries at runtime and collected alongside the default 80+ entities.
 
 ---
 

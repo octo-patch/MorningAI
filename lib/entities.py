@@ -1,7 +1,12 @@
 """Entity registry for morning-ai.
 
-Maps all 76+ tracked entities to their information sources across platforms.
+Maps all 80+ tracked entities to their information sources across platforms.
 Derived from morning-ai/entities/*.md definitions.
+
+Custom entities are loaded at import time from:
+    1. CUSTOM_ENTITIES_DIR env var
+    2. ~/.config/morning-ai/entities/
+    3. {project_root}/entities/custom/
 """
 
 # X/Twitter handles per entity (without @)
@@ -269,4 +274,19 @@ YOUTUBE_CHANNELS = {
     "NVIDIA": "UCHuiy8bXnmK5nisYHKIIeFxA",
     "Microsoft": "UCFtEEv80fQVKkbn3ZiQHIHg",
 }
+
+# --- Load custom entities ---
+from lib.custom_entities import merge_into_registries
+
+merge_into_registries(
+    X_HANDLES,
+    GITHUB_SOURCES,
+    HUGGINGFACE_AUTHORS,
+    ARXIV_QUERIES,
+    WEB_QUERIES,
+    REDDIT_KEYWORDS,
+    HN_KEYWORDS,
+    YOUTUBE_CHANNELS,
+    DISCORD_CHANNELS,
+)
 

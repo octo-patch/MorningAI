@@ -1,20 +1,36 @@
 # MorningAI
 
-A universal AI news tracking skill that works across Claude Code, OpenCode, OpenClaw, Codex, and Gemini CLI. Tracks 80+ AI entities across 9 data sources and generates daily structured reports with optional cover infographics.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-3776AB.svg)](https://python.org)
+[![Entities](https://img.shields.io/badge/Tracked_Entities-80%2B-orange.svg)](#tracked-entities-80)
+[![Sources](https://img.shields.io/badge/Data_Sources-9-green.svg)](#how-it-works)
+[![Platforms](https://img.shields.io/badge/Platforms-6%2B-purple.svg)](#install)
+
+**What happened in AI today?** — An AI news tracking skill that runs inside your coding agent. No Docker, no servers — just invoke `/morning-ai` in Claude Code, Codex, Cursor, Gemini CLI, or any SKILL.md-compatible tool. Monitors 80+ entities across 9 data sources, generates scored daily reports with optional infographics.
+
+## Features
+
+- **Skill-Native** — Runs inside your AI coding tool (Claude Code, Codex, Cursor, Gemini CLI). No Docker, no servers, no extra infra — just `/morning-ai`
+- **Entity-Centric Tracking** — 80+ curated entities across AI labs, model infra, coding agents, apps, vision/media, benchmarks, KOLs. Per-entity cross-platform handles (X, GitHub, HF, arXiv, YouTube, Discord), not keyword search
+- **9 Concurrent Sources** — X/Twitter, Reddit, HN, GitHub, HuggingFace, arXiv, web search, YouTube, Discord. 4 sources free without API keys
+- **Smart Scoring** — 5-dimension weighted scoring: Impact (30%), Differentiation (25%), Breakthrough (20%), Coverage (15%), Timeliness (10%). Score 7+ items auto-verified across multiple independent sources
+- **Custom Watchlists** — Add your own entities via simple markdown files — no code changes needed
+- **5 Infographic Styles** — `classic`, `dark`, `glassmorphism`, `newspaper`, `tech` — ready for social sharing
+- **Scheduled & Unattended** — Idempotent daily runs, no interactive prompts, partial success support
 
 ## How It Works
 
 ```
 SKILL.md (loaded by any AI tool)
-    │
-    ├─ Step 1: python3 skills/tracking-list/scripts/collect.py  →  data_{date}.json
-    │           (9 sources, concurrent, score + dedupe)
-    │
-    ├─ Step 2: Read skills/tracking-list/SKILL.md  →  scoring & format spec
-    │
-    ├─ Step 3: Write report_{date}.md  →  structured daily report
-    │
-    └─ Step 4: (optional) Read skills/gen-infographic/SKILL.md  →  cover image
+    |
+    +- Step 1: python3 skills/tracking-list/scripts/collect.py  ->  data_{date}.json
+    |           (9 sources, concurrent, score + dedupe)
+    |
+    +- Step 2: Read skills/tracking-list/SKILL.md  ->  scoring & format spec
+    |
+    +- Step 3: Write report_{date}.md  ->  structured daily report
+    |
+    +- Step 4: (optional) Read skills/gen-infographic/SKILL.md  ->  cover image
 ```
 
 The Python collector runs 9 sources concurrently (X/Twitter, Reddit, HN, GitHub, HuggingFace, arXiv, web search, YouTube, Discord), then scores, deduplicates, and cross-links results. The AI tool reads the JSON output and generates a formatted Markdown report.
@@ -87,6 +103,37 @@ BRAVE_API_KEY=your_key              # Web search (optional)
 
 Without any API keys, 4 free sources work out of the box: **Reddit**, **Hacker News**, **HuggingFace**, **arXiv**.
 
+## Custom Entity Watchlist
+
+Track your own entities beyond the built-in 80+ by creating a markdown file:
+
+```bash
+cp entities/custom-example.md entities/custom/my-watchlist.md
+```
+
+Edit the file with your entities:
+
+```markdown
+## My Startup
+
+| Platform | Value |
+|----------|-------|
+| X | @my_startup, @founder |
+| GitHub | my-startup-org |
+| HuggingFace | my-startup |
+| Reddit | MyStartup |
+```
+
+Each entity starts with a `## Name` heading followed by a `| Platform | Value |` table. Not all platforms are required — add only what you need. Supported platforms: `X`, `GitHub`, `HuggingFace`, `arXiv`, `Web`, `Reddit`, `HN`, `YouTube`, `Discord`.
+
+Custom entity files are loaded from (in priority order):
+
+1. `CUSTOM_ENTITIES_DIR` env var
+2. `~/.config/morning-ai/entities/`
+3. `entities/custom/` in the project directory
+
+Files in `entities/custom/` are gitignored, so your watchlists stay local.
+
 ## Usage
 
 Invoke the skill in your AI tool:
@@ -99,6 +146,23 @@ Or run the collector standalone:
 
 ```bash
 python3 skills/tracking-list/scripts/collect.py --date 2026-04-08 --output report.json
+```
+
+## Infographic Styles
+
+Set `IMAGE_STYLE` in your `.env` to choose a visual style for generated infographics:
+
+| Style | Description |
+|-------|-------------|
+| `classic` | Clean editorial magazine — off-white background, navy/coral/teal accents **(default)** |
+| `dark` | Dark mode — charcoal background, electric blue/violet accents |
+| `glassmorphism` | Frosted glass cards on soft gradient background — modern SaaS feel |
+| `newspaper` | Classic newsprint — serif typography, cream/black/crimson, broadsheet layout |
+| `tech` | Terminal aesthetic — dark background, monospace, cyan/green/amber accents |
+
+```env
+IMAGE_STYLE=dark
+IMAGE_GEN_PROVIDER=gemini
 ```
 
 ## Tracked Entities (80+)
