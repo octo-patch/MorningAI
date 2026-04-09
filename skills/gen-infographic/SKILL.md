@@ -117,7 +117,7 @@ Card design: Card title in 16pt bold green monospace, subtitle in 11pt gray mono
 ## Prompt Template
 
 ```
-16:9 infographic, AI News Daily {YYYY-MM-DD}, English text content.
+16:9 infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
 
 Total news items for today: {N}
 
@@ -169,7 +169,7 @@ From the report, identify:
 ### Per-Type Prompt Template
 
 ```
-16:9 infographic, AI News Daily {YYYY-MM-DD} — {Type} Updates, English text content.
+16:9 infographic, AI News Daily {YYYY-MM-DD} — {Type} Updates, {LANG} text content.
 
 Total news items: {N}
 
@@ -204,7 +204,7 @@ CRITICAL RULES:
 Use this template for per-type section images when generating a long image (`--stitch` mode). These are designed as SECTIONS of a vertical composition, NOT standalone images.
 
 ```
-9:16 portrait infographic section, {Type} Updates {YYYY-MM-DD}, English text content.
+9:16 portrait infographic section, {Type} Updates {YYYY-MM-DD}, {LANG} text content.
 
 Total news items: {N}
 
@@ -241,7 +241,7 @@ CRITICAL RULES:
 Use when total qualifying items across all types is **8 or fewer**. Produces a single self-contained 9:16 portrait image with all content — no stitching needed.
 
 ```
-9:16 portrait infographic, AI News Daily {YYYY-MM-DD}, English text content.
+9:16 portrait infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
 
 Total news items: {N}
 
@@ -382,7 +382,8 @@ When valid news items < 4, **do NOT pad with fake content**:
 
 ## Notes
 
-- Title uses "AI News Daily", news content in English
+- Title uses "AI News Daily", news content in the target language (default: English, follows `--lang` parameter)
+- **`{LANG}`** — substitute with the full language name: "English" (default), "Chinese", "Japanese", etc., based on the `--lang` parameter
 - **Strictly generate based on actual item count**, do not force 4-5 items
 - **Do NOT use `[MAJOR]`/`[MINOR]` labels in Prompt**
 - Use card size and point count to reflect importance differences

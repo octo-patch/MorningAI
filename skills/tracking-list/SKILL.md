@@ -282,6 +282,8 @@ Timeliness Check:
 
 ## Draft Record Format
 
+> **Language rule**: Titles (Entity name + Event description) and summary bullet points must be written in the report's target language (default: English). Entity names are proper nouns — keep them as-is. Translate source content if it is in a different language.
+
 ### Valid Record Format
 
 ```markdown

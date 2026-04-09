@@ -2,7 +2,7 @@
 name: morning-ai
 version: "1.0.0"
 description: "Daily-scheduled AI news tracker. Collects updates from 76+ AI entities across 9 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
-argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --schedule "0 9 * * *"'
+argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *"'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
 repository: https://github.com/octo-patch/MorningAI
@@ -104,6 +104,21 @@ If no config file exists, this is a first-time user. **Do NOT proceed to Step 1 
 
 ---
 
+## Language
+
+| Parameter | Default | Example |
+|-----------|---------|---------|
+| `--lang` | `en` (English) | `--lang zh` (Chinese), `--lang ja` (Japanese) |
+
+**Rules:**
+- **Default is English.** All report text — titles, summaries, section headers, table labels, and bullet points — must be written in English unless `--lang` is specified.
+- If `--lang` is specified, use that language for all human-readable content instead.
+- **Entity names are proper nouns** (OpenAI, DeepSeek, Midjourney, etc.) — keep them as-is regardless of language.
+- When source data is in a different language than the target, **translate it** into the target language during report generation.
+- The `--lang` setting also applies to infographic prompt content (see Step 4).
+
+---
+
 ## Step 1: Data Collection
 
 Run the Python collector to gather data from all available sources:
@@ -157,6 +172,7 @@ This specification defines:
 3. Generate `report_{YYYY-MM-DD}.md` in the working directory
 
 **Report generation rules:**
+- **Language**: Write all content in the target language (default: English). If source data is in a different language, translate it. Entity names (proper nouns) stay as-is.
 - Filter out any excluded types (if `--exclude` was specified)
 - Sort items by score within each type section
 - **TLDR section**: Only items with score 7+ (across all types), sorted high to low
