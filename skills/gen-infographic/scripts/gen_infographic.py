@@ -31,6 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 from lib import env
 from lib.image_gen import generate, generate_batch, list_providers, ImageGenError
+from lib.image_stitch import stitch_images
 
 
 def _log(msg: str):
@@ -73,7 +74,7 @@ def _run_single(args, config):
 
 
 def _run_batch(args, config):
-    """Batch mode: manifest JSON → multiple images."""
+    """Batch mode: manifest JSON → multiple images, optional stitch."""
     manifest_path = Path(args.batch)
     if not manifest_path.exists():
         _log(f"Error: Manifest file not found: {args.batch}")
@@ -102,6 +103,18 @@ def _run_batch(args, config):
     if not succeeded and provider_name != "none":
         sys.exit(1)
 
+    # Stitch into a single long image
+    if args.stitch and len(succeeded) >= 2:
+        stitch_output = args.stitch_output or f"news_infographic_{args.date}_combined.png"
+        try:
+            combined = stitch_images(succeeded, stitch_output)
+            print(combined)
+            _log(f"Stitched image: {combined}")
+        except (ImportError, ValueError) as e:
+            _log(f"Stitch skipped: {e}")
+    elif args.stitch:
+        _log("Stitch skipped: need at least 2 images")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generate infographics via external API")
@@ -118,6 +131,10 @@ def main():
                         help="Image generation provider (overrides IMAGE_GEN_PROVIDER env var)")
     parser.add_argument("--date", default=datetime.now().strftime("%Y-%m-%d"),
                         help="Date for default output filename (default: today)")
+    parser.add_argument("--stitch", action="store_true",
+                        help="Stitch batch images into a single vertical long image (requires Pillow)")
+    parser.add_argument("--stitch-output", default=None,
+                        help="Output path for stitched image (default: news_infographic_{date}_combined.png)")
     args = parser.parse_args()
 
     # Load config and apply provider override

@@ -204,6 +204,10 @@ For lower-score items (3-6), use compact table format.
    ```
    Supported providers: `gemini`, `gpt`, `minimax`. See [Configuration](#configuration) for API keys.
 
+   Add `--stitch` to also produce a single combined long image (`news_infographic_YYYY-MM-DD_combined.png`) for social sharing. Requires `pip install Pillow`.
+
+   **Long image mode**: To generate a cohesive vertical long image instead of separate standalone images, follow the **Long Image Strategy** section in `skills/gen-infographic/SKILL.md`. The strategy adapts based on content volume: sparse content (≤ 8 items) produces a single combined 9:16 portrait image; richer content produces a cover (16:9) + per-type sections (9:16) stitched together. Manifest items support an optional `"aspect_ratio"` field (e.g. `"9:16"`).
+
 5. Insert images into the report:
    - Cover image at the beginning
    - Per-type images at the top of each type section

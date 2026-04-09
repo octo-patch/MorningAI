@@ -14,15 +14,17 @@ Generate multiple infographics for the daily report:
 
 ## Output Specs
 
-| Image | Filename | When to generate |
-|-------|----------|-----------------|
-| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) |
-| Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items |
-| Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items |
-| Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items |
-| Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items |
+| Image | Filename | When to generate | Aspect |
+|-------|----------|-----------------|--------|
+| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 16:9 |
+| Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items | 16:9 (standalone) or 9:16 (long image) |
+| Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 16:9 (standalone) or 9:16 (long image) |
+| Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 16:9 (standalone) or 9:16 (long image) |
+| Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 16:9 (standalone) or 9:16 (long image) |
+| Combined | `news_infographic_YYYY-MM-DD_combined.png` | Sparse mode or `--stitch` output | 9:16 |
 
-- **Size**: 16:9 landscape
+- **Default format**: 16:9 landscape PNG (standalone mode)
+- **Long image format**: 9:16 portrait PNG for sections, stitched into a vertical long image
 - **Format**: PNG
 
 > **`IMAGE_GEN_TYPES` config**: Controls which per-type images to generate. Default: `auto` (only types with 7+ items). Options: `all` (all types with any items), `none` (cover only), or comma-separated types like `model,product`.
@@ -151,6 +153,116 @@ Layout: Cards arranged in grid layout. Cards aligned with equal gutters (24px). 
 Card design: Card title in 18pt bold navy sans-serif, subtitle in 12pt gray italic. Bullet points with small teal dot markers, 14pt regular weight. Thin 1px light gray top-border on each card for subtle separation. NO icons, NO illustrations, NO decorative elements inside cards — text only with strong typographic hierarchy.
 ```
 
+### Section Prompt Template (Long Image Mode)
+
+Use this template for per-type section images when generating a long image (`--stitch` mode). These are designed as SECTIONS of a vertical composition, NOT standalone images.
+
+```
+9:16 portrait infographic section, {Type} Updates {YYYY-MM-DD}, English text content.
+
+Total news items: {N}
+
+News cards (display EXACTLY {N} cards, arranged vertically):
+
+Card 1: {Entity name} {Event subject} {Core event verb phrase}
+- {Point 1}
+- {Point 2}
+- {Point 3}
+
+Card 2: {Entity name} {Event subject} {Core event verb phrase}
+- {Point 1}
+- {Point 2}
+
+(... list according to actual item count ...)
+
+CRITICAL RULES:
+- This is a SECTION of a longer image — do NOT include "AI News Daily" header or top branding
+- Start with a section header: "{Type} Updates" in navy (#1A2744) with coral (#E8553D) underline
+- Cards arranged vertically (portrait layout), one below another
+- Each card title MUST include: Entity name + Event subject + Event description
+- Display complete titles, do NOT truncate
+- Do NOT display any labels like [MAJOR], [MINOR], or importance markers
+- Do NOT invent items not listed
+- Display ALL bullet points for each card
+
+Style: Off-white (#F5F5F0) background. Section header in 24pt bold navy sans-serif with coral underline. Cards as white rectangles with soft drop shadow (4px blur, 10% black), stacked vertically with 24px gaps. Deep navy (#1A2744) card titles, coral (#E8553D) score badges, muted teal (#2A9D8F) bullet icons, slate gray (#4A5568) body text. NO gradients, NO textures — flat white space. Left and right margins 48px.
+```
+
+### Combined Prompt Template (Sparse Content)
+
+Use when total qualifying items across all types is **8 or fewer**. Produces a single self-contained 9:16 portrait image with all content — no stitching needed.
+
+```
+9:16 portrait infographic, AI News Daily {YYYY-MM-DD}, English text content.
+
+Total news items: {N}
+
+{For each active type with items, include a labeled section:}
+
+--- {Type} Updates ---
+
+Card 1: {Entity name} {Event subject} {Core event verb phrase}
+- {Point 1}
+- {Point 2}
+
+(... cards for this type ...)
+
+{Next type section...}
+
+CRITICAL RULES:
+- Header: "AI News Daily {YYYY-MM-DD}" at top, with branding
+- Each type section has a colored section divider with the type name
+- Cards arranged vertically within each section
+- Each card title MUST include: Entity name + Event subject + Event description
+- Use generous whitespace — do NOT compress cards to fill space
+- If only 1-2 types have items, center content vertically
+- Do NOT invent items not listed
+
+Style: Off-white (#F5F5F0) background. Top header "AI News Daily" in 28pt bold black sans-serif with coral (#E8553D) underline, date in 16pt gray below. Type section headers in 20pt bold navy (#1A2744) with teal (#2A9D8F) left border. Cards as white rectangles with soft drop shadow, stacked vertically. Deep navy card titles, coral score badges, teal bullet icons, slate gray body text. NO gradients, NO textures — flat white space.
+```
+
+---
+
+## Long Image Strategy
+
+When generating images for a shareable long image, use the adaptive strategy below instead of the default standalone mode.
+
+### Decision Logic
+
+| Condition | Strategy | What to generate |
+|-----------|----------|-----------------|
+| Total qualifying items ≤ 8 | **Sparse** | 1 combined image (9:16, Combined Template) |
+| Total qualifying items > 8 | **Normal** | Cover (16:9) + section images per active type (9:16, Section Template), then `--stitch` |
+
+"Qualifying items" = items that would appear in any infographic (7+ score for per-type, top 4-5 for cover).
+
+### Sparse Strategy
+
+- Use the **Combined Prompt Template**
+- Set `"aspect_ratio": "9:16"` in manifest
+- Do **NOT** use `--stitch` (single image, no stitching needed)
+- Output: `news_infographic_YYYY-MM-DD_combined.png`
+
+### Normal Strategy
+
+- **Cover**: standard Cover Prompt Template, aspect `"16:9"`
+- **Sections**: use **Section Prompt Template** (NOT Per-Type Template) with `"aspect_ratio": "9:16"` — these omit "AI News Daily" branding since the cover already has it
+- Use `--stitch` to combine into a single long image
+- Manifest example:
+  ```json
+  [
+    {"prompt": "<cover prompt>", "output": "news_infographic_YYYY-MM-DD.png"},
+    {"prompt": "<model section>", "output": "news_infographic_YYYY-MM-DD_model.png", "aspect_ratio": "9:16"},
+    {"prompt": "<product section>", "output": "news_infographic_YYYY-MM-DD_product.png", "aspect_ratio": "9:16"}
+  ]
+  ```
+
+### Default (Non-Long-Image) Mode
+
+Use the existing Cover Prompt Template and Per-Type Prompt Template with 16:9 aspect ratio. This is unchanged.
+
+---
+
 ### 3. Generate Images
 
 **Option A** — Native tool (if supported):
@@ -171,6 +283,20 @@ MANIFEST
 
 cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
 ```
+
+**Option C** — Long image for social sharing (sparse mode, single combined image):
+```bash
+cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
+```
+> Use the Combined Prompt Template with `"aspect_ratio": "9:16"` in manifest. No `--stitch` needed.
+
+**Option D** — Long image for social sharing (normal mode, cover + sections stitched):
+```bash
+cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json --stitch
+```
+> Use Cover Template (16:9) + Section Templates (9:16). Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
+
+> See **Long Image Strategy** section above for when to use Option C vs D.
 
 ### 4. Post-generation Verification (required)
 

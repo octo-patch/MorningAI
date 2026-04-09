@@ -14,6 +14,12 @@ from .env import get_key
 
 IMAGE_GEN_TIMEOUT = 120
 
+_OPENAI_ASPECT_TO_SIZE = {
+    "16:9": "1536x1024",
+    "9:16": "1024x1536",
+    "1:1":  "1024x1024",
+}
+
 
 def _log(msg: str):
     sys.stderr.write(f"[ImageGen] {msg}\n")
@@ -28,13 +34,13 @@ class ImageGenError(Exception):
 # Providers
 # ---------------------------------------------------------------------------
 
-def _generate_none(prompt: str, output_path: str, config: Dict[str, Any]) -> str:
+def _generate_none(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ratio: Optional[str] = None) -> str:
     """No-op provider — skip image generation."""
     _log("Provider is 'none', skipping image generation")
     return ""
 
 
-def _generate_gemini(prompt: str, output_path: str, config: Dict[str, Any]) -> str:
+def _generate_gemini(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ratio: Optional[str] = None) -> str:
     """Generate image via Google Gemini (Imagen) API."""
     api_key = get_key(config, "GEMINI_API_KEY")
     if not api_key:
@@ -50,7 +56,7 @@ def _generate_gemini(prompt: str, output_path: str, config: Dict[str, Any]) -> s
     payload = {
         "instances": [{"prompt": prompt}],
         "parameters": {
-            "aspectRatio": "16:9",
+            "aspectRatio": aspect_ratio or "16:9",
             "sampleCount": 1,
         },
     }
@@ -74,14 +80,17 @@ def _generate_gemini(prompt: str, output_path: str, config: Dict[str, Any]) -> s
     return output_path
 
 
-def _generate_gpt(prompt: str, output_path: str, config: Dict[str, Any]) -> str:
+def _generate_gpt(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ratio: Optional[str] = None) -> str:
     """Generate image via OpenAI (gpt-image-1 / DALL-E) API."""
     api_key = get_key(config, "OPENAI_API_KEY")
     if not api_key:
         raise ImageGenError("OPENAI_API_KEY not configured")
 
     model = get_key(config, "OPENAI_IMAGE_MODEL") or "gpt-image-1"
-    size = get_key(config, "OPENAI_IMAGE_SIZE") or "1536x1024"
+    if aspect_ratio:
+        size = _OPENAI_ASPECT_TO_SIZE.get(aspect_ratio, "1536x1024")
+    else:
+        size = get_key(config, "OPENAI_IMAGE_SIZE") or "1536x1024"
     url = "https://api.openai.com/v1/images/generations"
 
     headers = {
@@ -115,7 +124,7 @@ def _generate_gpt(prompt: str, output_path: str, config: Dict[str, Any]) -> str:
     return output_path
 
 
-def _generate_minimax(prompt: str, output_path: str, config: Dict[str, Any]) -> str:
+def _generate_minimax(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ratio: Optional[str] = None) -> str:
     """Generate image via MiniMax API."""
     api_key = get_key(config, "MINIMAX_API_KEY")
     if not api_key:
@@ -135,7 +144,7 @@ def _generate_minimax(prompt: str, output_path: str, config: Dict[str, Any]) -> 
     payload = {
         "model": model,
         "prompt": prompt,
-        "aspect_ratio": "16:9",
+        "aspect_ratio": aspect_ratio or "16:9",
         "response_format": "b64_json",
         "n": 1,
     }
@@ -176,13 +185,15 @@ PROVIDERS = {
 # Public API
 # ---------------------------------------------------------------------------
 
-def generate(prompt: str, output_path: str, config: Dict[str, Any]) -> str:
+def generate(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ratio: Optional[str] = None) -> str:
     """Generate an image using the configured provider.
 
     Args:
         prompt: Image generation prompt text
         output_path: Path to save the output PNG
         config: Configuration dict (from env.get_config())
+        aspect_ratio: Optional aspect ratio (e.g. "16:9", "9:16", "1:1").
+                      Defaults to "16:9" when not specified.
 
     Returns:
         Output file path on success, empty string if skipped (none provider)
@@ -197,7 +208,7 @@ def generate(prompt: str, output_path: str, config: Dict[str, Any]) -> str:
         raise ImageGenError(f"Unknown provider '{provider_name}'. Available: {available}")
 
     provider_fn = PROVIDERS[provider_name]
-    return provider_fn(prompt, output_path, config)
+    return provider_fn(prompt, output_path, config, aspect_ratio=aspect_ratio)
 
 
 def list_providers() -> list:
@@ -213,6 +224,7 @@ def generate_batch(
 
     Args:
         items: List of {"prompt": str, "output": str} dicts.
+               Optional "aspect_ratio" key per item (e.g. "9:16").
                Entries with empty prompt are skipped.
         config: Configuration dict (from env.get_config())
 
@@ -225,6 +237,7 @@ def generate_batch(
     for i, item in enumerate(items):
         prompt = item.get("prompt", "").strip()
         output_path = item.get("output", "")
+        aspect_ratio = item.get("aspect_ratio")
 
         if not prompt:
             _log(f"[{i + 1}/{total}] Skipping (empty prompt): {output_path}")
@@ -238,7 +251,7 @@ def generate_batch(
 
         _log(f"[{i + 1}/{total}] Generating: {output_path}")
         try:
-            result = generate(prompt, output_path, config)
+            result = generate(prompt, output_path, config, aspect_ratio=aspect_ratio)
             results.append(result)
         except ImageGenError as e:
             _log(f"[{i + 1}/{total}] Failed: {e}")
