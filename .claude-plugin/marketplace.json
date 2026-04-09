@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "MorningAI",
-  "description": "Daily-scheduled AI news tracker. Collects updates from 76+ AI entities across 9 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution.",
+  "description": "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 9 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution.",
   "owner": {
     "name": "octo-patch",
     "url": "https://github.com/octo-patch"

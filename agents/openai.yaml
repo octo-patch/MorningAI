@@ -1,0 +1,4 @@
+interface:
+  display_name: "Morning AI"
+  short_description: "Track 80+ AI entities across 9 sources with daily scored reports"
+  default_prompt: "Use morning-ai to collect today's AI news from 9 sources, score and deduplicate updates, and generate a structured daily report."
