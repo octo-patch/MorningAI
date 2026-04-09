@@ -66,31 +66,41 @@ Track 76+ AI entities across 9 data sources. Collect updates from the past 24 ho
 
 **Before first run, check if the configuration is ready.**
 
-1. Check if `~/.config/morning-ai/.env` or `.env` exists in the skill directory
-2. If neither exists, guide the user to set up API keys:
+1. Check if `~/.config/morning-ai/.env`, `.claude/morning-ai.env`, or `.env` exists
+2. If a config file exists, read it and report which sources are active, then proceed to Step 1
 
-```
-Required:
-  SCRAPECREATORS_API_KEY  — X/Twitter data collection (get at scrapecreators.com)
+### First Run (no config found)
 
-Optional (unlock more sources):
-  GITHUB_TOKEN            — GitHub releases and repos
-  YOUTUBE_API_KEY         — YouTube channel content
-  DISCORD_TOKEN           — Discord announcement channels
-  BRAVE_API_KEY           — Brave web search
-  EXA_API_KEY             — Exa web search
+If no config file exists, this is a first-time user. **Do NOT proceed to Step 1 yet.** Instead, walk the user through setup interactively:
 
-Image generation (for cover infographic, optional):
-  IMAGE_GEN_PROVIDER      — Provider: gemini | gpt | minimax | none (default: none)
-  IMAGE_STYLE             — Visual style: classic | dark | glassmorphism | newspaper | tech (default: classic)
-  GEMINI_API_KEY          — Google Gemini/Imagen API key
-  OPENAI_API_KEY          — OpenAI API key (for gpt-image-1)
-  MINIMAX_API_KEY         — MiniMax API key
-  MINIMAX_API_REGION      — MiniMax region: intl (default) | cn (国内)
-```
+1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 9 sources, generates scored daily reports
+2. **Show what works for free** — 4 sources need no API keys:
+   - Reddit (public JSON), Hacker News (Algolia API), HuggingFace (public API), arXiv (public API)
+3. **Ask the user** which additional sources they want to enable, and present the keys needed:
 
-3. Write the keys to `~/.config/morning-ai/.env` in `KEY=value` format
-4. Without any API keys, the following free sources still work: **Reddit** (public JSON), **Hacker News** (Algolia API), **HuggingFace** (public API), **arXiv** (public API)
+| Key | Source | Get it at |
+|-----|--------|-----------|
+| `SCRAPECREATORS_API_KEY` | X/Twitter search | https://scrapecreators.com |
+| `GITHUB_TOKEN` | GitHub releases & repos | https://github.com/settings/tokens |
+| `YOUTUBE_API_KEY` | YouTube channels | https://console.cloud.google.com |
+| `DISCORD_TOKEN` | Discord announcements | https://discord.com/developers |
+| `BRAVE_API_KEY` | Brave web search | https://brave.com/search/api |
+| `EXA_API_KEY` | Exa web search | https://exa.ai |
+
+4. **Ask about infographics** (optional):
+
+| Key | Description |
+|-----|-------------|
+| `IMAGE_GEN_PROVIDER` | Provider: `gemini` \| `gpt` \| `minimax` \| `none` (default: none) |
+| `IMAGE_STYLE` | Style: `classic` \| `dark` \| `glassmorphism` \| `newspaper` \| `tech` |
+| `GEMINI_API_KEY` | Google Gemini/Imagen (https://aistudio.google.com/apikey) |
+| `OPENAI_API_KEY` | OpenAI gpt-image-1 (https://platform.openai.com/api-keys) |
+| `MINIMAX_API_KEY` | MiniMax global(https://www.minimax.io) |
+| `MINIMAX_API_KEY` | MiniMax cn (https://platform.minimaxi.com) |
+
+5. **Create the config file** — collect the keys the user provides and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`
+6. **Confirm** — show how many sources are now active (N/9) and proceed to Step 1
+7. If the user wants to skip setup and use only free sources, that's fine — proceed directly to Step 1
 
 ---
 

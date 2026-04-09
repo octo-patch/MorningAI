@@ -15,26 +15,79 @@ elif [[ -f "$GLOBAL_ENV" ]]; then
     ACTIVE_ENV="$GLOBAL_ENV"
 fi
 
-# Count available sources
-SOURCES=4  # Reddit, HN, HuggingFace, arXiv are always free
-
+# Load env if found
 if [[ -n "$ACTIVE_ENV" ]]; then
-    # Source the env file
     set -a
     # shellcheck disable=SC1090
     source "$ACTIVE_ENV" 2>/dev/null || true
     set +a
 fi
 
-# Check API keys from env
-[[ -n "${SCRAPECREATORS_API_KEY:-}" ]] && SOURCES=$((SOURCES + 1))
-[[ -n "${GITHUB_TOKEN:-}" ]] && SOURCES=$((SOURCES + 1))
-[[ -n "${YOUTUBE_API_KEY:-}" ]] && SOURCES=$((SOURCES + 1))
-[[ -n "${DISCORD_TOKEN:-}" ]] && SOURCES=$((SOURCES + 1))
-[[ -n "${BRAVE_API_KEY:-}" || -n "${EXA_API_KEY:-}" ]] && SOURCES=$((SOURCES + 1))
-
+# ── No config found: first-time onboarding ──────────────────────────────
 if [[ -z "$ACTIVE_ENV" ]]; then
-    echo "morning-ai: No config found. Run /morning-ai to set up. ($SOURCES free sources available)"
-else
-    echo "morning-ai: $SOURCES/9 sources active (config: $ACTIVE_ENV)"
+    cat <<'WELCOME'
+morning-ai: First-time setup
+
+What is morning-ai?
+  AI news daily report generator. Tracks 80+ entities (OpenAI, Anthropic,
+  Google, Meta, xAI, DeepSeek, Cursor, Midjourney, etc.) across 9 data
+  sources. Generates scored, deduplicated Markdown reports with optional
+  infographics. Runs as a skill inside your AI coding agent.
+
+FREE sources (work immediately, no keys needed):
+  Reddit            public JSON API
+  Hacker News       Algolia API
+  HuggingFace       public API
+  arXiv             public API
+
+API keys (optional, unlock more sources):
+  SCRAPECREATORS_API_KEY   X/Twitter search       https://scrapecreators.com
+  GITHUB_TOKEN             GitHub releases         https://github.com/settings/tokens
+  YOUTUBE_API_KEY          YouTube channels        https://console.cloud.google.com
+  DISCORD_TOKEN            Discord announcements   https://discord.com/developers
+  BRAVE_API_KEY            Brave web search        https://brave.com/search/api
+  EXA_API_KEY              Exa web search          https://exa.ai
+
+Image generation (optional):
+  IMAGE_GEN_PROVIDER       gemini | gpt | minimax | none (default: none)
+  IMAGE_STYLE              classic | dark | glassmorphism | newspaper | tech
+  GEMINI_API_KEY           Google Gemini/Imagen    https://aistudio.google.com/apikey
+  OPENAI_API_KEY           OpenAI gpt-image-1      https://platform.openai.com/api-keys
+  MINIMAX_API_KEY          MiniMax global          https://www.minimax.io
+  MINIMAX_API_KEY          MiniMax cn              https://platform.minimaxi.com
+
+Setup:
+  Create ~/.config/morning-ai/.env with KEY=value format (one per line).
+  You can start with zero keys (4/9 sources) and add more later.
+
+Next: run /morning-ai
+WELCOME
+    exit 0
 fi
+
+# ── Config exists: show source status ────────────────────────────────────
+SOURCES=4  # Reddit, HN, HuggingFace, arXiv are always free
+DETAILS="reddit,hackernews,huggingface,arxiv"
+
+if [[ -n "${SCRAPECREATORS_API_KEY:-}" ]]; then
+    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,x-twitter"
+fi
+if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,github"
+fi
+if [[ -n "${YOUTUBE_API_KEY:-}" ]]; then
+    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,youtube"
+fi
+if [[ -n "${DISCORD_TOKEN:-}" ]]; then
+    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,discord"
+fi
+if [[ -n "${BRAVE_API_KEY:-}" || -n "${EXA_API_KEY:-}" ]]; then
+    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,websearch"
+fi
+
+IMG=""
+if [[ -n "${IMAGE_GEN_PROVIDER:-}" && "${IMAGE_GEN_PROVIDER:-}" != "none" ]]; then
+    IMG=" | image: ${IMAGE_GEN_PROVIDER}"
+fi
+
+echo "morning-ai: $SOURCES/9 sources active [$DETAILS]${IMG} (config: $ACTIVE_ENV)"
