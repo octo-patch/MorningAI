@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "morning-ai",
-      "description": "Track 76+ AI entities across X, Reddit, HN, GitHub, HuggingFace, arXiv, YouTube, Discord, and web search. Daily-scheduled with scored, deduplicated Markdown reports. Supports unattended cron execution.",
+      "description": "Track 80+ AI entities across X, Reddit, HN, GitHub, HuggingFace, arXiv, YouTube, Discord, and web search. Daily-scheduled with scored, deduplicated Markdown reports. Supports unattended cron execution.",
       "version": "1.0.0",
       "author": {
         "name": "octo-patch",
