@@ -1,6 +1,6 @@
 """Pluggable image generation for morning-ai.
 
-Dispatches to external APIs (Gemini, GPT, MiniMax) or skips (none).
+Dispatches to external APIs (Gemini, MiniMax) or skips (none).
 Provider is selected via IMAGE_GEN_PROVIDER env var.
 """
 
@@ -13,13 +13,6 @@ from . import http
 from .env import get_key
 
 IMAGE_GEN_TIMEOUT = 120
-
-_OPENAI_ASPECT_TO_SIZE = {
-    "16:9": "1536x1024",
-    "9:16": "1024x1536",
-    "1:1":  "1024x1024",
-    "3:4":  "1024x1365",
-}
 
 
 def _log(msg: str):
@@ -81,50 +74,6 @@ def _generate_gemini(prompt: str, output_path: str, config: Dict[str, Any], *, a
     return output_path
 
 
-def _generate_gpt(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ratio: Optional[str] = None) -> str:
-    """Generate image via OpenAI (gpt-image-1 / DALL-E) API."""
-    api_key = get_key(config, "OPENAI_API_KEY")
-    if not api_key:
-        raise ImageGenError("OPENAI_API_KEY not configured")
-
-    model = get_key(config, "OPENAI_IMAGE_MODEL") or "gpt-image-1"
-    if aspect_ratio:
-        size = _OPENAI_ASPECT_TO_SIZE.get(aspect_ratio, "1536x1024")
-    else:
-        size = get_key(config, "OPENAI_IMAGE_SIZE") or "1536x1024"
-    url = "https://api.openai.com/v1/images/generations"
-
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "model": model,
-        "prompt": prompt,
-        "n": 1,
-        "size": size,
-        "response_format": "b64_json",
-    }
-
-    _log(f"Calling OpenAI ({model}, size={size})...")
-    try:
-        response = http.post(url, json_data=payload, headers=headers, timeout=IMAGE_GEN_TIMEOUT)
-    except http.HTTPError as e:
-        raise ImageGenError(f"OpenAI API error: {e}") from e
-
-    data = response.get("data", [])
-    if not data:
-        raise ImageGenError("OpenAI returned no image data")
-
-    b64_data = data[0].get("b64_json", "")
-    if not b64_data:
-        raise ImageGenError("OpenAI response missing b64_json")
-
-    _write_image(b64_data, output_path)
-    _log(f"GPT image saved to {output_path}")
-    return output_path
-
-
 def _generate_minimax(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ratio: Optional[str] = None) -> str:
     """Generate image via MiniMax API."""
     api_key = get_key(config, "MINIMAX_API_KEY")
@@ -177,7 +126,6 @@ def _generate_minimax(prompt: str, output_path: str, config: Dict[str, Any], *, 
 PROVIDERS = {
     "none": _generate_none,
     "gemini": _generate_gemini,
-    "gpt": _generate_gpt,
     "minimax": _generate_minimax,
 }
 

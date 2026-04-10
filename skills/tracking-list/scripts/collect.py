@@ -87,15 +87,6 @@ def collect_arxiv(config: Dict[str, Any], from_date: str, to_date: str, depth: s
     return arxiv.collect(entities.ARXIV_QUERIES, from_date, to_date, depth)
 
 
-def collect_web(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
-    """Collect from web search."""
-    from lib import websearch
-
-    brave_key = env.get_key(config, "BRAVE_API_KEY")
-    exa_key = env.get_key(config, "EXA_API_KEY")
-    return websearch.collect(entities.WEB_QUERIES, from_date, to_date, brave_key, exa_key, depth)
-
-
 def collect_youtube(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
     """Collect from YouTube channels."""
     from lib import youtube
@@ -120,7 +111,6 @@ COLLECTORS = {
     "github": collect_github,
     "huggingface": collect_huggingface,
     "arxiv": collect_arxiv,
-    "web": collect_web,
     "youtube": collect_youtube,
     "discord": collect_discord,
 }

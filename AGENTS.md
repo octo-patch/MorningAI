@@ -1,6 +1,6 @@
 # MorningAI
 
-Daily-scheduled AI news tracker. Collects updates from 76+ AI entities across 9 data sources every 24 hours. Generates scored, deduplicated Markdown reports with optional cover infographics.
+Daily-scheduled AI news tracker. Collects updates from 76+ AI entities across 8 data sources every 24 hours. Generates scored, deduplicated Markdown reports with optional cover infographics.
 
 ## Skills
 
@@ -26,7 +26,7 @@ Required API keys should be configured in `~/.config/morning-ai/.env`:
 SCRAPECREATORS_API_KEY=...   # X/Twitter data (required for X source)
 ```
 
-Optional keys unlock more sources: `GITHUB_TOKEN`, `YOUTUBE_API_KEY`, `DISCORD_TOKEN`, `BRAVE_API_KEY`, `EXA_API_KEY`.
+Optional keys unlock more sources: `GITHUB_TOKEN`, `YOUTUBE_API_KEY`, `DISCORD_TOKEN`.
 
 Without any API keys, 4 free sources work out of the box: Reddit, Hacker News, HuggingFace, arXiv.
 

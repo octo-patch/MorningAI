@@ -3,16 +3,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-3776AB.svg)](https://python.org)
 [![Entities](https://img.shields.io/badge/Tracked_Entities-80%2B-orange.svg)](#tracked-entities-80)
-[![Sources](https://img.shields.io/badge/Data_Sources-9-green.svg)](#how-it-works)
+[![Sources](https://img.shields.io/badge/Data_Sources-8-green.svg)](#how-it-works)
 [![Platforms](https://img.shields.io/badge/Platforms-6%2B-purple.svg)](#install)
 
-**What happened in AI today?** — An AI news tracking skill that runs inside your coding agent. No Docker, no servers — just invoke `/morning-ai` in Claude Code, Codex, Cursor, Gemini CLI, or any SKILL.md-compatible tool. Monitors 80+ entities across 9 data sources, generates scored daily reports with optional infographics.
+**What happened in AI today?** — An AI news tracking skill that runs inside your coding agent. No Docker, no servers — just invoke `/morning-ai` in Claude Code, Codex, Cursor, or any SKILL.md-compatible tool. Monitors 80+ entities across 8 data sources, generates scored daily reports with optional infographics.
 
 ## Features
 
-- **Skill-Native** — Runs inside your AI coding tool (Claude Code, Codex, Cursor, Gemini CLI). No Docker, no servers, no extra infra — just `/morning-ai`
+- **Skill-Native** — Runs inside your AI coding tool (Claude Code, Codex, Cursor). No Docker, no servers, no extra infra — just `/morning-ai`
 - **Entity-Centric Tracking** — 80+ curated entities across AI labs, model infra, coding agents, apps, vision/media, benchmarks, KOLs. Per-entity cross-platform handles (X, GitHub, HF, arXiv, YouTube, Discord), not keyword search
-- **9 Concurrent Sources** — X/Twitter, Reddit, HN, GitHub, HuggingFace, arXiv, web search, YouTube, Discord. 4 sources free without API keys
+- **8 Concurrent Sources** — X/Twitter, Reddit, HN, GitHub, HuggingFace, arXiv, YouTube, Discord. 4 sources free without API keys
 - **Smart Scoring** — 5-dimension weighted scoring: Impact (30%), Differentiation (25%), Breakthrough (20%), Coverage (15%), Timeliness (10%). Score 7+ items auto-verified across multiple independent sources
 - **Custom Watchlists** — Add your own entities via simple markdown files — no code changes needed
 - **5 Infographic Styles** — `classic`, `dark`, `glassmorphism`, `newspaper`, `tech` — ready for social sharing
@@ -20,7 +20,7 @@
 
 ## Sample Output
 
-Here's what a MorningAI daily report looks like — 26 updates scored, deduplicated, and verified across 9 sources in under 50 seconds:
+Here's what a MorningAI daily report looks like — 26 updates scored, deduplicated, and verified across 8 sources in under 50 seconds:
 
 <details>
 <summary><b>TLDR — Today's 7+ Score Updates (click to expand)</b></summary>
@@ -46,7 +46,7 @@ Here's what a MorningAI daily report looks like — 26 updates scored, deduplica
 SKILL.md (loaded by any AI tool)
     |
     +- Step 1: python3 skills/tracking-list/scripts/collect.py  ->  data_{date}.json
-    |           (9 sources, concurrent, score + dedupe)
+    |           (8 sources, concurrent, score + dedupe)
     |
     +- Step 2: Read skills/tracking-list/SKILL.md  ->  scoring & format spec
     |
@@ -55,7 +55,7 @@ SKILL.md (loaded by any AI tool)
     +- Step 4: (optional) Read skills/gen-infographic/SKILL.md  ->  cover image
 ```
 
-The Python collector runs 9 sources concurrently (X/Twitter, Reddit, HN, GitHub, HuggingFace, arXiv, web search, YouTube, Discord), then scores, deduplicates, and cross-links results. The AI tool reads the JSON output and generates a formatted Markdown report.
+The Python collector runs 8 sources concurrently (X/Twitter, Reddit, HN, GitHub, HuggingFace, arXiv, YouTube, Discord), then scores, deduplicates, and cross-links results. The AI tool reads the JSON output and generates a formatted Markdown report.
 
 ## Install
 
@@ -82,12 +82,6 @@ git clone https://github.com/octo-patch/MorningAI.git ~/.claude/skills/morning-a
 
 ```bash
 clawhub install morning-ai
-```
-
-### Gemini CLI
-
-```bash
-gemini extensions install https://github.com/octo-patch/MorningAI.git
 ```
 
 ### OpenAI Codex
@@ -120,7 +114,6 @@ SCRAPECREATORS_API_KEY=your_key    # X/Twitter (required for X source)
 GITHUB_TOKEN=ghp_xxx               # GitHub (optional)
 YOUTUBE_API_KEY=your_key            # YouTube (optional)
 DISCORD_TOKEN=your_token            # Discord (optional)
-BRAVE_API_KEY=your_key              # Web search (optional)
 ```
 
 Without any API keys, 4 free sources work out of the box: **Reddit**, **Hacker News**, **HuggingFace**, **arXiv**.

@@ -9,12 +9,10 @@ from typing import Any, Dict, List, Optional
 SKILL_SEARCH_PATHS: List[Optional[str]] = [
     ".",                                           # Current checkout
     os.environ.get("CLAUDE_PLUGIN_ROOT"),           # Claude Code plugin
-    os.environ.get("GEMINI_EXTENSION_DIR"),         # Gemini CLI extension
     str(Path.home() / ".claude" / "plugins" / "marketplaces" / "MorningAI"),
     str(Path.home() / ".claude" / "skills" / "morning-ai"),
     str(Path.home() / ".agents" / "skills" / "morning-ai"),
     str(Path.home() / ".codex" / "skills" / "morning-ai"),
-    str(Path.home() / ".gemini" / "extensions" / "morning-ai"),
 ]
 
 
@@ -60,7 +58,7 @@ def get_config() -> Dict[str, Any]:
     config.update(project_claude_env)
     config.update(project_env)
     config.update(local_env)
-    config.update({k: v for k, v in os.environ.items() if k.startswith(("MORNING_AI_", "SCRAPECREATORS_", "BRAVE_", "EXA_", "GITHUB_", "YOUTUBE_", "DISCORD_", "AUTH_TOKEN", "CT0", "IMAGE_GEN_", "IMAGE_STYLE", "OPENAI_", "GEMINI_", "MINIMAX_", "SOCIAL_"))})
+    config.update({k: v for k, v in os.environ.items() if k.startswith(("MORNING_AI_", "SCRAPECREATORS_", "GITHUB_", "YOUTUBE_", "DISCORD_", "AUTH_TOKEN", "CT0", "IMAGE_GEN_", "IMAGE_STYLE", "GEMINI_", "MINIMAX_", "SOCIAL_"))})
 
     return config
 
@@ -81,8 +79,6 @@ def get_available_sources(config: Dict[str, Any]) -> Dict[str, bool]:
         "github": bool(get_key(config, "GITHUB_TOKEN")),
         "huggingface": True,  # public API
         "arxiv": True,  # public API
-        "brave": bool(get_key(config, "BRAVE_API_KEY")),
-        "exa": bool(get_key(config, "EXA_API_KEY")),
         "youtube": bool(get_key(config, "YOUTUBE_API_KEY")),
         "discord": bool(get_key(config, "DISCORD_TOKEN")),
     }

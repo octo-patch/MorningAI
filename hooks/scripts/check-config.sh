@@ -45,14 +45,11 @@ API keys (optional, unlock more sources):
   GITHUB_TOKEN             GitHub releases         https://github.com/settings/tokens
   YOUTUBE_API_KEY          YouTube channels        https://console.cloud.google.com
   DISCORD_TOKEN            Discord announcements   https://discord.com/developers
-  BRAVE_API_KEY            Brave web search        https://brave.com/search/api
-  EXA_API_KEY              Exa web search          https://exa.ai
 
 Image generation (optional):
-  IMAGE_GEN_PROVIDER       gemini | gpt | minimax | none (default: none)
+  IMAGE_GEN_PROVIDER       gemini | minimax | none (default: none)
   IMAGE_STYLE              classic | dark | glassmorphism | newspaper | tech
   GEMINI_API_KEY           Google Gemini/Imagen    https://aistudio.google.com/apikey
-  OPENAI_API_KEY           OpenAI gpt-image-1      https://platform.openai.com/api-keys
   MINIMAX_API_KEY          MiniMax global          https://www.minimax.io
   MINIMAX_API_KEY          MiniMax cn              https://platform.minimaxi.com
 
@@ -81,13 +78,10 @@ fi
 if [[ -n "${DISCORD_TOKEN:-}" ]]; then
     SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,discord"
 fi
-if [[ -n "${BRAVE_API_KEY:-}" || -n "${EXA_API_KEY:-}" ]]; then
-    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,websearch"
-fi
 
 IMG=""
 if [[ -n "${IMAGE_GEN_PROVIDER:-}" && "${IMAGE_GEN_PROVIDER:-}" != "none" ]]; then
     IMG=" | image: ${IMAGE_GEN_PROVIDER}"
 fi
 
-echo "morning-ai: $SOURCES/9 sources active [$DETAILS]${IMG} (config: $ACTIVE_ENV)"
+echo "morning-ai: $SOURCES/8 sources active [$DETAILS]${IMG} (config: $ACTIVE_ENV)"

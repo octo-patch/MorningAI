@@ -1,7 +1,7 @@
 ---
 name: morning-ai
 version: "1.1.1"
-description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 9 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
+description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 8 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
 argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *"'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
@@ -26,8 +26,6 @@ metadata:
         - GITHUB_TOKEN
         - YOUTUBE_API_KEY
         - DISCORD_TOKEN
-        - BRAVE_API_KEY
-        - EXA_API_KEY
       bins:
         - python3
     primaryEnv: SCRAPECREATORS_API_KEY
@@ -56,9 +54,9 @@ metadata:
 
 # morning-ai: AI News Daily Report Generator
 
-> **Permissions overview:** Collects public data from X/Twitter, Reddit, Hacker News, GitHub, HuggingFace, arXiv, YouTube, Discord, and web search. Requires API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
+> **Permissions overview:** Collects public data from X/Twitter, Reddit, Hacker News, GitHub, HuggingFace, arXiv, YouTube, and Discord. Requires API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
 
-Track 76+ AI entities across 9 data sources. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
+Track 76+ AI entities across 8 data sources. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
 
 ---
 
@@ -84,7 +82,7 @@ if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || 
 
 Walk the user through setup interactively, waiting for their response at each step:
 
-1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 9 sources, generates scored daily reports
+1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 8 sources, generates scored daily reports
 2. **Show what works for free** — 4 sources need no API keys:
    - Reddit (public JSON), Hacker News (Algolia API), HuggingFace (public API), arXiv (public API)
 3. **Ask the user** which additional sources they want to enable, and present the keys needed:
@@ -95,17 +93,14 @@ Walk the user through setup interactively, waiting for their response at each st
 | `GITHUB_TOKEN` | GitHub releases & repos | https://github.com/settings/tokens |
 | `YOUTUBE_API_KEY` | YouTube channels | https://console.cloud.google.com |
 | `DISCORD_TOKEN` | Discord announcements | https://discord.com/developers |
-| `BRAVE_API_KEY` | Brave web search | https://brave.com/search/api |
-| `EXA_API_KEY` | Exa web search | https://exa.ai |
 
 4. **Ask about infographics** (optional):
 
 | Key | Description |
 |-----|-------------|
-| `IMAGE_GEN_PROVIDER` | Provider: `gemini` \| `gpt` \| `minimax` \| `none` (default: none) |
+| `IMAGE_GEN_PROVIDER` | Provider: `gemini` \| `minimax` \| `none` (default: none) |
 | `IMAGE_STYLE` | Style: `classic` \| `dark` \| `glassmorphism` \| `newspaper` \| `tech` |
 | `GEMINI_API_KEY` | Google Gemini/Imagen (https://aistudio.google.com/apikey) |
-| `OPENAI_API_KEY` | OpenAI gpt-image-1 (https://platform.openai.com/api-keys) |
 | `MINIMAX_API_KEY` | MiniMax global(https://www.minimax.io) |
 | `MINIMAX_API_KEY` | MiniMax cn (https://platform.minimaxi.com) |
 
@@ -160,7 +155,7 @@ cd {SKILL_DIR} && python3 skills/tracking-list/scripts/collect.py --date {YYYY-M
 - `-o`: Output JSON file path
 
 **What it does:**
-- Runs 9 collectors concurrently (X, Reddit, HN, GitHub, HuggingFace, arXiv, web, YouTube, Discord)
+- Runs 8 collectors concurrently (X, Reddit, HN, GitHub, HuggingFace, arXiv, YouTube, Discord)
 - Time window: `[Yesterday 08:00, Today 08:00) UTC+8`
 - Pipeline: collect → score (1-10) → deduplicate → cross-source link → verification bonus
 - Returns structured JSON with all items, stats, and collection metadata
@@ -256,7 +251,7 @@ For lower-score items (3-6), use compact table format. The Source column must co
    ```bash
    cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
    ```
-   Supported providers: `gemini`, `gpt`, `minimax`. See [Configuration](#configuration) for API keys.
+   Supported providers: `gemini`, `minimax`. See [Configuration](#configuration) for API keys.
 
    Add `--stitch` to also produce a single combined long image (`news_infographic_YYYY-MM-DD_combined.png`) for social sharing. Requires `pip install Pillow`.
 
@@ -386,8 +381,6 @@ SCRAPECREATORS_API_KEY=your_key
 GITHUB_TOKEN=ghp_xxx
 YOUTUBE_API_KEY=your_key
 DISCORD_TOKEN=your_token
-BRAVE_API_KEY=your_key
-EXA_API_KEY=your_key
 ```
 
 ### Free Sources (no API key needed)

@@ -12,7 +12,7 @@ TARGETS=(
 )
 
 SYNC_DIRS=(lib skills entities templates hooks scripts .codex-plugin .agents .claude-plugin)
-SYNC_FILES=(SKILL.md AGENTS.md gemini-extension.json .clawhubignore)
+SYNC_FILES=(SKILL.md AGENTS.md .clawhubignore)
 
 for target in "${TARGETS[@]}"; do
     echo "Syncing to $target ..."

@@ -11,7 +11,7 @@ Usage:
     python3 skills/gen-infographic/scripts/gen_infographic.py --batch manifest.json
 
     # Pipe prompt via stdin
-    echo "prompt text" | python3 skills/gen-infographic/scripts/gen_infographic.py --provider gpt
+    echo "prompt text" | python3 skills/gen-infographic/scripts/gen_infographic.py --provider minimax
 
 Manifest JSON format:
     [
