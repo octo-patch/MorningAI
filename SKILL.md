@@ -62,16 +62,27 @@ Track 76+ AI entities across 9 data sources. Collect updates from the past 24 ho
 
 ---
 
-## Step 0: Configuration Check
+## Step 0: Configuration Gate (REQUIRED — must complete before any other step)
 
-**Before first run, check if the configuration is ready.**
+**Run this command FIRST before doing anything else:**
 
-1. Check if `~/.config/morning-ai/.env`, `.claude/morning-ai.env`, or `.env` exists
-2. If a config file exists, read it and report which sources are active, then proceed to Step 1
+```bash
+if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || [ -f ".env" ]; then echo "CONFIG_STATUS=READY"; else echo "CONFIG_STATUS=MISSING"; fi
+```
 
-### First Run (no config found)
+**Branch on the output:**
 
-If no config file exists, this is a first-time user. **Do NOT proceed to Step 1 yet.** Instead, walk the user through setup interactively:
+- **If output is `CONFIG_STATUS=READY`** — read the config file, report which sources are active (N/9), then proceed to Step 1.
+- **If output is `CONFIG_STATUS=MISSING`** — **STOP. You MUST complete the First-Time Onboarding below before proceeding to Step 1.**
+
+### First-Time Onboarding (when `MISSING`)
+
+> **CRITICAL: STOP HERE.**
+> You MUST complete all onboarding steps below interactively with the user.
+> Do NOT run Step 1 (data collection) until a config file exists and the gate check returns `READY`.
+> Running data collection without configuration will produce incomplete results.
+
+Walk the user through setup interactively, waiting for their response at each step:
 
 1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 9 sources, generates scored daily reports
 2. **Show what works for free** — 4 sources need no API keys:
@@ -99,8 +110,16 @@ If no config file exists, this is a first-time user. **Do NOT proceed to Step 1 
 | `MINIMAX_API_KEY` | MiniMax cn (https://platform.minimaxi.com) |
 
 5. **Create the config file** — collect the keys the user provides and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`
-6. **Confirm** — show how many sources are now active (N/9) and proceed to Step 1
-7. If the user wants to skip setup and use only free sources, that's fine — proceed directly to Step 1
+6. **Confirm** — show how many sources are now active (N/9)
+7. **Verify** — re-run the gate check to confirm `CONFIG_STATUS=READY`:
+   ```bash
+   if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || [ -f ".env" ]; then echo "CONFIG_STATUS=READY"; else echo "CONFIG_STATUS=MISSING"; fi
+   ```
+   Only proceed to Step 1 if the output is `READY`.
+8. If the user wants to skip API key setup and use only free sources, create a minimal config file first, then proceed to Step 1:
+   ```bash
+   mkdir -p ~/.config/morning-ai && echo "# morning-ai config — free sources only" > ~/.config/morning-ai/.env
+   ```
 
 ---
 
@@ -118,6 +137,8 @@ If no config file exists, this is a first-time user. **Do NOT proceed to Step 1 
 - The `--lang` setting also applies to infographic prompt content (see Step 4).
 
 ---
+
+> **Prerequisite:** Step 0 must have returned `CONFIG_STATUS=READY`. If you have not completed Step 0, go back and run it now.
 
 ## Step 1: Data Collection
 
