@@ -15,7 +15,8 @@
 > Today's important updates with 7+ scores (across all types)
 
 <!-- List by score from high to low for all 7+ updates, format:
-- **[Type] Entity name - Event description** (X.X points): One-line summary
+- **[Type] Entity name - Event description** (X.X points): One-line summary [[Source](URL)]
+Every TLDR item MUST include at least one source link so readers can click through to the original.
 -->
 
 ---
@@ -38,7 +39,7 @@
 
 ### Minor Updates (3-4 Scores)
 
-<!-- Table format -->
+<!-- Table format — Source column MUST contain clickable [Name](URL) links -->
 
 | Entity | Update | Score | Source |
 |------|---------|------|------|
@@ -56,6 +57,8 @@
 ### Regular Updates (5-6 Scores)
 
 ### Minor Updates (3-4 Scores)
+
+<!-- Source column MUST contain clickable [Name](URL) links -->
 
 | Product | Update | Score | Source |
 |------|---------|------|------|
@@ -86,6 +89,8 @@
 
 | Entity | Event | Amount/Scale | Score | Source |
 |------|------|----------|------|------|
+
+<!-- Source column MUST contain clickable [Name](URL) links -->
 
 ---
 

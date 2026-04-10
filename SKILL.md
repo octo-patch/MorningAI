@@ -194,9 +194,10 @@ This specification defines:
 
 **Report generation rules:**
 - **Language**: Write all content in the target language (default: English). If source data is in a different language, translate it. Entity names (proper nouns) stay as-is.
+- **Source links**: Every item in the report MUST include a clickable source link `[Source Name](URL)` pointing to the original content. This applies to all sections: TLDR items, high-score detailed entries, and compact table rows. Readers must be able to click through to the original source for every item.
 - Filter out any excluded types (if `--exclude` was specified)
 - Sort items by score within each type section
-- **TLDR section**: Only items with score 7+ (across all types), sorted high to low
+- **TLDR section**: Only items with score 7+ (across all types), sorted high to low. Each item must include a source link `[[Source](URL)]` at the end.
 - **Type sections**: Group by score range (9-10 / 7-8 / 5-6 / 3-4)
 - For items with score 7+, include multi-source verification if available
 - Use the record format from the tracking specification
@@ -221,7 +222,7 @@ For high-score items (7+):
 - Key point 3
 ```
 
-For lower-score items (3-6), use compact table format.
+For lower-score items (3-6), use compact table format. The Source column must contain clickable `[Name](URL)` links.
 
 ---
 
