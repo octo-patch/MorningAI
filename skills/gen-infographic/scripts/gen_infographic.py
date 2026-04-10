@@ -28,15 +28,46 @@ from pathlib import Path
 
 # Add project root to path for imports
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lib import env
 from lib.image_gen import generate, generate_batch, list_providers, ImageGenError
 from lib.image_stitch import stitch_images
+from styles import (
+    STYLE_PRESETS, DEFAULT_STYLE, CONTENT_DENSITY,
+    SECTION_SUFFIX, SECTION_STYLE_OVERRIDES, STYLE_BG_COLORS,
+)
 
 
 def _log(msg: str):
     sys.stderr.write(f"[gen-infographic] {msg}\n")
     sys.stderr.flush()
+
+
+def _inject_style(prompt: str, config: dict) -> str:
+    """Inject style preset into prompt based on IMAGE_STYLE config."""
+    style_name = (config.get("IMAGE_STYLE") or DEFAULT_STYLE).strip().lower()
+    if style_name not in STYLE_PRESETS:
+        _log(f"Warning: Unknown style '{style_name}', falling back to '{DEFAULT_STYLE}'")
+        style_name = DEFAULT_STYLE
+
+    style_block = STYLE_PRESETS[style_name] + CONTENT_DENSITY
+
+    # Detect section prompts (used in --stitch mode) and append continuity rules
+    is_section = "section" in prompt[:120].lower()
+    if is_section:
+        style_block += SECTION_SUFFIX
+        extra = SECTION_STYLE_OVERRIDES.get(style_name, "")
+        if extra:
+            style_block += extra
+
+    if "{STYLE_BLOCK}" in prompt:
+        prompt = prompt.replace("{STYLE_BLOCK}", style_block)
+    else:
+        prompt = prompt.rstrip() + "\n\n" + style_block
+
+    _log(f"Style: {style_name}{' (section mode)' if is_section else ''}")
+    return prompt
 
 
 def _run_single(args, config):
@@ -55,6 +86,8 @@ def _run_single(args, config):
     if not prompt:
         _log("Error: Empty prompt")
         sys.exit(1)
+
+    prompt = _inject_style(prompt, config)
 
     output_path = args.output or f"news_infographic_{args.date}.png"
     provider_name = config.get("IMAGE_GEN_PROVIDER", "none")
@@ -93,6 +126,10 @@ def _run_batch(args, config):
     provider_name = config.get("IMAGE_GEN_PROVIDER", "none")
     _log(f"Batch mode: {len(items)} images, provider: {provider_name}")
 
+    for item in items:
+        if item.get("prompt", "").strip():
+            item["prompt"] = _inject_style(item["prompt"], config)
+
     results = generate_batch(items, config)
     succeeded = [r for r in results if r]
 
@@ -106,8 +143,10 @@ def _run_batch(args, config):
     # Stitch into a single long image
     if args.stitch and len(succeeded) >= 2:
         stitch_output = args.stitch_output or f"news_infographic_{args.date}_combined.png"
+        style_name = (config.get("IMAGE_STYLE") or DEFAULT_STYLE).strip().lower()
+        bg_color = STYLE_BG_COLORS.get(style_name, (245, 245, 240))
         try:
-            combined = stitch_images(succeeded, stitch_output)
+            combined = stitch_images(succeeded, stitch_output, bg_color=bg_color)
             print(combined)
             _log(f"Stitched image: {combined}")
         except (ImportError, ValueError) as e:

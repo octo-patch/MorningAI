@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1] - 2026-04-10
+
+### New Features
+- **Style presets for infographics**: 5 built-in visual styles (classic, dark, glassmorphism, newspaper, tech) selectable via `IMAGE_STYLE` config
+- **Style-aware image stitching**: Background color matches selected style when stitching multi-section infographics
+- **Content density enforcement**: Automatic injection of content rendering rules to maximize information display in generated images
+- **Section continuity rules**: Seamless visual flow between stitched image sections with per-style overrides
+
 ## [1.1.0] - 2026-04-10
 
 ### New Features
