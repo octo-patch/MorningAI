@@ -60,7 +60,7 @@ def get_config() -> Dict[str, Any]:
     config.update(project_claude_env)
     config.update(project_env)
     config.update(local_env)
-    config.update({k: v for k, v in os.environ.items() if k.startswith(("MORNING_AI_", "SCRAPECREATORS_", "BRAVE_", "EXA_", "GITHUB_", "YOUTUBE_", "DISCORD_", "AUTH_TOKEN", "CT0", "IMAGE_GEN_", "IMAGE_STYLE", "OPENAI_", "GEMINI_", "MINIMAX_"))})
+    config.update({k: v for k, v in os.environ.items() if k.startswith(("MORNING_AI_", "SCRAPECREATORS_", "BRAVE_", "EXA_", "GITHUB_", "YOUTUBE_", "DISCORD_", "AUTH_TOKEN", "CT0", "IMAGE_GEN_", "IMAGE_STYLE", "OPENAI_", "GEMINI_", "MINIMAX_", "SOCIAL_"))})
 
     return config
 

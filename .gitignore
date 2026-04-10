@@ -9,8 +9,13 @@ drafts/draft_*
 /report_*.md
 plan_*.md
 /data_*.json
+/social/
 data/leaderboard.db
 entities/custom/*.md
 !entities/custom-example.md
+skills/gen-social/templates/x/*.md
+!skills/gen-social/templates/x/insider.md
+skills/gen-social/templates/xiaohongshu/*.md
+!skills/gen-social/templates/xiaohongshu/educational.md
 docs/competitive-analysis.md
 .claude/

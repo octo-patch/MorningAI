@@ -109,14 +109,19 @@ Walk the user through setup interactively, waiting for their response at each st
 | `MINIMAX_API_KEY` | MiniMax global(https://www.minimax.io) |
 | `MINIMAX_API_KEY` | MiniMax cn (https://platform.minimaxi.com) |
 
-5. **Create the config file** — collect the keys the user provides and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`
-6. **Confirm** — show how many sources are now active (N/9)
-7. **Verify** — re-run the gate check to confirm `CONFIG_STATUS=READY`:
+5. **Ask about social content distribution** (optional):
+   - Enable social content generation? Set `SOCIAL_ENABLED=true`
+   - Which platforms? X (Twitter), Xiaohongshu (Little Red Book), or both
+   - For advanced multi-account/multi-style setup, create `~/.config/morning-ai/social_channels.json` (see `skills/gen-social/SKILL.md` for schema). For quick single-channel setup, just set `SOCIAL_PLATFORM`, `SOCIAL_STYLE`, and `SOCIAL_LANG` env vars.
+
+6. **Create the config file** — collect the keys the user provides and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`
+7. **Confirm** — show how many sources are now active (N/9)
+8. **Verify** — re-run the gate check to confirm `CONFIG_STATUS=READY`:
    ```bash
    if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || [ -f ".env" ]; then echo "CONFIG_STATUS=READY"; else echo "CONFIG_STATUS=MISSING"; fi
    ```
    Only proceed to Step 1 if the output is `READY`.
-8. If the user wants to skip API key setup and use only free sources, create a minimal config file first, then proceed to Step 1:
+9. If the user wants to skip API key setup and use only free sources, create a minimal config file first, then proceed to Step 1:
    ```bash
    mkdir -p ~/.config/morning-ai && echo "# morning-ai config — free sources only" > ~/.config/morning-ai/.env
    ```
@@ -260,6 +265,39 @@ For lower-score items (3-6), use compact table format. The Source column must co
 5. Insert images into the report:
    - Cover image at the beginning
    - Per-type images at the top of each type section
+
+---
+
+## Step 5: Generate Social Content (Optional)
+
+**Skip this step if `SOCIAL_ENABLED` is not `true` or no social channels are configured.**
+
+Generate platform-optimized copy and images for social media distribution (X, Xiaohongshu, etc.).
+
+1. Read the social content specification:
+   ```
+   Read {SKILL_DIR}/skills/gen-social/SKILL.md
+   ```
+
+2. Load channel configuration:
+   - If `SOCIAL_CHANNELS_FILE` exists → read the JSON channel list
+   - Else if `SOCIAL_PLATFORM` env var is set → build a single channel from `SOCIAL_PLATFORM` + `SOCIAL_STYLE` + `SOCIAL_LANG`
+   - Else → skip this step
+
+3. For each channel:
+   a. Read the channel's template: `{SKILL_DIR}/skills/gen-social/templates/{platform}/{style}.md`
+   b. Select top items from the report data (filter by `min_score`, limit by `items`, translate if `lang` differs from source)
+   c. Generate copy following the template's format rules, tone, and character limits
+   d. **Validate character counts** — each tweet ≤ 280 chars, Xiaohongshu title ≤ 20 chars, body ≤ 1000 chars
+   e. Write copy to `{CWD}/social/social_{YYYY-MM-DD}_{channel_id}.md`
+   f. If channel has `image: true` — generate platform-adapted images using the same providers as Step 4
+      - X: 16:9 or 1:1 aspect ratio
+      - Xiaohongshu: 3:4 portrait, carousel multi-image supported
+   g. Write images to `{CWD}/social/social_{YYYY-MM-DD}_{channel_id}_{N}.png`
+
+4. Write manifest to `{CWD}/social/social_{YYYY-MM-DD}_manifest.json` listing all generated files
+
+**Channel config examples**: See `skills/gen-social/SKILL.md` for the full JSON schema and quick-setup env vars.
 
 ---
 
