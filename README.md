@@ -18,6 +18,28 @@
 - **5 Infographic Styles** — `classic`, `dark`, `glassmorphism`, `newspaper`, `tech` — ready for social sharing
 - **Scheduled & Unattended** — Idempotent daily runs, no interactive prompts, partial success support
 
+## Sample Output
+
+Here's what a MorningAI daily report looks like — 26 updates scored, deduplicated, and verified across 9 sources in under 50 seconds:
+
+<details>
+<summary><b>TLDR — Today's 7+ Score Updates (click to expand)</b></summary>
+
+- **[Model] Anthropic - Claude 4.5 Sonnet released** (9.2): New mid-tier model with +18% SWE-Bench, 200K context, 40% faster output
+- **[Model] Google DeepMind - Gemini 2.5 Flash public preview** (8.8): 1M context, native multimodal, free tier on AI Studio
+- **[Product] Cursor - Background Agents GA** (8.5): Autonomous agents, cloud sandbox, multi-file refactoring
+- **[Model] DeepSeek - V3-0407 open-weight release** (8.3): 671B MoE, MIT license, weights on HuggingFace
+- **[Product] OpenAI - Codex CLI open-sourced** (8.0): Terminal agent, suggest/auto-edit/full-auto modes
+- **[Benchmark] LMSYS - Chatbot Arena April rankings** (7.5): Claude 4.5 Sonnet #2 overall, Gemini 2.5 Pro #1 coding
+- **[Product] GitHub - Copilot Coding Agent preview** (7.3): Autonomous agent on issues, creates PRs in sandbox
+- **[Funding] Windsurf - $200M Series C at $3B** (7.1): Largest round in coding tools space
+
+</details>
+
+> Full sample report: [samples/report_2026-04-08.md](samples/report_2026-04-08.md)
+> Raw data JSON: [samples/data_2026-04-08.json](samples/data_2026-04-08.json)
+> Infographic style previews: [docs/styles.md](docs/styles.md)
+
 ## How It Works
 
 ```

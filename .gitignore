@@ -6,10 +6,11 @@ __pycache__/
 env.local
 *.png
 drafts/draft_*
-report_*.md
+/report_*.md
 plan_*.md
-data_*.json
+/data_*.json
 data/leaderboard.db
 entities/custom/*.md
 !entities/custom-example.md
+docs/competitive-analysis.md
 .claude/

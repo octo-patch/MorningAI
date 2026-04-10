@@ -75,41 +75,41 @@ Select a visual style via `IMAGE_STYLE` config (default: `classic`). Insert the 
 ### `classic` — Clean Editorial Magazine
 
 ```
-Style: Clean editorial magazine layout. Off-white (#F5F5F0) background with subtle warm gray grid lines. Bold sans-serif header "AI News Daily" in black with a vivid accent color underline. Each card is a white rectangle with soft drop shadow (4px blur, 10% black), separated by generous whitespace. Use a refined accent palette: deep navy (#1A2744) for card titles, coral red (#E8553D) for score badges, muted teal (#2A9D8F) for bullet icons, slate gray (#4A5568) for body text. NO gradients, NO textures, NO background patterns — pure flat white space.
-Layout: Top row 1-2 large cards (60% height), bottom row 2-3 smaller cards. Cards aligned to a strict grid with equal gutters (24px). Score badge as a bold colored pill in top-right corner of each card.
-Card design: Card title in 18pt bold navy sans-serif, subtitle in 12pt gray italic. Bullet points with small teal dot markers, 14pt regular weight. Thin 1px light gray top-border on each card for subtle separation. NO icons, NO illustrations, NO decorative elements inside cards — text only with strong typographic hierarchy.
+Style: Clean editorial magazine layout. Off-white (#F5F5F0) background with subtle warm gray grid lines. Bold sans-serif header "AI News Daily" in black with a vivid accent color underline. Each card is a white rectangle with soft drop shadow (4px blur, 10% black), separated by generous whitespace. Use a refined accent palette: deep navy (#1A2744) for card titles, muted teal (#2A9D8F) for bullet icons, slate gray (#4A5568) for body text. NO gradients, NO textures, NO background patterns — pure flat white space.
+Layout: Cards arranged in a balanced grid with equal gutters (24px). Maximize space for card content (titles and bullet points). Do NOT display score numbers or score badges — let card size and content density convey importance.
+Card design: Card title in 18pt bold navy sans-serif, subtitle in 12pt gray italic. Bullet points with small teal dot markers, 14pt regular weight. Thin 1px light gray top-border on each card for subtle separation. NO icons, NO illustrations, NO decorative elements inside cards — text only with strong typographic hierarchy. Prioritize readable text and generous line spacing.
 ```
 
 ### `dark` — Dark Mode
 
 ```
-Style: Dark mode editorial layout. Deep charcoal (#1A1A2E) background. Bold sans-serif header "AI News Daily" in white (#FAFAFA) with electric blue (#00D4FF) accent underline. Each card is a dark slate (#16213E) rectangle with subtle 1px border in muted blue (#0F3460), separated by generous spacing. Accent palette: white (#FAFAFA) for card titles, electric blue (#00D4FF) for score badges, soft violet (#7B68EE) for bullet icons, light gray (#B0BEC5) for body text. NO gradients, NO glow effects — clean flat dark surfaces.
-Layout: Top row 1-2 large cards (60% height), bottom row 2-3 smaller cards. Cards aligned to a strict grid with equal gutters (24px). Score badge as a bold colored pill in top-right corner of each card.
-Card design: Card title in 18pt bold white sans-serif, subtitle in 12pt light gray italic. Bullet points with small violet dot markers, 14pt regular weight. Thin 1px muted blue top-border on each card. NO icons, NO illustrations — text only with strong typographic hierarchy on dark background.
+Style: Dark mode editorial layout. Deep charcoal (#1A1A2E) background. Bold sans-serif header "AI News Daily" in white (#FAFAFA) with electric blue (#00D4FF) accent underline. Each card is a dark slate (#16213E) rectangle with subtle 1px border in muted blue (#0F3460), separated by generous spacing. Accent palette: white (#FAFAFA) for card titles, soft violet (#7B68EE) for bullet icons, light gray (#B0BEC5) for body text. NO gradients, NO glow effects — clean flat dark surfaces.
+Layout: Cards arranged in a balanced grid with equal gutters (24px). Maximize space for card content (titles and bullet points). Do NOT display score numbers or score badges — let card size and content density convey importance.
+Card design: Card title in 18pt bold white sans-serif, subtitle in 12pt light gray italic. Bullet points with small violet dot markers, 14pt regular weight. Thin 1px muted blue top-border on each card. NO icons, NO illustrations — text only with strong typographic hierarchy on dark background. Prioritize readable text and generous line spacing.
 ```
 
 ### `glassmorphism` — Frosted Glass
 
 ```
-Style: Glassmorphism editorial layout. Soft gradient background blending from lavender (#E8EAF6) top-left to pale rose (#FCE4EC) bottom-right. Bold sans-serif header "AI News Daily" in dark charcoal (#212121) with warm coral (#FF6B6B) accent underline. Each card is a semi-transparent frosted white panel (rgba(255,255,255,0.65)) with backdrop blur effect, rounded corners (16px), and subtle white border (1px, 30% opacity). Accent palette: charcoal (#212121) for card titles, warm coral (#FF6B6B) for score badges, soft indigo (#5C6BC0) for bullet icons, medium gray (#546E7A) for body text. Soft diffused shadows (8px blur, 5% black) behind each card.
-Layout: Top row 1-2 large cards (60% height), bottom row 2-3 smaller cards. Cards aligned to a grid with generous gutters (28px). Score badge as a rounded pill with slight glass effect in top-right corner.
-Card design: Card title in 18pt bold charcoal sans-serif, subtitle in 12pt gray italic. Bullet points with small indigo dot markers, 14pt regular weight. NO hard borders — rely on frosted glass contrast for separation. Clean, airy, modern feel.
+Style: Glassmorphism editorial layout. Soft gradient background blending from lavender (#E8EAF6) top-left to pale rose (#FCE4EC) bottom-right. Bold sans-serif header "AI News Daily" in dark charcoal (#212121) with warm coral (#FF6B6B) accent underline. Each card is a semi-transparent frosted white panel (rgba(255,255,255,0.65)) with backdrop blur effect, rounded corners (16px), and subtle white border (1px, 30% opacity). Accent palette: charcoal (#212121) for card titles, soft indigo (#5C6BC0) for bullet icons, medium gray (#546E7A) for body text. Soft diffused shadows (8px blur, 5% black) behind each card.
+Layout: Cards arranged in a balanced grid with generous gutters (28px). Maximize space for card content (titles and bullet points). Do NOT display score numbers or score badges — let card size and content density convey importance.
+Card design: Card title in 18pt bold charcoal sans-serif, subtitle in 12pt gray italic. Bullet points with small indigo dot markers, 14pt regular weight. NO hard borders — rely on frosted glass contrast for separation. Clean, airy, modern feel. Prioritize readable text and generous line spacing.
 ```
 
 ### `newspaper` — Classic Newsprint
 
 ```
-Style: Classic newspaper editorial layout. Warm cream (#FFF8E7) background with very faint paper texture grain. Bold serif header "AI News Daily" in deep black (#1A1A1A) with crimson red (#B71C1C) thin rule line below. Each card is separated by thin black hairline rules (1px) — NO card backgrounds, NO shadows, NO boxes. Content flows in a column-based newspaper grid. Accent palette: deep black (#1A1A1A) for card titles in bold serif, crimson (#B71C1C) for score indicators as small circled numbers, dark gray (#333333) for bullet text in serif, medium gray (#666666) for subtitles in italic serif.
-Layout: Multi-column newspaper grid (2-3 columns). Large stories span full width at top, smaller stories in side-by-side columns below. Separated by horizontal and vertical hairline rules. NO cards, NO boxes — pure typographic layout.
-Card design: Card title in 18pt bold black serif, subtitle in 12pt gray italic serif. Bullet points with small em-dash markers, 14pt regular serif weight. Dateline-style score indicator. Feels like the front page of a prestigious broadsheet.
+Style: Classic newspaper editorial layout. Warm cream (#FFF8E7) background with very faint paper texture grain. Bold serif header "AI News Daily" in deep black (#1A1A1A) with crimson red (#B71C1C) thin rule line below. Each card is separated by thin black hairline rules (1px) — NO card backgrounds, NO shadows, NO boxes. Content flows in a column-based newspaper grid. Accent palette: deep black (#1A1A1A) for card titles in bold serif, dark gray (#333333) for bullet text in serif, medium gray (#666666) for subtitles in italic serif.
+Layout: Multi-column newspaper grid (2-3 columns). Large stories span full width at top, smaller stories in side-by-side columns below. Separated by horizontal and vertical hairline rules. NO cards, NO boxes — pure typographic layout. Do NOT display score numbers or score indicators — let column placement and headline size convey importance.
+Card design: Card title in 18pt bold black serif, subtitle in 12pt gray italic serif. Bullet points with small em-dash markers, 14pt regular serif weight. Feels like the front page of a prestigious broadsheet. Prioritize readable text and generous line spacing.
 ```
 
 ### `tech` — Terminal / Hacker
 
 ```
-Style: Tech terminal aesthetic layout. Near-black background (#0D1117) with very faint dot grid pattern (8px spacing, 5% white). Bold monospace header "AI News Daily" in bright cyan (#00FFCC) with a blinking cursor underscore effect. Each card is a dark panel (#161B22) with 1px border in dim cyan (#1A3A3A), rounded corners (4px). Accent palette: bright green (#39FF14) for card titles in monospace bold, electric cyan (#00FFCC) for score badges formatted as `[8.5]`, amber (#FFB000) for bullet markers as `>` symbols, light gray (#C9D1D9) for body text in monospace. Each card has a subtle top-left label like `// MODEL` or `// PRODUCT` in dim green (#1A4A1A).
-Layout: Top row 1-2 large cards (60% height), bottom row 2-3 smaller cards. Cards aligned to a strict grid with equal gutters (16px). Compact spacing, information-dense.
-Card design: Card title in 16pt bold green monospace, subtitle in 11pt gray monospace. Bullet points with amber `>` markers, 13pt regular monospace. Thin 1px dim cyan border. Feels like a developer dashboard or terminal readout.
+Style: Tech terminal aesthetic layout. Near-black background (#0D1117) with very faint dot grid pattern (8px spacing, 5% white). Bold monospace header "AI News Daily" in bright cyan (#00FFCC) with a blinking cursor underscore effect. Each card is a dark panel (#161B22) with 1px border in dim cyan (#1A3A3A), rounded corners (4px). Accent palette: bright green (#39FF14) for card titles in monospace bold, amber (#FFB000) for bullet markers as `>` symbols, light gray (#C9D1D9) for body text in monospace. Each card has a subtle top-left label like `// MODEL` or `// PRODUCT` in dim green (#1A4A1A).
+Layout: Cards arranged in a balanced grid with equal gutters (16px). Compact spacing, information-dense. Maximize space for card content (titles and bullet points). Do NOT display score numbers or score badges — let card size and content density convey importance.
+Card design: Card title in 16pt bold green monospace, subtitle in 11pt gray monospace. Bullet points with amber `>` markers, 13pt regular monospace. Thin 1px dim cyan border. Feels like a developer dashboard or terminal readout. Prioritize readable text and generous line spacing.
 ```
 
 ---
@@ -141,8 +141,10 @@ CRITICAL RULES:
 - Each card title MUST include: Entity name + Event subject + Event description
 - Display complete titles, do NOT truncate
 - Do NOT display any labels like [MAJOR], [MINOR], or importance markers
+- Do NOT display score numbers, score badges, or any numerical ratings on the image
 - Do NOT invent items not listed
 - Display ALL bullet points for each card
+- Maximize content area — card titles and bullet points are the primary focus
 - If fewer than 4 items, use more whitespace and decorative elements
 
 {STYLE_BLOCK}
@@ -190,8 +192,10 @@ CRITICAL RULES:
 - Each card title MUST include: Entity name + Event subject + Event description
 - Display complete titles, do NOT truncate
 - Do NOT display any labels like [MAJOR], [MINOR], or importance markers
+- Do NOT display score numbers, score badges, or any numerical ratings on the image
 - Do NOT invent items not listed
 - Display ALL bullet points for each card
+- Maximize content area — card titles and bullet points are the primary focus
 - If fewer than 3 items, use more whitespace and decorative elements
 
 {STYLE_BLOCK}
@@ -228,8 +232,10 @@ CRITICAL RULES:
 - Each card title MUST include: Entity name + Event subject + Event description
 - Display complete titles, do NOT truncate
 - Do NOT display any labels like [MAJOR], [MINOR], or importance markers
+- Do NOT display score numbers, score badges, or any numerical ratings on the image
 - Do NOT invent items not listed
 - Display ALL bullet points for each card
+- Maximize content area — card titles and bullet points are the primary focus
 
 {STYLE_BLOCK}
 ```
@@ -264,7 +270,9 @@ CRITICAL RULES:
 - Each card title MUST include: Entity name + Event subject + Event description
 - Use generous whitespace — do NOT compress cards to fill space
 - If only 1-2 types have items, center content vertically
+- Do NOT display score numbers, score badges, or any numerical ratings on the image
 - Do NOT invent items not listed
+- Maximize content area — card titles and bullet points are the primary focus
 
 {STYLE_BLOCK}
 ```
@@ -356,6 +364,7 @@ For each generated image:
 - Check if titles are truncated
 - Confirm no unprovided content
 - Confirm no `[MAJOR]`, `[MINOR]` or similar labels displayed
+- Confirm no score numbers or score badges are displayed
 - If issues found, regenerate or manually correct
 
 ### 5. Insert into Report
