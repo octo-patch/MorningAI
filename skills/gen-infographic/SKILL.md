@@ -260,21 +260,20 @@ Image generation always produces a **single combined long image** as the final o
 ### Sparse Strategy
 
 - Use the **Combined Prompt Template**
-- Set `"aspect_ratio": "9:16"` in manifest
 - Single image, no stitching needed
 - Output: `news_infographic_YYYY-MM-DD_combined.png`
 
 ### Normal Strategy (default)
 
-- **Cover**: Cover Prompt Template, aspect `"9:16"`
-- **Sections**: Per-Type Prompt Template with `"aspect_ratio": "9:16"` — use "{Type} Updates" as header instead of "AI News Daily"
+- **Cover**: Cover Prompt Template
+- **Sections**: Per-Type Prompt Template — use "{Type} Updates" as header instead of "AI News Daily"
 - Automatically stitch into a single long image
 - Manifest example:
   ```json
   [
-    {"prompt": "<cover prompt>", "output": "news_infographic_YYYY-MM-DD.png", "aspect_ratio": "9:16"},
-    {"prompt": "<model section>", "output": "news_infographic_YYYY-MM-DD_model.png", "aspect_ratio": "9:16"},
-    {"prompt": "<product section>", "output": "news_infographic_YYYY-MM-DD_product.png", "aspect_ratio": "9:16"}
+    {"prompt": "<cover prompt>", "output": "news_infographic_YYYY-MM-DD.png"},
+    {"prompt": "<model section>", "output": "news_infographic_YYYY-MM-DD_model.png"},
+    {"prompt": "<product section>", "output": "news_infographic_YYYY-MM-DD_product.png"}
   ]
   ```
 
@@ -300,7 +299,7 @@ cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --ba
 ```bash
 cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
 ```
-> Use the Combined Prompt Template with `"aspect_ratio": "9:16"` in manifest. No stitching needed.
+> Use the Combined Prompt Template. No stitching needed.
 
 ### 4. Post-generation Verification (required)
 
