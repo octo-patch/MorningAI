@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.3] - 2026-04-13
+
+### Breaking Changes
+- **Removed YouTube, Discord, and ScrapeCreators data sources**: Streamlined to 5 automated sources (Reddit, HN, GitHub, HuggingFace, arXiv) + agent-driven X/Twitter search
+- **X/Twitter switched to agent web search**: No API key needed — X updates are now discovered via agent web search instead of dedicated collectors
+
+### Improvements
+- **Default to long image mode**: Infographics now generate as stitched long images by default
+- **Unified 9:16 portrait format**: All infographic images (cover + sections) use consistent 9:16 portrait aspect ratio
+- **English as default report language**: Reports are now written in English by default unless `--lang` is specified
+- **Cleaned up manifest examples**: Removed redundant `aspect_ratio` field from image generation manifests
+- **Simplified tool compatibility docs**: Removed references to Amp and Jules; updated GitHub token prefix example
+
 ## [1.1.2] - 2026-04-13
 
 ### Improvements

@@ -95,9 +95,9 @@ Or install as a skill:
 git clone https://github.com/octo-patch/MorningAI.git ~/.agents/skills/morning-ai
 ```
 
-### Other Tools (Cursor, Amp, Jules, etc.)
+### Other Tools (Cursor, etc.)
 
-`AGENTS.md` at the repo root is an open standard recognized by Codex, Cursor, Amp, Jules, and more. Clone the repo and the tool will auto-discover it.
+`AGENTS.md` at the repo root is an open standard recognized by Codex, Cursor and more. Clone the repo and the tool will auto-discover it.
 
 ### Manual (any tool)
 
@@ -111,10 +111,10 @@ cd MorningAI
 Create a config file at `~/.config/morning-ai/.env`:
 
 ```env
-GITHUB_TOKEN=ghp_xxx               # GitHub (optional, higher rate limits)
+GITHUB_TOKEN=gh_xxx               # GitHub (optional, higher rate limits)
 ```
 
-Without any API keys, all sources work out of the box: **Reddit**, **Hacker News**, **GitHub**, **HuggingFace**, **arXiv**, and **X/Twitter** (via agent web search).
+Without any API keys, all sources work out of the box: **Reddit**, **Hacker News**, **GitHub**, **HuggingFace**, **arXiv**, and **X/Twitter**.
 
 ## Custom Entity Watchlist
 
