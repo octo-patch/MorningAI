@@ -301,9 +301,20 @@ Timeliness Check:
 | **Score** | X.X |
 
 **Summary**:
-- Key point 1
+- Key point 1 (include specific details: version numbers, parameter counts, percentage improvements, pricing, availability)
 - Key point 2
 - Key point 3
+- (add more bullet points as needed to cover all important details)
+
+**Why It Matters** (required for 7+ scores):
+> 1-2 sentence analysis of industry impact, competitive significance, or user implications. Explain what this changes for the industry or end users — don't just restate what happened.
+
+**Key Data** (optional — include when quantitative metrics are available):
+| Metric | Value |
+|--------|-------|
+| e.g. Benchmark score | e.g. 92.3% (+5.1%) |
+| e.g. Parameters | e.g. 671B total / 37B active |
+| e.g. Pricing | e.g. $3/M input, $15/M output |
 
 **Multi-source Verification** (required for 7+):
 - [Source 1](URL)
@@ -330,7 +341,7 @@ Timeliness Check:
 > One-sentence description of the paper's core innovation
 
 **Research Significance**:
-> Who is impacted? What has changed?
+> Who is impacted? What has changed? What does this enable that wasn't possible before? Include concrete implications for practitioners or downstream applications.
 
 **Key Data**:
 | Metric | Value |

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2] - 2026-04-13
+
+### Improvements
+- **Richer report detail for high-score items (7+)**: Added required "Why It Matters" analysis section and optional "Key Data" metrics table to record format
+- **Enhanced mid-score items (5-6)**: Upgraded from one-line summaries to two-line format with concrete details, numbers, and source links
+- **More informative TLDR**: Each TLDR entry now includes an Impact line explaining industry significance
+- **Detail quality rule**: Summary bullet points now explicitly require specific numbers (versions, benchmarks, pricing, parameters) instead of vague descriptions
+
 ## [1.1.1] - 2026-04-10
 
 ### New Features

@@ -15,7 +15,8 @@
 > Today's important updates with 7+ scores (across all types)
 
 <!-- List by score from high to low for all 7+ updates, format:
-- **[Type] Entity name - Event description** (X.X points): One-line summary [[Source](URL)]
+- **[Type] Entity name - Event description** (X.X points): One-line summary with specific details (numbers, versions, capabilities).
+  _Impact: One sentence explaining why this matters — competitive context, industry significance, or user implications._ [[Source](URL)]
 Every TLDR item MUST include at least one source link so readers can click through to the original.
 -->
 
@@ -27,15 +28,28 @@ Every TLDR item MUST include at least one source link so readers can click throu
 
 ### Major Releases (9-10 Scores)
 
-<!-- List in tracking-list format -->
+<!-- List in tracking-list format. Each item MUST include:
+     - Summary with 3+ specific bullet points (include numbers, versions, benchmarks, pricing)
+     - "Why It Matters" analysis paragraph (industry impact, competitive context)
+     - "Key Data" table when quantitative metrics are available (benchmark scores, parameters, pricing, performance comparisons)
+     - Multi-source verification
+-->
 
 ### Important Updates (7-8 Scores)
 
-<!-- List in tracking-list format -->
+<!-- List in tracking-list format. Each item MUST include:
+     - Summary with 3+ specific bullet points
+     - "Why It Matters" analysis paragraph
+     - "Key Data" table when applicable
+     - Multi-source verification
+-->
 
 ### Regular Updates (5-6 Scores)
 
-<!-- Brief format -->
+<!-- Two-line format per item with concrete details:
+- **Entity** (X.X): Event description with specifics (version, capability, metric).
+  Detail: additional context — what changed, key numbers, comparison with previous version or competitors. Source: [Name](URL)
+-->
 
 ### Minor Updates (3-4 Scores)
 
@@ -52,9 +66,18 @@ Every TLDR item MUST include at least one source link so readers can click throu
 
 ### Major Updates (9-10 Scores)
 
+<!-- List in tracking-list format with full detail: Summary (3+ bullets), Why It Matters, Key Data table, multi-source verification -->
+
 ### Important Updates (7-8 Scores)
 
+<!-- List in tracking-list format with full detail: Summary (3+ bullets), Why It Matters, Key Data table (if applicable), multi-source verification -->
+
 ### Regular Updates (5-6 Scores)
+
+<!-- Two-line format per item with concrete details:
+- **Product** (X.X): Event description with specifics (version, capability, metric).
+  Detail: additional context — what changed, key numbers, comparison with previous version or competitors. Source: [Name](URL)
+-->
 
 ### Minor Updates (3-4 Scores)
 
@@ -71,11 +94,22 @@ Every TLDR item MUST include at least one source link so readers can click throu
 
 ### Major Benchmarks (7+ Scores)
 
+<!-- List in tracking-list format with full detail: Summary (3+ bullets), Why It Matters, Key Data table, multi-source verification -->
+
 ### Academic Papers
 
-<!-- Use academic paper record format -->
+<!-- Use academic paper record format. Each paper MUST include:
+     - Core Innovation (one sentence)
+     - Research Significance (who is impacted, what does this enable)
+     - Key Data table (metrics, benchmark results, comparisons)
+-->
 
 ### Regular Benchmarks (5-6 Scores)
+
+<!-- Two-line format per item:
+- **Entity** (X.X): Event description with specifics.
+  Detail: what changed in the ranking/results, key numbers. Source: [Name](URL)
+-->
 
 ---
 
@@ -84,6 +118,8 @@ Every TLDR item MUST include at least one source link so readers can click throu
 <!-- Insert type image if generated: ![Funding Updates](news_infographic_{DATE}_funding.png) -->
 
 ### Major Events (7+ Scores)
+
+<!-- List in tracking-list format with full detail: Summary (3+ bullets), Why It Matters (competitive/strategic context), Key Data table (amount, valuation, investors), multi-source verification -->
 
 ### Regular Events
 

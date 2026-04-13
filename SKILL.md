@@ -1,6 +1,6 @@
 ---
 name: morning-ai
-version: "1.1.1"
+version: "1.1.2"
 description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 8 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
 argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *"'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
@@ -195,9 +195,10 @@ This specification defines:
 **Report generation rules:**
 - **Language**: Write all content in the target language (default: English). If source data is in a different language, translate it. Entity names (proper nouns) stay as-is.
 - **Source links**: Every item in the report MUST include a clickable source link `[Source Name](URL)` pointing to the original content. This applies to all sections: TLDR items, high-score detailed entries, and compact table rows. Readers must be able to click through to the original source for every item.
+- **Detail quality**: Summary bullet points must include specific details — version numbers, percentage improvements, parameter counts, pricing, availability dates, benchmark scores. Avoid vague descriptions like "improved performance" or "major update" without concrete numbers or specifics.
 - Filter out any excluded types (if `--exclude` was specified)
 - Sort items by score within each type section
-- **TLDR section**: Only items with score 7+ (across all types), sorted high to low. Each item must include a source link `[[Source](URL)]` at the end.
+- **TLDR section**: Only items with score 7+ (across all types), sorted high to low. Each item includes a one-line summary with specifics, plus an _Impact_ sentence explaining why it matters. Must include a source link `[[Source](URL)]` at the end.
 - **Type sections**: Group by score range (9-10 / 7-8 / 5-6 / 3-4)
 - For items with score 7+, include multi-source verification if available
 - Use the record format from the tracking specification
@@ -217,12 +218,28 @@ For high-score items (7+):
 | **Source** | [Source Name](URL) |
 
 **Summary:**
-- Key point 1
+- Key point 1 (with specific numbers, versions, or metrics)
 - Key point 2
 - Key point 3
+- (more as needed)
+
+**Why It Matters:**
+> 1-2 sentence analysis: industry impact, competitive significance, or what this changes for end users. Don't restate the summary — explain the implications.
+
+**Key Data** (include when quantitative metrics are available):
+| Metric | Value |
+|--------|-------|
+| e.g. Benchmark | e.g. 92.3% (+5.1% vs previous) |
+| e.g. Parameters | e.g. 671B total / 37B active |
 ```
 
-For lower-score items (3-6), use compact table format. The Source column must contain clickable `[Name](URL)` links.
+For mid-score items (5-6), use two-line format with concrete details:
+```markdown
+- **Entity** (X.X): Event description with specifics (version, capability, metric).
+  Detail: additional context — what changed, key numbers, comparison with previous version or competitors. Source: [Name](URL)
+```
+
+For lower-score items (3-4), use compact table format. The Source column must contain clickable `[Name](URL)` links.
 
 ---
 
