@@ -198,6 +198,7 @@ This specification defines:
 - **Language**: Default is **English**. Write ALL content in English unless `--lang` is explicitly specified. If source data is in a different language, translate it. Entity names (proper nouns) stay as-is.
 - **Source links**: Every item in the report MUST include a clickable source link `[Source Name](URL)` pointing to the original content. This applies to all sections: TLDR items, high-score detailed entries, and compact table rows. Readers must be able to click through to the original source for every item.
 - **Detail quality**: Summary bullet points must include specific details — version numbers, percentage improvements, parameter counts, pricing, availability dates, benchmark scores. Avoid vague descriptions like "improved performance" or "major update" without concrete numbers or specifics.
+- **Factual verification (CRITICAL)**: Every specific number (parameter count, benchmark score, pricing, context length, version number, funding amount) MUST be verified from an authoritative primary source (HuggingFace model card, official blog, changelog, benchmark site, etc.) before inclusion. **Never write a number from memory or inference** — if the detail cannot be confirmed from the collected source data, OMIT it rather than guess. An absent detail is always better than a wrong one. See `skills/tracking-list/SKILL.md` → "Factual Detail Verification" for the full protocol.
 - Filter out any excluded types (if `--exclude` was specified)
 - Sort items by score within each type section
 

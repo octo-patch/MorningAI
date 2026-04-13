@@ -106,11 +106,39 @@ Major funding, acquisitions/mergers, strategic partnerships, milestone events.
 | 9 | Opinion Leaders/KOL | Reference | Must trace to official channel for confirmation |
 | 10 | Industry Media | Reference | For lead discovery only, must trace to source |
 
+### Factual Detail Verification (CRITICAL)
+
+> **Core Rule: Every specific number or technical detail in the report MUST be traceable to an authoritative primary source. Never infer, extrapolate, or "fill in" details from memory or general knowledge.**
+
+Specific details that **MUST** be verified from primary sources before inclusion:
+
+| Detail Type | Authoritative Source | Example Error |
+|-------------|---------------------|---------------|
+| **Model parameter count** | HuggingFace model card, official blog/paper | Writing "456B" when the actual size is "480B" |
+| **Model architecture** (MoE active params, layers) | HuggingFace model card, technical report | Guessing active parameter count |
+| **Benchmark scores** | Original benchmark site, official eval results | Citing an approximate score from memory |
+| **Version numbers** | Official changelog, release notes, GitHub Release | Writing "v2.1" when the actual release is "v2.0" |
+| **Pricing** | Official pricing page, API docs | Using outdated or incorrect price points |
+| **Context window size** | Official documentation, model card | Confusing context lengths between model versions |
+| **Release/availability dates** | Official announcement | Guessing a date based on general timeline |
+| **Funding amounts & valuations** | Official press release, Crunchbase | Rounding or estimating funding figures |
+| **User counts / milestones** | Official announcement, company blog | Using outdated user statistics |
+| **Training data details** | Technical report, model card | Speculating about training data composition |
+
+**Verification protocol:**
+1. **Check the primary source first** — For models: read the HuggingFace model card or official blog. For products: read the changelog/release notes. For benchmarks: check the benchmark site.
+2. **If a detail cannot be verified** — **OMIT it entirely** rather than guessing. Write "parameters not yet disclosed" or simply leave the metric out of the Key Data table. An absent detail is always better than a wrong one.
+3. **Never rely on your training data for specific numbers** — Model knowledge may be outdated, conflated between similar models, or simply wrong. Always verify against a live source.
+4. **Cross-check confusable details** — Many model families have similar names with different specs (e.g., Qwen2.5-72B vs Qwen3-235B). Verify that the number matches the *exact* model version being discussed.
+5. **Flag uncertainty explicitly** — If a source gives conflicting numbers (e.g., blog says one thing, model card says another), note the discrepancy rather than picking one silently.
+
 ### Prohibited Actions
 
 - Using news sites as primary source (for lead discovery only)
 - Using search results as main information source
 - Including secondary source information without tracing verification
+- **Writing specific numbers (parameter counts, benchmark scores, pricing, etc.) without verifying from an authoritative primary source**
+- **Filling in technical details from model memory/training data instead of checking the actual source**
 
 ### Cross-verification Rules
 
