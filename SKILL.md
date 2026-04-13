@@ -130,10 +130,10 @@ Walk the user through setup interactively, waiting for their response at each st
 | `--lang` | `en` (English) | `--lang zh` (Chinese), `--lang ja` (Japanese) |
 
 **Rules:**
-- **Default is English.** All report text — titles, summaries, section headers, table labels, and bullet points — must be written in English unless `--lang` is specified.
+- **Default is English. Unless `--lang` is explicitly specified, the report MUST be written entirely in English.** All report text — titles, summaries, section headers, table labels, bullet points, "Why It Matters" analysis, and all other human-readable content — must be in English.
 - If `--lang` is specified, use that language for all human-readable content instead.
 - **Entity names are proper nouns** (OpenAI, DeepSeek, Midjourney, etc.) — keep them as-is regardless of language.
-- When source data is in a different language than the target, **translate it** into the target language during report generation.
+- When source data is in a different language than the target (e.g. Chinese source → English report), **translate it** into the target language during report generation. Do NOT leave untranslated fragments.
 - The `--lang` setting also applies to infographic prompt content (see Step 4).
 
 ---
@@ -193,11 +193,44 @@ This specification defines:
 3. Generate `report_{YYYY-MM-DD}.md` in the working directory
 
 **Report generation rules:**
-- **Language**: Write all content in the target language (default: English). If source data is in a different language, translate it. Entity names (proper nouns) stay as-is.
+- **Language**: Default is **English**. Write ALL content in English unless `--lang` is explicitly specified. If source data is in a different language, translate it. Entity names (proper nouns) stay as-is.
 - **Source links**: Every item in the report MUST include a clickable source link `[Source Name](URL)` pointing to the original content. This applies to all sections: TLDR items, high-score detailed entries, and compact table rows. Readers must be able to click through to the original source for every item.
 - **Detail quality**: Summary bullet points must include specific details — version numbers, percentage improvements, parameter counts, pricing, availability dates, benchmark scores. Avoid vague descriptions like "improved performance" or "major update" without concrete numbers or specifics.
 - Filter out any excluded types (if `--exclude` was specified)
 - Sort items by score within each type section
+
+### Report Detail Level Requirements
+
+Write reports as **detailed and comprehensive as possible**. Each item should have enough bullet points to cover all important aspects of the news.
+
+**Bullet point count by score:**
+
+| Score | Min Bullet Points | Content Depth |
+|-------|------------------|---------------|
+| **9-10** | 5-8 points | Exhaustive coverage: what, why, how, technical specs, competitive context, availability, pricing, ecosystem impact |
+| **7-8** | 4-6 points | Thorough coverage: what happened, key specs/numbers, why it matters, who's affected, timeline |
+| **5-6** | 3-4 points | Solid coverage: what changed, key numbers, context |
+| **3-4** | 1-2 points | Brief but specific: what changed, one key detail |
+
+**Each bullet point must be substantive** — include at least one of:
+- Specific numbers (benchmarks, parameters, pricing, performance gains)
+- Named comparisons (vs. competitor X, vs. previous version Y)
+- Concrete capabilities (what users can now do)
+- Dates/timelines (when available, when rolling out)
+- Technical details (architecture, training data, methods)
+
+**"Why It Matters" section** (required for 7+ scores):
+- Must be **analytical, not descriptive** — explain implications, not just restate facts
+- Include competitive context (how this positions the company vs rivals)
+- Include user/industry impact (what changes for practitioners, researchers, or end users)
+- 2-4 sentences for 9-10 scores, 1-2 sentences for 7-8 scores
+
+**"Key Data" table** (required for 7+ scores when quantitative data exists):
+- Include benchmark scores with delta vs previous/competitor
+- Include pricing with comparison
+- Include model specs (parameters, context length, modalities)
+- Include business metrics (funding amount, valuation, user count)
+
 - **TLDR section**: Only items with score 7+ (across all types), sorted high to low. Each item includes a one-line summary with specifics, plus an _Impact_ sentence explaining why it matters. Must include a source link `[[Source](URL)]` at the end.
 - **Type sections**: Group by score range (9-10 / 7-8 / 5-6 / 3-4)
 - For items with score 7+, include multi-source verification if available
@@ -206,7 +239,7 @@ This specification defines:
 
 **Item format in report:**
 
-For high-score items (7+):
+For top-score items (9-10):
 ```markdown
 ### {Entity} - {Event description}
 
@@ -219,24 +252,58 @@ For high-score items (7+):
 
 **Summary:**
 - Key point 1 (with specific numbers, versions, or metrics)
-- Key point 2
-- Key point 3
-- (more as needed)
+- Key point 2 (competitive comparison or positioning)
+- Key point 3 (technical specs or architecture details)
+- Key point 4 (availability, pricing, or rollout timeline)
+- Key point 5 (ecosystem impact or integration details)
+- (5-8 bullet points total — cover all important aspects exhaustively)
 
 **Why It Matters:**
-> 1-2 sentence analysis: industry impact, competitive significance, or what this changes for end users. Don't restate the summary — explain the implications.
+> 2-4 sentence analysis: industry impact, competitive significance, and what this changes for end users. Don't restate the summary — explain the implications and strategic context.
+
+**Key Data** (required when quantitative metrics are available):
+| Metric | Value |
+|--------|-------|
+| e.g. Benchmark | e.g. 92.3% (+5.1% vs previous) |
+| e.g. Parameters | e.g. 671B total / 37B active |
+| e.g. Pricing | e.g. $3/M input, $15/M output |
+| e.g. Context | e.g. 1M tokens (+4x vs v3) |
+```
+
+For important items (7-8):
+```markdown
+### {Entity} - {Event description}
+
+| Field | Value |
+|-------|-------|
+| **Type** | Product / Model / Benchmark / Funding |
+| **Score** | X.X |
+| **Published** | YYYY-MM-DD HH:MM UTC+8 |
+| **Source** | [Source Name](URL) |
+
+**Summary:**
+- Key point 1 (with specific numbers, versions, or metrics)
+- Key point 2 (what changed and why)
+- Key point 3 (who's affected and how)
+- Key point 4 (technical or business details)
+- (4-6 bullet points total)
+
+**Why It Matters:**
+> 1-2 sentence analysis: industry impact, competitive significance, or what this changes for end users.
 
 **Key Data** (include when quantitative metrics are available):
 | Metric | Value |
 |--------|-------|
 | e.g. Benchmark | e.g. 92.3% (+5.1% vs previous) |
-| e.g. Parameters | e.g. 671B total / 37B active |
 ```
 
-For mid-score items (5-6), use two-line format with concrete details:
+For mid-score items (5-6), use multi-line format with 3-4 concrete points:
 ```markdown
 - **Entity** (X.X): Event description with specifics (version, capability, metric).
-  Detail: additional context — what changed, key numbers, comparison with previous version or competitors. Source: [Name](URL)
+  - Detail 1: what changed, key numbers, comparison with previous version or competitors
+  - Detail 2: additional context, availability, or technical specifics
+  - Detail 3: implications or notable aspects
+  Source: [Name](URL)
 ```
 
 For lower-score items (3-4), use compact table format. The Source column must contain clickable `[Name](URL)` links.
@@ -252,31 +319,33 @@ For lower-score items (3-4), use compact table format. The Source column must co
    Read {SKILL_DIR}/skills/gen-infographic/SKILL.md
    ```
 
-2. **Cover image**: Sort by score and select the **top 4-5** updates (across all types). Build prompt using the Cover Prompt Template.
+2. **Determine strategy** based on qualifying item count (see **Default Image Strategy** in `skills/gen-infographic/SKILL.md`):
+   - **Sparse** (≤ 8 qualifying items): Generate a single combined 9:16 portrait image
+   - **Normal** (> 8 qualifying items): Generate cover (16:9) + per-type section images (9:16), then stitch into one long image
 
-3. **Per-type images**: For each type (Model/Product/Benchmark/Funding), check if it has 7+ score items. If yes, build a prompt using the Per-Type Prompt Template.
+3. **Cover image**: Sort by score and select the **top 4-5** updates (across all types). Build prompt using the Cover Prompt Template.
+
+4. **Per-type section images**: For each type (Model/Product/Benchmark/Funding) with 7+ score items, build a prompt using the **Section Prompt Template** (9:16, omits top branding).
    - Default (`IMAGE_GEN_TYPES=auto`): only types with 7+ score items
    - Set `IMAGE_GEN_TYPES=all` for all types, `none` for cover only
 
-4. Generate 16:9 landscape images using one of:
+5. Generate images and stitch:
 
    **Option A** — Native tool (Claude Code or other tools with built-in image generation):
-   Use your tool's built-in image generation capability (e.g. `gen_images`), one call per image.
+   Use your tool's built-in image generation capability, one call per image. Then stitch sections together.
 
    **Option B** — Python script batch mode (any environment, requires `IMAGE_GEN_PROVIDER` configured):
    Build a manifest JSON with all prompts and outputs, then run:
    ```bash
-   cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
+   cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json --stitch
    ```
-   Supported providers: `gemini`, `minimax`. See [Configuration](#configuration) for API keys.
+   Supported providers: `gemini`, `minimax`. See [Configuration](#configuration) for API keys. Requires `pip install Pillow`.
 
-   Add `--stitch` to also produce a single combined long image (`news_infographic_YYYY-MM-DD_combined.png`) for social sharing. Requires `pip install Pillow`.
+   The final output is **`news_infographic_YYYY-MM-DD_combined.png`** — a single long image containing cover + all section images.
 
-   **Long image mode**: To generate a cohesive vertical long image instead of separate standalone images, follow the **Long Image Strategy** section in `skills/gen-infographic/SKILL.md`. The strategy adapts based on content volume: sparse content (≤ 8 items) produces a single combined 9:16 portrait image; richer content produces a cover (16:9) + per-type sections (9:16) stitched together. Manifest items support an optional `"aspect_ratio"` field (e.g. `"9:16"`).
-
-5. Insert images into the report:
-   - Cover image at the beginning
-   - Per-type images at the top of each type section
+6. Insert images into the report:
+   - Combined long image at the beginning
+   - Individual per-type images optionally at the top of each type section
 
 ---
 

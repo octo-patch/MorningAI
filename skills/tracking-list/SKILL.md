@@ -282,7 +282,7 @@ Timeliness Check:
 
 ## Draft Record Format
 
-> **Language rule**: Titles (Entity name + Event description) and summary bullet points must be written in the report's target language (default: English). Entity names are proper nouns — keep them as-is. Translate source content if it is in a different language.
+> **Language rule**: Default is **English**. Titles (Entity name + Event description) and summary bullet points must be written in English unless `--lang` specifies otherwise. Entity names are proper nouns — keep them as-is. Translate source content if it is in a different language than the target.
 
 ### Valid Record Format
 
@@ -302,19 +302,23 @@ Timeliness Check:
 
 **Summary**:
 - Key point 1 (include specific details: version numbers, parameter counts, percentage improvements, pricing, availability)
-- Key point 2
-- Key point 3
-- (add more bullet points as needed to cover all important details)
+- Key point 2 (competitive comparison or positioning)
+- Key point 3 (technical specs or architecture details)
+- Key point 4 (availability, rollout timeline, or ecosystem impact)
+- Key point 5 (additional context as needed)
+- (9-10 scores: 5-8 bullet points; 7-8 scores: 4-6 bullet points; 5-6 scores: 3-4 bullet points — cover all important aspects)
 
 **Why It Matters** (required for 7+ scores):
-> 1-2 sentence analysis of industry impact, competitive significance, or user implications. Explain what this changes for the industry or end users — don't just restate what happened.
+> 1-4 sentence analysis of industry impact, competitive significance, or user implications. For 9-10 scores use 2-4 sentences with strategic context; for 7-8 scores use 1-2 sentences. Explain what this changes for the industry or end users — don't just restate what happened.
 
-**Key Data** (optional — include when quantitative metrics are available):
+**Key Data** (required for 7+ scores when quantitative data exists — include when quantitative metrics are available):
 | Metric | Value |
 |--------|-------|
-| e.g. Benchmark score | e.g. 92.3% (+5.1%) |
+| e.g. Benchmark score | e.g. 92.3% (+5.1% vs previous SOTA) |
 | e.g. Parameters | e.g. 671B total / 37B active |
-| e.g. Pricing | e.g. $3/M input, $15/M output |
+| e.g. Pricing | e.g. $3/M input, $15/M output (vs $5/M previous) |
+| e.g. Context length | e.g. 1M tokens (+4x vs v3) |
+| e.g. Funding amount | e.g. $500M Series C at $5B valuation |
 
 **Multi-source Verification** (required for 7+):
 - [Source 1](URL)

@@ -17,14 +17,14 @@ Generate multiple infographics for the daily report:
 | Image | Filename | When to generate | Aspect |
 |-------|----------|-----------------|--------|
 | Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 16:9 |
-| Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items | 16:9 (standalone) or 9:16 (long image) |
-| Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 16:9 (standalone) or 9:16 (long image) |
-| Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 16:9 (standalone) or 9:16 (long image) |
-| Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 16:9 (standalone) or 9:16 (long image) |
-| Combined | `news_infographic_YYYY-MM-DD_combined.png` | Sparse mode or `--stitch` output | 9:16 |
+| Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items | 9:16 (section) |
+| Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 9:16 (section) |
+| Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 9:16 (section) |
+| Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 9:16 (section) |
+| Combined | `news_infographic_YYYY-MM-DD_combined.png` | Always (final output) | 9:16 |
 
-- **Default format**: 16:9 landscape PNG (standalone mode)
-- **Long image format**: 9:16 portrait PNG for sections, stitched into a vertical long image
+- **Default format**: Cover (16:9) + per-type sections (9:16), automatically stitched into a single vertical long image (`_combined.png`)
+- **Sparse mode**: If total qualifying items ≤ 8, produces a single combined 9:16 image directly (no stitching needed)
 - **Format**: PNG
 
 > **`IMAGE_GEN_TYPES` config**: Controls which per-type images to generate. Default: `auto` (only types with 7+ items). Options: `all` (all types with any items), `none` (cover only), or comma-separated types like `model,product`.
@@ -281,16 +281,16 @@ CRITICAL RULES:
 
 ---
 
-## Long Image Strategy
+## Default Image Strategy
 
-When generating images for a shareable long image, use the adaptive strategy below instead of the default standalone mode.
+Image generation always produces a **single combined long image** as the final output. The strategy adapts based on content volume:
 
 ### Decision Logic
 
 | Condition | Strategy | What to generate |
 |-----------|----------|-----------------|
 | Total qualifying items ≤ 8 | **Sparse** | 1 combined image (9:16, Combined Template) |
-| Total qualifying items > 8 | **Normal** | Cover (16:9) + section images per active type (9:16, Section Template), then `--stitch` |
+| Total qualifying items > 8 | **Normal** | Cover (16:9) + section images per active type (9:16, Section Template), then stitch |
 
 "Qualifying items" = items that would appear in any infographic (7+ score for per-type, top 4-5 for cover).
 
@@ -298,14 +298,14 @@ When generating images for a shareable long image, use the adaptive strategy bel
 
 - Use the **Combined Prompt Template**
 - Set `"aspect_ratio": "9:16"` in manifest
-- Do **NOT** use `--stitch` (single image, no stitching needed)
+- Single image, no stitching needed
 - Output: `news_infographic_YYYY-MM-DD_combined.png`
 
-### Normal Strategy
+### Normal Strategy (default)
 
-- **Cover**: standard Cover Prompt Template, aspect `"16:9"`
-- **Sections**: use **Section Prompt Template** (NOT Per-Type Template) with `"aspect_ratio": "9:16"` — these omit "AI News Daily" branding since the cover already has it
-- Use `--stitch` to combine into a single long image
+- **Cover**: Cover Prompt Template, aspect `"16:9"`
+- **Sections**: **Section Prompt Template** (NOT Per-Type Template) with `"aspect_ratio": "9:16"` — these omit "AI News Daily" branding since the cover already has it
+- Automatically stitch into a single long image
 - Manifest example:
   ```json
   [
@@ -315,46 +315,29 @@ When generating images for a shareable long image, use the adaptive strategy bel
   ]
   ```
 
-### Default (Non-Long-Image) Mode
-
-Use the existing Cover Prompt Template and Per-Type Prompt Template with 16:9 aspect ratio. This is unchanged.
-
 ---
 
 ### 3. Generate Images
 
+Follow the **Default Image Strategy** section above to determine Sparse vs Normal strategy.
+
 **Option A** — Native tool (if supported):
-Generate each image using your tool's built-in capability.
+Generate each image using your tool's built-in capability, then stitch if Normal strategy.
 
-**Option B** — Python script (batch mode):
-Build a manifest JSON and run once:
+**Option B** — Python script (default, recommended):
+Build a manifest JSON and run with `--stitch`:
 
-```bash
-# Create manifest.json with all prompts
-cat > manifest.json << 'MANIFEST'
-[
-  {"prompt": "<cover prompt>", "output": "news_infographic_YYYY-MM-DD.png"},
-  {"prompt": "<model prompt>", "output": "news_infographic_YYYY-MM-DD_model.png"},
-  {"prompt": "<product prompt>", "output": "news_infographic_YYYY-MM-DD_product.png"}
-]
-MANIFEST
-
-cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
-```
-
-**Option C** — Long image for social sharing (sparse mode, single combined image):
-```bash
-cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
-```
-> Use the Combined Prompt Template with `"aspect_ratio": "9:16"` in manifest. No `--stitch` needed.
-
-**Option D** — Long image for social sharing (normal mode, cover + sections stitched):
+**Normal strategy** (> 8 qualifying items — cover + sections + auto-stitch):
 ```bash
 cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json --stitch
 ```
 > Use Cover Template (16:9) + Section Templates (9:16). Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
 
-> See **Long Image Strategy** section above for when to use Option C vs D.
+**Sparse strategy** (≤ 8 qualifying items — single combined image):
+```bash
+cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
+```
+> Use the Combined Prompt Template with `"aspect_ratio": "9:16"` in manifest. No stitching needed.
 
 ### 4. Post-generation Verification (required)
 
