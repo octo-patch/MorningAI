@@ -148,6 +148,7 @@ CRITICAL RULES:
 - Cards arranged in a grid layout (landscape orientation)
 - Maximize content area — card titles and bullet points are the primary focus
 - If fewer than 4 items, use more whitespace and decorative elements
+- Cover header MUST include the date: "AI News Daily {YYYY-MM-DD}"
 
 {STYLE_BLOCK}
 ```
@@ -173,7 +174,7 @@ From the report, identify:
 ### Per-Type Prompt Template
 
 ```
-9:16 portrait infographic, AI News Daily {YYYY-MM-DD} — {Type} Updates, {LANG} text content.
+9:16 portrait infographic, AI News Daily — {Type} Updates, {LANG} text content.
 
 Total news items: {N}
 
@@ -200,6 +201,7 @@ CRITICAL RULES:
 - Cards arranged vertically (portrait layout), one below another
 - Maximize content area — card titles and bullet points are the primary focus
 - If fewer than 3 items, use more whitespace and decorative elements
+- Do NOT display dates in the header or title — per-type images use "AI News Daily — {Type} Updates" only, without any date
 
 {STYLE_BLOCK}
 ```
@@ -284,6 +286,7 @@ When valid news items < 4, **do NOT pad with fake content**:
 ## Notes
 
 - Title uses "AI News Daily", news content in the target language (default: English, follows `--lang` parameter)
+- **Date display rule**: Only the **cover image** header includes the date (`AI News Daily YYYY-MM-DD`). Per-type section images must **NOT** include any date — use `AI News Daily — {Type} Updates` only.
 - **`{LANG}`** — substitute with the full language name: "English" (default), "Chinese", "Japanese", etc., based on the `--lang` parameter
 - **Strictly generate based on actual item count**, do not force 4-5 items
 - **Do NOT use `[MAJOR]`/`[MINOR]` labels in Prompt**
