@@ -16,15 +16,16 @@ Generate multiple infographics for the daily report:
 
 | Image | Filename | When to generate | Aspect |
 |-------|----------|-----------------|--------|
-| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 9:16 |
+| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 16:9 |
 | Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items | 9:16 |
 | Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 9:16 |
 | Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 9:16 |
 | Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 9:16 |
-| Combined | `news_infographic_YYYY-MM-DD_combined.png` | Always (final output) | 9:16 |
+| Combined | `news_infographic_YYYY-MM-DD_combined.png` | Always (final output) | long |
 
-- **All images use 9:16 portrait format** — cover + per-type sections, automatically stitched into a single vertical long image (`_combined.png`)
-- **Sparse mode**: If total qualifying items ≤ 8, produces a single combined 9:16 image directly (no stitching needed)
+- **Cover uses 16:9 landscape format** — serves as the hero banner at the top of the report
+- **Per-type sections use 9:16 portrait format** — automatically stitched below the cover into a single vertical long image (`_combined.png`)
+- **Always generate cover + sections + stitch** — regardless of how many qualifying items exist
 - **Format**: PNG
 
 > **`IMAGE_GEN_TYPES` config**: Controls which per-type images to generate. Default: `auto` (only types with 7+ items). Options: `all` (all types with any items), `none` (cover only), or comma-separated types like `model,product`.
@@ -117,7 +118,7 @@ Card design: Card title in 16pt bold green monospace, subtitle in 11pt gray mono
 ## Prompt Template
 
 ```
-9:16 portrait infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
+16:9 landscape infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
 
 Total news items for today: {N}
 
@@ -144,7 +145,7 @@ CRITICAL RULES:
 - Do NOT display score numbers, score badges, or any numerical ratings on the image
 - Do NOT invent items not listed
 - Display ALL bullet points for each card
-- Cards arranged vertically (portrait layout), one below another
+- Cards arranged in a grid layout (landscape orientation)
 - Maximize content area — card titles and bullet points are the primary focus
 - If fewer than 4 items, use more whitespace and decorative elements
 
@@ -205,101 +206,47 @@ CRITICAL RULES:
 
 > Adjust the style header text to "AI News Daily — {Type} Updates" when using the preset.
 
-### Combined Prompt Template (Sparse Content)
+### Combined Prompt Template — not used
 
-Use when total qualifying items across all types is **8 or fewer**. Produces a single self-contained 9:16 portrait image with all content — no stitching needed.
-
-```
-9:16 portrait infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
-
-Total news items: {N}
-
-{For each active type with items, include a labeled section:}
-
---- {Type} Updates ---
-
-Card 1: {Entity name} {Event subject} {Core event verb phrase}
-- {Point 1}
-- {Point 2}
-
-(... cards for this type ...)
-
-{Next type section...}
-
-CRITICAL RULES:
-- Header: "AI News Daily {YYYY-MM-DD}" at top, with branding
-- Each type section has a colored section divider with the type name
-- Cards arranged vertically within each section
-- Each card title MUST include: Entity name + Event subject + Event description
-- Use generous whitespace — do NOT compress cards to fill space
-- If only 1-2 types have items, center content vertically
-- Do NOT display score numbers, score badges, or any numerical ratings on the image
-- Do NOT invent items not listed
-- Maximize content area — card titles and bullet points are the primary focus
-
-{STYLE_BLOCK}
-```
-
-> For combined images: include "AI News Daily" header and type section dividers. Adapt the preset's colors for section dividers accordingly.
+> **Removed.** All reports now use Cover (16:9) + Per-Type Sections (9:16) + stitch, regardless of item count.
 
 ---
 
-## Default Image Strategy
+## Image Strategy
 
-Image generation always produces a **single combined long image** as the final output. The strategy adapts based on content volume:
+Image generation always produces a **single combined long image** as the final output:
 
-### Decision Logic
+1. **Cover** (16:9 landscape): Top 4-5 items across all types — Cover Prompt Template
+2. **Per-type sections** (9:16 portrait): One for each type with 7+ score items — Per-Type Prompt Template
+3. **Stitch**: Cover + sections vertically into `news_infographic_YYYY-MM-DD_combined.png`
 
-| Condition | Strategy | What to generate |
-|-----------|----------|-----------------|
-| Total qualifying items ≤ 8 | **Sparse** | 1 combined image (9:16, Combined Template) |
-| Total qualifying items > 8 | **Normal** | Cover (16:9) + section images per active type (9:16, Section Template), then stitch |
+> If only 1-2 qualifying items exist, the cover still generates with extra whitespace. Per-type sections are skipped for types with no 7+ items.
 
-"Qualifying items" = items that would appear in any infographic (7+ score for per-type, top 4-5 for cover).
-
-### Sparse Strategy
-
-- Use the **Combined Prompt Template**
-- Single image, no stitching needed
-- Output: `news_infographic_YYYY-MM-DD_combined.png`
-
-### Normal Strategy (default)
-
-- **Cover**: Cover Prompt Template
-- **Sections**: Per-Type Prompt Template — use "{Type} Updates" as header instead of "AI News Daily"
-- Automatically stitch into a single long image
-- Manifest example:
-  ```json
-  [
-    {"prompt": "<cover prompt>", "output": "news_infographic_YYYY-MM-DD.png"},
-    {"prompt": "<model section>", "output": "news_infographic_YYYY-MM-DD_model.png"},
-    {"prompt": "<product section>", "output": "news_infographic_YYYY-MM-DD_product.png"}
-  ]
-  ```
+Manifest example:
+```json
+[
+  {"prompt": "<cover prompt>", "output": "news_infographic_YYYY-MM-DD.png"},
+  {"prompt": "<model section>", "output": "news_infographic_YYYY-MM-DD_model.png"},
+  {"prompt": "<product section>", "output": "news_infographic_YYYY-MM-DD_product.png"}
+]
+```
 
 ---
 
 ### 3. Generate Images
 
-Follow the **Default Image Strategy** section above to determine Sparse vs Normal strategy.
+Follow the **Image Strategy** section above — always generate cover + per-type sections + stitch.
 
 **Option A** — Native tool (if supported):
-Generate each image using your tool's built-in capability, then stitch if Normal strategy.
+Generate each image using your tool's built-in capability, then stitch.
 
 **Option B** — Python script (default, recommended):
 Build a manifest JSON and run with `--stitch`:
 
-**Normal strategy** (> 8 qualifying items — cover + sections + auto-stitch):
 ```bash
 cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json --stitch
 ```
-> All images use 9:16 portrait format. Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
-
-**Sparse strategy** (≤ 8 qualifying items — single combined image):
-```bash
-cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
-```
-> Use the Combined Prompt Template. No stitching needed.
+> Cover is 16:9 landscape, sections are 9:16 portrait. Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
 
 ### 4. Post-generation Verification (required)
 

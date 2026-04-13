@@ -8,7 +8,8 @@
 
 ### Improvements
 - **Default to long image mode**: Infographics now generate as stitched long images by default
-- **Unified 9:16 portrait format**: All infographic images (cover + sections) use consistent 9:16 portrait aspect ratio
+- **Cover image switched to 16:9 landscape**: Cover infographic now uses 16:9 aspect ratio; per-type sections remain 9:16 portrait
+- **Removed sparse image strategy**: Always generate cover + per-type sections + stitch into long image, regardless of item count
 - **English as default report language**: Reports are now written in English by default unless `--lang` is specified
 - **Cleaned up manifest examples**: Removed redundant `aspect_ratio` field from image generation manifests
 - **Simplified tool compatibility docs**: Removed references to Amp and Jules; updated GitHub token prefix example
