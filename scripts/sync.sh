@@ -9,6 +9,7 @@ TARGETS=(
     "$HOME/.claude/skills/morning-ai"
     "$HOME/.agents/skills/morning-ai"
     "$HOME/.codex/skills/morning-ai"
+    "$HOME/.config/opencode/skills/morning-ai"
 )
 
 SYNC_DIRS=(lib skills entities templates hooks scripts .codex-plugin .agents .claude-plugin)

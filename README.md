@@ -6,11 +6,11 @@
 [![Sources](https://img.shields.io/badge/Data_Sources-5%2BX-green.svg)](#how-it-works)
 [![Platforms](https://img.shields.io/badge/Platforms-6%2B-purple.svg)](#install)
 
-**What happened in AI today?** — An AI news tracking skill that runs inside your coding agent. No Docker, no servers — just invoke `/morning-ai` in Claude Code, Codex, Cursor, or any SKILL.md-compatible tool. Monitors 80+ entities across 5 automated sources + agent-driven X/Twitter search, generates scored daily reports with optional infographics.
+**What happened in AI today?** — An AI news tracking skill that runs inside your coding agent. No Docker, no servers — just invoke `/morning-ai` in Claude Code, Codex, OpenCode, Hermes, Cursor, or any SKILL.md-compatible tool. Monitors 80+ entities across 5 automated sources + agent-driven X/Twitter search, generates scored daily reports with optional infographics.
 
 ## Features
 
-- **Skill-Native** — Runs inside your AI coding tool (Claude Code, Codex, Cursor). No Docker, no servers, no extra infra — just `/morning-ai`
+- **Skill-Native** — Runs inside your AI coding tool (Claude Code, Codex, OpenCode, Hermes, Cursor). No Docker, no servers, no extra infra — just `/morning-ai`
 - **Entity-Centric Tracking** — 80+ curated entities across AI labs, model infra, coding agents, apps, vision/media, benchmarks, KOLs. Per-entity cross-platform handles (X, GitHub, HF, arXiv), not keyword search
 - **5 Automated Sources + Agent X Search** — Reddit, HN, GitHub, HuggingFace, arXiv run concurrently. X/Twitter updates discovered via agent web search. All sources free — no API keys required
 - **Smart Scoring** — 5-dimension weighted scoring: Impact (30%), Differentiation (25%), Breakthrough (20%), Coverage (15%), Timeliness (10%). Score 7+ items auto-verified across multiple independent sources
@@ -85,6 +85,45 @@ git clone https://github.com/octo-patch/MorningAI.git ~/.claude/skills/morning-a
 clawhub install morning-ai
 ```
 
+### OpenCode
+
+OpenCode auto-discovers skills from `.agents/skills/` and `.claude/skills/` directories — the same paths MorningAI already supports. Install as a skill:
+
+```bash
+git clone https://github.com/octo-patch/MorningAI.git ~/.config/opencode/skills/morning-ai
+```
+
+Or use any of the compatible paths:
+
+```bash
+# Any of these work — OpenCode scans all three
+git clone https://github.com/octo-patch/MorningAI.git ~/.config/opencode/skills/morning-ai
+git clone https://github.com/octo-patch/MorningAI.git ~/.agents/skills/morning-ai
+git clone https://github.com/octo-patch/MorningAI.git ~/.claude/skills/morning-ai
+```
+
+Then invoke in OpenCode: type `morning-ai` or let the agent load the skill on demand.
+
+> **Tip**: OpenCode also reads `AGENTS.md` at the repo root. If you clone the repo into any project directory, OpenCode will auto-discover it.
+
+### Hermes Agent
+
+Install directly from GitHub:
+
+```bash
+hermes skills install octo-patch/MorningAI
+```
+
+Or clone manually:
+
+```bash
+git clone https://github.com/octo-patch/MorningAI.git ~/.agents/skills/morning-ai
+```
+
+Then invoke in Hermes: type `morning-ai` or use `/skills` to browse installed skills.
+
+> **Tip**: Hermes also supports `AGENTS.md` auto-discovery. Clone the repo into your project and Hermes will find it.
+
 ### OpenAI Codex
 
 If cloned or forked, Codex auto-discovers the plugin via `.codex-plugin/plugin.json` and `AGENTS.md` — no manual setup needed.
@@ -97,7 +136,7 @@ git clone https://github.com/octo-patch/MorningAI.git ~/.agents/skills/morning-a
 
 ### Other Tools (Cursor, etc.)
 
-`AGENTS.md` at the repo root is an open standard recognized by Codex, Cursor and more. Clone the repo and the tool will auto-discover it.
+`AGENTS.md` at the repo root is an open standard recognized by Codex, Cursor, OpenCode, Hermes and more. Clone the repo and the tool will auto-discover it.
 
 ### Manual (any tool)
 
@@ -199,7 +238,7 @@ All items are classified into 4 types: **Product**, **Model**, **Benchmark**, **
 bash scripts/sync.sh
 ```
 
-Distributes the skill to `~/.claude/skills/`, `~/.agents/skills/`, and `~/.codex/skills/`.
+Distributes the skill to `~/.claude/skills/`, `~/.agents/skills/`, `~/.codex/skills/`, and `~/.config/opencode/skills/`.
 
 ## License
 
