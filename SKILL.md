@@ -321,11 +321,11 @@ For lower-score items (3-4), use compact table format. The Source column must co
 
 2. **Determine strategy** based on qualifying item count (see **Default Image Strategy** in `skills/gen-infographic/SKILL.md`):
    - **Sparse** (≤ 8 qualifying items): Generate a single combined 9:16 portrait image
-   - **Normal** (> 8 qualifying items): Generate cover (16:9) + per-type section images (9:16), then stitch into one long image
+   - **Normal** (> 8 qualifying items): Generate cover (9:16) + per-type section images (9:16), then stitch into one long image
 
-3. **Cover image**: Sort by score and select the **top 4-5** updates (across all types). Build prompt using the Cover Prompt Template.
+3. **Cover image**: Sort by score and select the **top 4-5** updates (across all types). Build prompt using the Cover Prompt Template (9:16 portrait).
 
-4. **Per-type section images**: For each type (Model/Product/Benchmark/Funding) with 7+ score items, build a prompt using the **Section Prompt Template** (9:16, omits top branding).
+4. **Per-type section images**: For each type (Model/Product/Benchmark/Funding) with 7+ score items, build a prompt using the Per-Type Prompt Template (9:16 portrait).
    - Default (`IMAGE_GEN_TYPES=auto`): only types with 7+ score items
    - Set `IMAGE_GEN_TYPES=all` for all types, `none` for cover only
 

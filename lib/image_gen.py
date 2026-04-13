@@ -50,7 +50,7 @@ def _generate_gemini(prompt: str, output_path: str, config: Dict[str, Any], *, a
     payload = {
         "instances": [{"prompt": prompt}],
         "parameters": {
-            "aspectRatio": aspect_ratio or "16:9",
+            "aspectRatio": aspect_ratio or "9:16",
             "sampleCount": 1,
         },
     }
@@ -94,7 +94,7 @@ def _generate_minimax(prompt: str, output_path: str, config: Dict[str, Any], *, 
     payload = {
         "model": model,
         "prompt": prompt,
-        "aspect_ratio": aspect_ratio or "16:9",
+        "aspect_ratio": aspect_ratio or "9:16",
         "response_format": "b64_json",
         "n": 1,
     }
@@ -141,8 +141,8 @@ def generate(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ra
         prompt: Image generation prompt text
         output_path: Path to save the output PNG
         config: Configuration dict (from env.get_config())
-        aspect_ratio: Optional aspect ratio (e.g. "16:9", "9:16", "1:1").
-                      Defaults to "16:9" when not specified.
+        aspect_ratio: Optional aspect ratio (e.g. "9:16", "16:9", "1:1").
+                      Defaults to "9:16" when not specified.
 
     Returns:
         Output file path on success, empty string if skipped (none provider)

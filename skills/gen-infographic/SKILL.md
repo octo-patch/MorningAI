@@ -16,14 +16,14 @@ Generate multiple infographics for the daily report:
 
 | Image | Filename | When to generate | Aspect |
 |-------|----------|-----------------|--------|
-| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 16:9 |
-| Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items | 9:16 (section) |
-| Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 9:16 (section) |
-| Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 9:16 (section) |
-| Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 9:16 (section) |
+| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 9:16 |
+| Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items | 9:16 |
+| Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 9:16 |
+| Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 9:16 |
+| Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 9:16 |
 | Combined | `news_infographic_YYYY-MM-DD_combined.png` | Always (final output) | 9:16 |
 
-- **Default format**: Cover (16:9) + per-type sections (9:16), automatically stitched into a single vertical long image (`_combined.png`)
+- **All images use 9:16 portrait format** — cover + per-type sections, automatically stitched into a single vertical long image (`_combined.png`)
 - **Sparse mode**: If total qualifying items ≤ 8, produces a single combined 9:16 image directly (no stitching needed)
 - **Format**: PNG
 
@@ -117,7 +117,7 @@ Card design: Card title in 16pt bold green monospace, subtitle in 11pt gray mono
 ## Prompt Template
 
 ```
-16:9 infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
+9:16 portrait infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
 
 Total news items for today: {N}
 
@@ -144,6 +144,7 @@ CRITICAL RULES:
 - Do NOT display score numbers, score badges, or any numerical ratings on the image
 - Do NOT invent items not listed
 - Display ALL bullet points for each card
+- Cards arranged vertically (portrait layout), one below another
 - Maximize content area — card titles and bullet points are the primary focus
 - If fewer than 4 items, use more whitespace and decorative elements
 
@@ -171,7 +172,7 @@ From the report, identify:
 ### Per-Type Prompt Template
 
 ```
-16:9 infographic, AI News Daily {YYYY-MM-DD} — {Type} Updates, {LANG} text content.
+9:16 portrait infographic, AI News Daily {YYYY-MM-DD} — {Type} Updates, {LANG} text content.
 
 Total news items: {N}
 
@@ -195,6 +196,7 @@ CRITICAL RULES:
 - Do NOT display score numbers, score badges, or any numerical ratings on the image
 - Do NOT invent items not listed
 - Display ALL bullet points for each card
+- Cards arranged vertically (portrait layout), one below another
 - Maximize content area — card titles and bullet points are the primary focus
 - If fewer than 3 items, use more whitespace and decorative elements
 
@@ -202,45 +204,6 @@ CRITICAL RULES:
 ```
 
 > Adjust the style header text to "AI News Daily — {Type} Updates" when using the preset.
-
-### Section Prompt Template (Long Image Mode)
-
-Use this template for per-type section images when generating a long image (`--stitch` mode). These are designed as SECTIONS of a vertical composition, NOT standalone images.
-
-```
-9:16 portrait infographic section, {Type} Updates {YYYY-MM-DD}, {LANG} text content.
-
-Total news items: {N}
-
-News cards (display EXACTLY {N} cards, arranged vertically):
-
-Card 1: {Entity name} {Event subject} {Core event verb phrase}
-- {Point 1}
-- {Point 2}
-- {Point 3}
-
-Card 2: {Entity name} {Event subject} {Core event verb phrase}
-- {Point 1}
-- {Point 2}
-
-(... list according to actual item count ...)
-
-CRITICAL RULES:
-- This is a SECTION of a longer image — do NOT include "AI News Daily" header or top branding
-- Start with a section header: "{Type} Updates" in navy (#1A2744) with coral (#E8553D) underline
-- Cards arranged vertically (portrait layout), one below another
-- Each card title MUST include: Entity name + Event subject + Event description
-- Display complete titles, do NOT truncate
-- Do NOT display any labels like [MAJOR], [MINOR], or importance markers
-- Do NOT display score numbers, score badges, or any numerical ratings on the image
-- Do NOT invent items not listed
-- Display ALL bullet points for each card
-- Maximize content area — card titles and bullet points are the primary focus
-
-{STYLE_BLOCK}
-```
-
-> For section images: omit the "AI News Daily" top header; start with a section header "{Type} Updates" instead. Adapt the preset's colors for section headers accordingly.
 
 ### Combined Prompt Template (Sparse Content)
 
@@ -303,13 +266,13 @@ Image generation always produces a **single combined long image** as the final o
 
 ### Normal Strategy (default)
 
-- **Cover**: Cover Prompt Template, aspect `"16:9"`
-- **Sections**: **Section Prompt Template** (NOT Per-Type Template) with `"aspect_ratio": "9:16"` — these omit "AI News Daily" branding since the cover already has it
+- **Cover**: Cover Prompt Template, aspect `"9:16"`
+- **Sections**: Per-Type Prompt Template with `"aspect_ratio": "9:16"` — use "{Type} Updates" as header instead of "AI News Daily"
 - Automatically stitch into a single long image
 - Manifest example:
   ```json
   [
-    {"prompt": "<cover prompt>", "output": "news_infographic_YYYY-MM-DD.png"},
+    {"prompt": "<cover prompt>", "output": "news_infographic_YYYY-MM-DD.png", "aspect_ratio": "9:16"},
     {"prompt": "<model section>", "output": "news_infographic_YYYY-MM-DD_model.png", "aspect_ratio": "9:16"},
     {"prompt": "<product section>", "output": "news_infographic_YYYY-MM-DD_product.png", "aspect_ratio": "9:16"}
   ]
@@ -331,7 +294,7 @@ Build a manifest JSON and run with `--stitch`:
 ```bash
 cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json --stitch
 ```
-> Use Cover Template (16:9) + Section Templates (9:16). Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
+> All images use 9:16 portrait format. Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
 
 **Sparse strategy** (≤ 8 qualifying items — single combined image):
 ```bash
