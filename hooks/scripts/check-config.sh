@@ -30,21 +30,20 @@ morning-ai: First-time setup
 
 What is morning-ai?
   AI news daily report generator. Tracks 80+ entities (OpenAI, Anthropic,
-  Google, Meta, xAI, DeepSeek, Cursor, Midjourney, etc.) across 9 data
-  sources. Generates scored, deduplicated Markdown reports with optional
-  infographics. Runs as a skill inside your AI coding agent.
+  Google, Meta, xAI, DeepSeek, Cursor, Midjourney, etc.) across 5 automated
+  sources + agent-driven X/Twitter search. Generates scored, deduplicated
+  Markdown reports with optional infographics.
 
 FREE sources (work immediately, no keys needed):
   Reddit            public JSON API
   Hacker News       Algolia API
+  GitHub            public API (optional token for higher rate limits)
   HuggingFace       public API
   arXiv             public API
+  X/Twitter         agent web search (no API key needed)
 
-API keys (optional, unlock more sources):
-  SCRAPECREATORS_API_KEY   X/Twitter search       https://scrapecreators.com
-  GITHUB_TOKEN             GitHub releases         https://github.com/settings/tokens
-  YOUTUBE_API_KEY          YouTube channels        https://console.cloud.google.com
-  DISCORD_TOKEN            Discord announcements   https://discord.com/developers
+API keys (optional):
+  GITHUB_TOKEN             GitHub higher rate limits   https://github.com/settings/tokens
 
 Image generation (optional):
   IMAGE_GEN_PROVIDER       gemini | minimax | none (default: none)
@@ -55,7 +54,7 @@ Image generation (optional):
 
 Setup:
   Create ~/.config/morning-ai/.env with KEY=value format (one per line).
-  You can start with zero keys (4/9 sources) and add more later.
+  All sources work without API keys. Add GITHUB_TOKEN for higher rate limits.
 
 Next: run /morning-ai
 WELCOME
@@ -63,20 +62,11 @@ WELCOME
 fi
 
 # ── Config exists: show source status ────────────────────────────────────
-SOURCES=4  # Reddit, HN, HuggingFace, arXiv are always free
-DETAILS="reddit,hackernews,huggingface,arxiv"
+SOURCES=5  # Reddit, HN, GitHub, HuggingFace, arXiv are always available
+DETAILS="reddit,hackernews,github,huggingface,arxiv,x(agent-search)"
 
-if [[ -n "${SCRAPECREATORS_API_KEY:-}" ]]; then
-    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,x-twitter"
-fi
 if [[ -n "${GITHUB_TOKEN:-}" ]]; then
-    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,github"
-fi
-if [[ -n "${YOUTUBE_API_KEY:-}" ]]; then
-    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,youtube"
-fi
-if [[ -n "${DISCORD_TOKEN:-}" ]]; then
-    SOURCES=$((SOURCES + 1)); DETAILS="$DETAILS,discord"
+    DETAILS="$DETAILS,github-token(enhanced)"
 fi
 
 IMG=""
@@ -84,4 +74,4 @@ if [[ -n "${IMAGE_GEN_PROVIDER:-}" && "${IMAGE_GEN_PROVIDER:-}" != "none" ]]; th
     IMG=" | image: ${IMAGE_GEN_PROVIDER}"
 fi
 
-echo "morning-ai: $SOURCES/8 sources active [$DETAILS]${IMG} (config: $ACTIVE_ENV)"
+echo "morning-ai: $SOURCES sources + X agent search [$DETAILS]${IMG} (config: $ACTIVE_ENV)"

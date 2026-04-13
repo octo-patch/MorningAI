@@ -20,8 +20,6 @@
      | Web          | Blog/changelog URLs        | site:example.com/blog                 |
      | Reddit       | Reddit search keywords     | keyword1, keyword2                    |
      | HN           | Hacker News keywords       | keyword1                              |
-     | YouTube      | YouTube channel ID         | UCxxxxxxxxxxxxxxxxxx                  |
-     | Discord      | Discord invite URL         | https://discord.gg/xxxxx              |
 -->
 
 ## Example Corp

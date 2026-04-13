@@ -35,8 +35,6 @@ PLATFORM_KEYS = {
     "web": "web_queries",
     "reddit": "reddit_keywords",
     "hn": "hn_keywords",
-    "youtube": "youtube_channels",
-    "discord": "discord_channels",
 }
 
 
@@ -110,10 +108,6 @@ def parse_custom_file(path: Path) -> Dict[str, Dict[str, Any]]:
                 result["reddit_keywords"][entity_name] = _parse_multi(value)
             elif platform == "hn":
                 result["hn_keywords"][entity_name] = _parse_multi(value)
-            elif platform == "youtube":
-                result["youtube_channels"][entity_name] = value.strip()
-            elif platform == "discord":
-                result["discord_channels"][entity_name] = value.strip()
 
     return result
 
@@ -169,8 +163,6 @@ def merge_into_registries(
     web_queries: dict,
     reddit_keywords: dict,
     hn_keywords: dict,
-    youtube_channels: dict,
-    discord_channels: dict,
 ) -> None:
     """Load custom entities and merge into the provided registry dicts."""
     custom = load_custom_entities()
@@ -182,5 +174,3 @@ def merge_into_registries(
     web_queries.update(custom["web_queries"])
     reddit_keywords.update(custom["reddit_keywords"])
     hn_keywords.update(custom["hn_keywords"])
-    youtube_channels.update(custom["youtube_channels"])
-    discord_channels.update(custom["discord_channels"])

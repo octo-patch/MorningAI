@@ -103,10 +103,8 @@ Major funding, acquisitions/mergers, strategic partnerships, milestone events.
 | 6 | HuggingFace | Medium-High | Accept directly |
 | 7 | arXiv | Medium-High | Accept directly |
 | 8 | Benchmark institutions | Medium | Accept directly (for benchmark information) |
-| 9 | YouTube Official Channel | Medium | Accept directly |
-| 10 | Discord Official Announcement | Medium | Accept directly |
-| 11 | Opinion Leaders/KOL | Reference | Must trace to official channel for confirmation |
-| 12 | Industry Media | Reference | For lead discovery only, must trace to source |
+| 9 | Opinion Leaders/KOL | Reference | Must trace to official channel for confirmation |
+| 10 | Industry Media | Reference | For lead discovery only, must trace to source |
 
 ### Prohibited Actions
 
@@ -172,8 +170,6 @@ A page being currently accessible does not mean the event it describes occurred 
 | Official Blog (US) | PST/PDT | +16/+15 hours → UTC+8 |
 | Official Blog (China) | UTC+8 | No conversion needed |
 | GitHub Releases | UTC | +8 hours → UTC+8 |
-| YouTube API | UTC | +8 hours → UTC+8 |
-| Discord API | UTC | +8 hours → UTC+8 |
 | Other sources | Case-by-case | Convert based on page annotation |
 
 ### Date Extraction Rules by Source Type
@@ -369,7 +365,7 @@ Timeliness Check:
 
 ```
 FOR each source:
-    1️⃣ Check source (X account, Changelog/Blog, GitHub Releases, YouTube, Discord, arXiv)
+    1️⃣ Check source (X account, Changelog/Blog, GitHub Releases, arXiv)
     2️⃣ Timeliness check (per time validation rules)
     3️⃣ Cross-verification (key people posts require cross-verification with official channels)
     4️⃣ Content classification → determine type label (Product/Model/Benchmark/Funding)

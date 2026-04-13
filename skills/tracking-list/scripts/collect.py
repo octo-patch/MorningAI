@@ -44,17 +44,6 @@ def get_time_window(date_str: str) -> tuple:
     return from_date, to_date
 
 
-def collect_x(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
-    """Collect from X/Twitter."""
-    from lib import x_twitter
-
-    api_key = env.get_key(config, "SCRAPECREATORS_API_KEY")
-    if not api_key:
-        return CollectionResult(source="x", errors=["No SCRAPECREATORS_API_KEY configured"])
-
-    return x_twitter.collect(entities.X_HANDLES, from_date, to_date, api_key, depth)
-
-
 def collect_reddit(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
     """Collect from Reddit."""
     from lib import reddit
@@ -87,32 +76,13 @@ def collect_arxiv(config: Dict[str, Any], from_date: str, to_date: str, depth: s
     return arxiv.collect(entities.ARXIV_QUERIES, from_date, to_date, depth)
 
 
-def collect_youtube(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
-    """Collect from YouTube channels."""
-    from lib import youtube
-
-    api_key = env.get_key(config, "YOUTUBE_API_KEY")
-    return youtube.collect(entities.YOUTUBE_CHANNELS, from_date, to_date, api_key, depth)
-
-
-def collect_discord(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
-    """Collect from Discord announcement channels."""
-    from lib import discord
-
-    token = env.get_key(config, "DISCORD_TOKEN")
-    return discord.collect(entities.DISCORD_CHANNELS, from_date, to_date, token, depth)
-
-
 # All collectors with their names
 COLLECTORS = {
-    "x": collect_x,
     "reddit": collect_reddit,
     "hackernews": collect_hackernews,
     "github": collect_github,
     "huggingface": collect_huggingface,
     "arxiv": collect_arxiv,
-    "youtube": collect_youtube,
-    "discord": collect_discord,
 }
 
 

@@ -1,7 +1,7 @@
 ---
 name: morning-ai
 version: "1.1.2"
-description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 8 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
+description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 5 automated sources + agent X/Twitter search every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
 argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *"'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
@@ -20,15 +20,10 @@ metadata:
   openclaw:
     emoji: "📰"
     requires:
-      env:
-        - SCRAPECREATORS_API_KEY
       optionalEnv:
         - GITHUB_TOKEN
-        - YOUTUBE_API_KEY
-        - DISCORD_TOKEN
       bins:
         - python3
-    primaryEnv: SCRAPECREATORS_API_KEY
     files:
       - "skills/*/scripts/collect.py"
       - "skills/*/scripts/gen_infographic.py"
@@ -54,9 +49,9 @@ metadata:
 
 # morning-ai: AI News Daily Report Generator
 
-> **Permissions overview:** Collects public data from X/Twitter, Reddit, Hacker News, GitHub, HuggingFace, arXiv, YouTube, and Discord. Requires API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
+> **Permissions overview:** Collects public data from Reddit, Hacker News, GitHub, HuggingFace, and arXiv. X/Twitter updates are discovered via agent web search. Requires optional API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
 
-Track 76+ AI entities across 8 data sources. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
+Track 76+ AI entities across 5 automated data sources + agent-driven X/Twitter search. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
 
 ---
 
@@ -70,7 +65,7 @@ if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || 
 
 **Branch on the output:**
 
-- **If output is `CONFIG_STATUS=READY`** — read the config file, report which sources are active (N/9), then proceed to Step 1.
+- **If output is `CONFIG_STATUS=READY`** — read the config file, report which sources are active, then proceed to Step 1.
 - **If output is `CONFIG_STATUS=MISSING`** — **STOP. You MUST complete the First-Time Onboarding below before proceeding to Step 1.**
 
 ### First-Time Onboarding (when `MISSING`)
@@ -82,17 +77,16 @@ if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || 
 
 Walk the user through setup interactively, waiting for their response at each step:
 
-1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 8 sources, generates scored daily reports
-2. **Show what works for free** — 4 sources need no API keys:
+1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 5 automated sources + agent X/Twitter search, generates scored daily reports
+2. **Show what works for free** — 5 automated sources (4 need no API keys, 1 optional):
    - Reddit (public JSON), Hacker News (Algolia API), HuggingFace (public API), arXiv (public API)
-3. **Ask the user** which additional sources they want to enable, and present the keys needed:
+   - GitHub (public API, optional `GITHUB_TOKEN` for higher rate limits)
+   - X/Twitter updates are discovered via agent web search (no API key needed)
+3. **Ask the user** if they want to enable GitHub with higher rate limits:
 
 | Key | Source | Get it at |
 |-----|--------|-----------|
-| `SCRAPECREATORS_API_KEY` | X/Twitter search | https://scrapecreators.com |
-| `GITHUB_TOKEN` | GitHub releases & repos | https://github.com/settings/tokens |
-| `YOUTUBE_API_KEY` | YouTube channels | https://console.cloud.google.com |
-| `DISCORD_TOKEN` | Discord announcements | https://discord.com/developers |
+| `GITHUB_TOKEN` | GitHub releases & repos (higher rate limit) | https://github.com/settings/tokens |
 
 4. **Ask about infographics** (optional):
 
@@ -142,7 +136,7 @@ Walk the user through setup interactively, waiting for their response at each st
 
 ## Step 1: Data Collection
 
-Run the Python collector to gather data from all available sources:
+Run the Python collector to gather data from automated sources:
 
 ```bash
 cd {SKILL_DIR} && python3 skills/tracking-list/scripts/collect.py --date {YYYY-MM-DD} --depth default -o {CWD}/data_{YYYY-MM-DD}.json
@@ -155,7 +149,7 @@ cd {SKILL_DIR} && python3 skills/tracking-list/scripts/collect.py --date {YYYY-M
 - `-o`: Output JSON file path
 
 **What it does:**
-- Runs 8 collectors concurrently (X, Reddit, HN, GitHub, HuggingFace, arXiv, YouTube, Discord)
+- Runs 5 collectors concurrently (Reddit, HN, GitHub, HuggingFace, arXiv)
 - Time window: `[Yesterday 08:00, Today 08:00) UTC+8`
 - Pipeline: collect → score (1-10) → deduplicate → cross-source link → verification bonus
 - Returns structured JSON with all items, stats, and collection metadata
@@ -163,6 +157,14 @@ cd {SKILL_DIR} && python3 skills/tracking-list/scripts/collect.py --date {YYYY-M
 **Timeout:** Allow up to 3 minutes for default depth, 5 minutes for deep.
 
 If the user provides `--exclude` types (e.g. `--exclude Funding`), note which types to filter out in Step 3.
+
+### X/Twitter Search (Agent-driven)
+
+After the automated collection completes, use **web search** to discover recent X/Twitter updates from tracked entities. The tracked X handles are listed in `{SKILL_DIR}/lib/entities.py` under `X_HANDLES`.
+
+1. Search for recent AI news on X/Twitter using web search — focus on high-priority entities (major AI labs, trending products, key people)
+2. For each discovered update, verify timeliness (must be within the 24-hour collection window)
+3. Incorporate verified X/Twitter findings into the report in Step 3, attributing the source as X/Twitter with a link to the original post
 
 ---
 
@@ -463,10 +465,7 @@ skill: morning-ai
 
 ```bash
 # ~/.config/morning-ai/.env
-SCRAPECREATORS_API_KEY=your_key
 GITHUB_TOKEN=ghp_xxx
-YOUTUBE_API_KEY=your_key
-DISCORD_TOKEN=your_token
 ```
 
 ### Free Sources (no API key needed)
@@ -475,8 +474,10 @@ DISCORD_TOKEN=your_token
 |--------|-----|-----------|
 | Reddit | Public JSON | Generous |
 | Hacker News | Algolia API | Generous |
+| GitHub | Public API (optional token for higher limits) | 60 req/hr (unauthenticated) |
 | HuggingFace | Public API | Generous |
 | arXiv | Public API | Generous |
+| X/Twitter | Agent web search | N/A |
 
 ---
 
@@ -485,5 +486,5 @@ DISCORD_TOKEN=your_token
 - **Data access**: Reads public web/platform data only. No private or authenticated content is accessed.
 - **API keys**: Stored locally in `.env` files. Never transmitted except to their respective APIs.
 - **File writes**: Only writes report files (`report_*.md`, `data_*.json`) and cache files to the skill/working directory.
-- **Network**: Outbound HTTP/HTTPS requests to public APIs (Twitter, Reddit, GitHub, etc.). No inbound connections.
+- **Network**: Outbound HTTP/HTTPS requests to public APIs (Reddit, GitHub, etc.). No inbound connections.
 - **No telemetry**: No usage data is collected or sent anywhere.

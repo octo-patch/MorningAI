@@ -58,7 +58,7 @@ def get_config() -> Dict[str, Any]:
     config.update(project_claude_env)
     config.update(project_env)
     config.update(local_env)
-    config.update({k: v for k, v in os.environ.items() if k.startswith(("MORNING_AI_", "SCRAPECREATORS_", "GITHUB_", "YOUTUBE_", "DISCORD_", "AUTH_TOKEN", "CT0", "IMAGE_GEN_", "IMAGE_STYLE", "GEMINI_", "MINIMAX_", "SOCIAL_"))})
+    config.update({k: v for k, v in os.environ.items() if k.startswith(("MORNING_AI_", "GITHUB_", "IMAGE_GEN_", "IMAGE_STYLE", "GEMINI_", "MINIMAX_", "SOCIAL_"))})
 
     return config
 
@@ -72,13 +72,9 @@ def get_key(config: Dict[str, Any], key: str) -> Optional[str]:
 def get_available_sources(config: Dict[str, Any]) -> Dict[str, bool]:
     """Check which data sources are available based on configured API keys."""
     return {
-        "x_bird": bool(get_key(config, "AUTH_TOKEN") and get_key(config, "CT0")),
-        "x_scrapecreators": bool(get_key(config, "SCRAPECREATORS_API_KEY")),
         "reddit": True,  # public JSON, no key needed
         "hackernews": True,  # Algolia API, free
         "github": bool(get_key(config, "GITHUB_TOKEN")),
         "huggingface": True,  # public API
         "arxiv": True,  # public API
-        "youtube": bool(get_key(config, "YOUTUBE_API_KEY")),
-        "discord": bool(get_key(config, "DISCORD_TOKEN")),
     }

@@ -20,8 +20,6 @@ SOURCE_GITHUB = "github"
 SOURCE_HUGGINGFACE = "huggingface"
 SOURCE_ARXIV = "arxiv"
 SOURCE_WEB = "web"
-SOURCE_YOUTUBE = "youtube"
-SOURCE_DISCORD = "discord"
 
 
 @dataclass

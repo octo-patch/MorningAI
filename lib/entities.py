@@ -258,23 +258,6 @@ HN_KEYWORDS = {
     "Perplexity AI": ["Perplexity"],
 }
 
-# Discord announcement channels per entity
-DISCORD_CHANNELS = {
-    "Midjourney": "https://discord.gg/midjourney",
-    "Stability AI": "https://discord.gg/stablediffusion",
-    "Cursor": "https://discord.gg/cursor",
-    "Cline": "https://discord.gg/cline",
-}
-
-# YouTube channel IDs per entity
-YOUTUBE_CHANNELS = {
-    "OpenAI": "UCXZCJLdBC09xxGZ6gcdrc6A",
-    "Google DeepMind": "UCwF9VGMVhKiTTx1R1kZpWvg",
-    "Anthropic": "UCi1_3SeJ_GlqkV9_FZcMdQg",
-    "NVIDIA": "UCHuiy8bXnmK5nisYHKIIeFxA",
-    "Microsoft": "UCFtEEv80fQVKkbn3ZiQHIHg",
-}
-
 # --- Load custom entities ---
 from lib.custom_entities import merge_into_registries
 
@@ -286,7 +269,5 @@ merge_into_registries(
     WEB_QUERIES,
     REDDIT_KEYWORDS,
     HN_KEYWORDS,
-    YOUTUBE_CHANNELS,
-    DISCORD_CHANNELS,
 )
 
