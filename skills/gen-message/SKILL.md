@@ -1,6 +1,6 @@
 ---
 name: gen-message
-version: "1.2.3"
+version: "1.2.4"
 description: Generate concise message digest with image for sharing on messaging platforms (WeChat, Telegram, Slack, etc.)
 ---
 
@@ -86,14 +86,17 @@ Each item follows this structure:
 
 ```
 {emoji} **{Entity} {Event description}**
-{One to two sentence summary with key metrics, numbers, or specifics.}
+{One to two sentence summary: what it IS/DOES + why it matters.}
 🔗 {source_url}
 ```
 
 **Rules:**
 - Title is bold, includes entity name + concise event description
-- Summary is 1-2 sentences max — condense the raw summary to the most essential information
-- Include specific numbers (benchmark scores, parameter counts, pricing, versions) when available
+- Summary is 1-2 sentences max — must answer TWO questions:
+  1. **What is it / what does it do?** — the core capability, function, or purpose (e.g., "Code generation model specialized for multi-file edits", "Open-source text-to-video model supporting 10-second 1080p clips")
+  2. **Why is it interesting / what's notable?** — the differentiator, breakthrough, or key advancement (e.g., "first open-weight model to beat GPT-4o on SWE-bench", "runs locally on consumer GPUs with 8GB VRAM")
+- **Prioritize technical substance** over popularity metrics: benchmark scores, parameter counts, context window, architecture innovations, licensing, pricing, speed improvements
+- **Do NOT lead with vanity metrics** like download counts, likes, stars, or follower counts — these say nothing about what the thing does. Only mention them if the surge itself IS the news (e.g., "hit 100K stars in 48 hours")
 - No score numbers displayed — the emoji conveys importance level
 - Each item MUST end with a `🔗 {source_url}` line linking to the original source
 - Items separated by a blank line
@@ -103,10 +106,12 @@ Each item follows this structure:
 For GitHub Trending items or items with notable engagement metrics:
 
 ```
-🔥 **GitHub Trending: {repo-name} (Stars Surging!)**
-⭐ {star_count}(+{delta}) | {one-line description}
+🔥 **GitHub Trending: {repo-name}**
+{What it does + why it's trending.} ⭐ {star_count}(+{delta})
 🔗 {source_url}
 ```
+
+Note: even for trending items, lead with what the project does, then append the star count as supporting context — not the other way around.
 
 ### Link Placement
 
@@ -277,7 +282,7 @@ Powered by MorningAI | Full report: report_2026-04-08.md
 ## Notes
 
 - The text digest reads from `data_{DATE}.json` directly — it does NOT depend on the report being generated first
-- All summaries must be condensed to 1-2 sentences — extract the most important facts, numbers, and metrics from the full summary
+- All summaries must be condensed to 1-2 sentences — prioritize explaining what the thing IS and why it matters, not popularity metrics (downloads, likes, stars)
 - Entity names are always preserved as proper nouns regardless of language setting
 - The image is optional — if no image generation provider is configured, only the text file is produced
 - When `MESSAGE_LINKS=bottom`, the reference numbers are implicit (ordered by item appearance) — do NOT add `[1]` markers in the item body, and do NOT include `🔗` lines after each item

@@ -120,7 +120,7 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **HuggingFace** | https://huggingface.co/Qwen |
 | **arXiv** | https://arxiv.org/search/?query=Qwen |
 | **Reddit Keywords** | Qwen |
-| **Reddit Community** | [r/Qwen](https://www.reddit.com/r/Qwen/) |
+| **Reddit Community** | [r/Qwen_AI](https://www.reddit.com/r/Qwen_AI/) |
 
 #### 8. DeepSeek
 
@@ -178,7 +178,7 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **Hailuo Product** | https://hailuoai.com |
 | **Covered Products** | MiniMax Models, Hailuo Video |
 | **Reddit Keywords** | MiniMax, Hailuo |
-| **Reddit Community** | [r/HailuoAI](https://www.reddit.com/r/HailuoAI/) |
+| **Reddit Community** | [r/HailuoAiOfficial](https://www.reddit.com/r/HailuoAiOfficial/) |
 
 #### 13. Kuaishou (Kling)
 
@@ -240,7 +240,7 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **arXiv** | https://arxiv.org/search/?query=Tencent+Hunyuan |
 | **Covered Products** | Hunyuan LLM, HunyuanVideo, HunyuanImage |
 | **Reddit Keywords** | Hunyuan, Tencent AI |
-| **Reddit Community** | [r/TencentAI](https://www.reddit.com/r/TencentAI/) |
+
 
 ---
 

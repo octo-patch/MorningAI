@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.4] - 2026-04-14
+
+### Fixes
+- **Reddit community links fixed**: Replace dead/private subreddit links — r/Qwen → r/Qwen_AI (original was private), r/HailuoAI → r/HailuoAiOfficial (original didn't exist), removed r/TencentAI (doesn't exist)
+- **Message digest: prioritize substance over vanity metrics**: Summary now requires answering "what is it" + "why it matters" instead of leading with download/star counts. GitHub Trending items lead with project description, star count as supporting context
+
 ## [1.2.3] - 2026-04-14
 
 ### Improvements
