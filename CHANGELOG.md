@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.8] - 2026-04-14
+
+### Fixes
+- **Fix plugin manifest validation**: Remove `skills` and `hooks` fields from `plugin.json` (Claude Code auto-discovers root `SKILL.md`); remove `$schema` and move `description` into `metadata` in `marketplace.json` to match current Claude Code schema
+
 ## [1.1.7] - 2026-04-14
 
 ### Fixes

@@ -1,6 +1,6 @@
 ---
 name: morning-ai
-version: "1.1.7"
+version: "1.1.8"
 description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 5 automated sources + agent X/Twitter search every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
 argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *"'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
