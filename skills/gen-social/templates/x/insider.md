@@ -83,7 +83,7 @@ Claude 4.5 Sonnet just dropped. +18% SWE-Bench, 200K context, 40% faster. The in
 https://anthropic.com/news/claude-4-5-sonnet
 
 ---media---
-social_2026-04-08_x_insider_en_cover.png
+social_2026-04-14_x_insider_en_cover.png
 
 ---tweet---
 Cursor shipped background agents to GA. They run in the cloud, no IDE needed, up to 10 at once. We're about 6 months from "I reviewed the PR my agent's agent wrote" being a normal sentence.

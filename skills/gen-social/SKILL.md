@@ -360,15 +360,15 @@ social/
 
 ```json
 {
-  "date": "2026-04-08",
+  "date": "2026-04-14",
   "channels": [
     {
       "id": "x_insider_en",
       "platform": "x",
       "style": "insider",
       "lang": "en",
-      "copy_file": "social_2026-04-08_x_insider_en.md",
-      "images": ["social_2026-04-08_x_insider_en_cover.png"],
+      "copy_file": "social_2026-04-14_x_insider_en.md",
+      "images": ["social_2026-04-14_x_insider_en_cover.png"],
       "items_used": 3
     },
     {
@@ -376,12 +376,12 @@ social/
       "platform": "xiaohongshu",
       "style": "educational",
       "lang": "zh",
-      "copy_file": "social_2026-04-08_xhs_kepu_zh.md",
+      "copy_file": "social_2026-04-14_xhs_kepu_zh.md",
       "images": [
-        "social_2026-04-08_xhs_kepu_zh_1.png",
-        "social_2026-04-08_xhs_kepu_zh_2.png",
-        "social_2026-04-08_xhs_kepu_zh_3.png",
-        "social_2026-04-08_xhs_kepu_zh_4.png"
+        "social_2026-04-14_xhs_kepu_zh_1.png",
+        "social_2026-04-14_xhs_kepu_zh_2.png",
+        "social_2026-04-14_xhs_kepu_zh_3.png",
+        "social_2026-04-14_xhs_kepu_zh_4.png"
       ],
       "items_used": 5
     }

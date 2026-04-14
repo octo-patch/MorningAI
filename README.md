@@ -37,8 +37,7 @@ Here's what a MorningAI daily report looks like — 26 updates scored, deduplica
 
 </details>
 
-> Full sample report: [samples/report_2026-04-08.md](samples/report_2026-04-08.md)
-> Raw data JSON: [samples/data_2026-04-08.json](samples/data_2026-04-08.json)
+> Full sample report: [samples/report_2026-04-14.md](samples/report_2026-04-14.md)
 > Infographic style previews: [docs/styles.md](docs/styles.md)
 
 ## How It Works
@@ -201,7 +200,7 @@ Invoke the skill in your AI tool:
 Or run the collector standalone:
 
 ```bash
-python3 skills/tracking-list/scripts/collect.py --date 2026-04-08 --output report.json
+python3 skills/tracking-list/scripts/collect.py --date 2026-04-14 --output report.json
 ```
 
 ## Infographic Styles

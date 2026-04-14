@@ -125,8 +125,8 @@ image_lang: zh
 #AI日报 #人工智能 #Claude #Gemini #DeepSeek #Cursor #AI科普 #科技圈 #大模型
 
 ---images---
-1: social_2026-04-08_xhs_kepu_zh_1.png
-2: social_2026-04-08_xhs_kepu_zh_2.png
-3: social_2026-04-08_xhs_kepu_zh_3.png
-4: social_2026-04-08_xhs_kepu_zh_4.png
+1: social_2026-04-14_xhs_kepu_zh_1.png
+2: social_2026-04-14_xhs_kepu_zh_2.png
+3: social_2026-04-14_xhs_kepu_zh_3.png
+4: social_2026-04-14_xhs_kepu_zh_4.png
 ```

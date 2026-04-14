@@ -4,7 +4,7 @@
 Usage:
     # Save snapshot and print diff against previous
     python3 skills/leaderboard/scripts/leaderboard_snapshot.py save \\
-        --leaderboard lmsys --date 2026-04-08 \\
+        --leaderboard lmsys --date 2026-04-14 \\
         --data '[{"model":"GPT-4o","rank":1,"score":1287}]'
 
     # Show the latest saved snapshot

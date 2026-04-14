@@ -14,7 +14,7 @@ Clean editorial magazine aesthetic.
 
 ```
 ┌─────────────────────────────────────────────┐
-│  MorningAI · 2026-04-08                 │
+│  MorningAI · 2026-04-14                 │
 │─────────────────────────────────────────────│
 │                                             │
 │  ┌─────────────────────────────────────┐    │
@@ -51,7 +51,7 @@ Dark mode with electric accents — ideal for developer audiences.
 
 ```
 ┌─────────────────────────────────────────────┐
-│  ░░ MorningAI · 2026-04-08 ░░           │
+│  ░░ MorningAI · 2026-04-14 ░░           │
 │─────────────────────────────────────────────│
 │                                             │
 │  ┌─ ◆ 9.2 ─────────────────────────────┐   │
@@ -85,7 +85,7 @@ Frosted glass cards on soft gradient — modern SaaS aesthetic.
 
 ```
 ┌─────────────────────────────────────────────┐
-│  ·····  MorningAI  ·····  2026-04-08    │
+│  ·····  MorningAI  ·····  2026-04-14    │
 │  ░░░░░░░░░░░░ gradient bg ░░░░░░░░░░░░░░░  │
 │                                             │
 │    ╭╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╮    │
@@ -150,7 +150,7 @@ Terminal aesthetic with monospace — for the hacker crowd.
 
 ```
 ┌─────────────────────────────────────────────┐
-│  > morning-ai --date 2026-04-08             │
+│  > morning-ai --date 2026-04-14             │
 │  > scanning 6 sources... done (47.3s)       │
 │  > 186 raw → 26 deduped → 8 verified        │
 │                                             │

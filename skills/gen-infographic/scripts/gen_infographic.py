@@ -15,8 +15,8 @@ Usage:
 
 Manifest JSON format:
     [
-      {"prompt": "9:16 portrait infographic, MorningAI ...", "output": "news_infographic_2026-04-08.png"},
-      {"prompt": "9:16 portrait infographic, Model Updates ...", "output": "news_infographic_2026-04-08_model.png"}
+      {"prompt": "9:16 portrait infographic, MorningAI ...", "output": "news_infographic_2026-04-14.png"},
+      {"prompt": "9:16 portrait infographic, Model Updates ...", "output": "news_infographic_2026-04-14_model.png"}
     ]
 """
 

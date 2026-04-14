@@ -237,7 +237,7 @@ cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --pr
 ## Example Output
 
 ```
-MorningAI 2026-04-08
+MorningAI 2026-04-14
 
 8 notable updates today
 
@@ -274,7 +274,7 @@ Largest round in AI coding tools space. Plans to hire 200 engineers and expand e
 🔗 https://techcrunch.com/2026/04/07/windsurf-raises-200m
 
 ---
-Powered by MorningAI | Full report: report_2026-04-08.md
+Powered by MorningAI | Full report: report_2026-04-14.md
 ```
 
 ---
