@@ -17,14 +17,14 @@ Generate multiple infographics for the daily report:
 
 | Image | Filename | When to generate | Aspect |
 |-------|----------|-----------------|--------|
-| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 16:9 |
+| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 9:16 |
 | Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items | 9:16 |
 | Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 9:16 |
 | Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 9:16 |
 | Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 9:16 |
 | Combined | `news_infographic_YYYY-MM-DD_combined.png` | Always (final output) | long |
 
-- **Cover uses 16:9 landscape format** — serves as the hero banner at the top of the report
+- **Cover uses 9:16 portrait format** — same as per-type sections, for seamless vertical stitching
 - **Per-type sections use 9:16 portrait format** — automatically stitched below the cover into a single vertical long image (`_combined.png`)
 - **Always generate cover + sections + stitch** — regardless of how many qualifying items exist
 - **Format**: PNG
@@ -119,7 +119,7 @@ Card design: Card title in 16pt bold green monospace, subtitle in 11pt gray mono
 ## Prompt Template
 
 ```
-16:9 landscape infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
+9:16 portrait infographic, AI News Daily {YYYY-MM-DD}, {LANG} text content.
 
 Total news items for today: {N}
 
@@ -211,7 +211,7 @@ CRITICAL RULES:
 
 ### Combined Prompt Template — not used
 
-> **Removed.** All reports now use Cover (16:9) + Per-Type Sections (9:16) + stitch, regardless of item count.
+> **Removed.** All reports now use Cover (9:16) + Per-Type Sections (9:16) + stitch, regardless of item count.
 
 ---
 
@@ -219,7 +219,7 @@ CRITICAL RULES:
 
 Image generation always produces a **single combined long image** as the final output:
 
-1. **Cover** (16:9 landscape): Top 4-5 items across all types — Cover Prompt Template
+1. **Cover** (9:16 portrait): Top 4-5 items across all types — Cover Prompt Template
 2. **Per-type sections** (9:16 portrait): One for each type with 7+ score items — Per-Type Prompt Template
 3. **Stitch**: Cover + sections vertically into `news_infographic_YYYY-MM-DD_combined.png`
 
@@ -249,7 +249,7 @@ Build a manifest JSON and run with `--stitch`:
 ```bash
 cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json --stitch
 ```
-> Cover is 16:9 landscape, sections are 9:16 portrait. Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
+> Cover is 9:16 portrait, sections are 9:16 portrait. Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
 
 ### 4. Post-generation Verification (required)
 

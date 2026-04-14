@@ -8,6 +8,7 @@
 - **25 entity-specific subreddits added**: Covers AI labs (r/OpenAI, r/ChatGPT, r/ClaudeAI, r/Gemini, r/DeepSeek, r/Grok, etc.), coding agents (r/cursor, r/Windsurf, r/ClineAI), model infra (r/MistralAI, r/perplexity_ai), vision/media (r/midjourney, r/StableDiffusion, r/SunoAI), and apps (r/CharacterAI)
 - **Custom entity template updated**: `Reddit Community` added as a supported platform field in `custom-example.md`
 - **Cache TTL default reduced to 1 hour**: `--cache-ttl` now defaults to 1h; added `--no-cache` and `--clear-cache` flags
+- **Cover image switched to 9:16 portrait**: Cover infographic now uses 9:16 portrait (same as per-type sections) for seamless vertical stitching into combined long image
 
 ## [1.2.2] - 2026-04-14
 

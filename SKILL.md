@@ -286,9 +286,9 @@ This specification defines:
    ```
 
 2. **Generate cover + per-type sections + stitch** (see **Image Strategy** in `skills/gen-infographic/SKILL.md`):
-   - Always generate cover (16:9 landscape) + per-type section images (9:16 portrait), then stitch into one long image
+   - Always generate cover (9:16 portrait) + per-type section images (9:16 portrait), then stitch into one long image
 
-3. **Cover image**: Sort by score and select the **top 4-5** updates (across all types). Build prompt using the Cover Prompt Template (16:9 landscape).
+3. **Cover image**: Sort by score and select the **top 4-5** updates (across all types). Build prompt using the Cover Prompt Template (9:16 portrait).
 
 4. **Per-type section images**: For each type (Model/Product/Benchmark/Funding) with 7+ score items, build a prompt using the Per-Type Prompt Template (9:16 portrait).
    - Default (`IMAGE_GEN_TYPES=auto`): only types with 7+ score items
