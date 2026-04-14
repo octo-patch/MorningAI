@@ -19,7 +19,7 @@
     "cron",
     "automated"
   ],
-  "skills": "./",
+  "skills": "SKILL.md",
   "interface": {
     "displayName": "Morning AI",
     "shortDescription": "Track 80+ AI entities across 5 automated sources + agent X/Twitter search with daily scored reports",

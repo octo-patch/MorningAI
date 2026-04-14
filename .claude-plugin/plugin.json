@@ -10,6 +10,6 @@
   "repository": "https://github.com/octo-patch/MorningAI",
   "license": "MIT",
   "keywords": ["ai", "news", "tracking", "daily-report", "model", "product", "benchmark", "funding", "scheduled", "cron", "automated"],
-  "skills": ["./"],
+  "skills": ["SKILL.md"],
   "hooks": {}
 }
