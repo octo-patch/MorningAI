@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.5] - 2026-04-14
+
+### Fixes
+- **Fix skills path escaping plugin directory**: Changed `skills` field from `"./"` to `"SKILL.md"` in `.claude-plugin` and `.codex-plugin` plugin.json to resolve validator error
+
 ## [1.1.4] - 2026-04-13
 
 ### New Features
@@ -8,9 +13,6 @@
 ### Improvements
 - **Factual detail verification rules**: All specific numbers (parameter counts, benchmark scores, pricing, context lengths, etc.) must now be verified from authoritative primary sources before inclusion — omit rather than guess
 - **Date display restricted to cover image**: Per-type section infographic images (Model/Product/Benchmark/Funding) no longer show the date in the header; only the cover image displays the date
-
-### Fixes
-- **Fix skills path escaping plugin directory**: Changed `skills` field from `"./"` to `"SKILL.md"` in `.claude-plugin` and `.codex-plugin` plugin.json to resolve validator error
 
 ## [1.1.3] - 2026-04-13
 
