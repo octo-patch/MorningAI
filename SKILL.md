@@ -2,7 +2,7 @@
 name: morning-ai
 version: "1.2.6"
 description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 6 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
-argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *", morning-ai --lang zh (with MESSAGE_ENABLED=true for message digest)'
+argument-hint: 'morning-ai, morning-ai --intro, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *", morning-ai --lang zh (with MESSAGE_ENABLED=true for message digest)'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
 repository: https://github.com/octo-patch/MorningAI
@@ -52,6 +52,53 @@ metadata:
 > **Permissions overview:** Collects public data from Reddit, Hacker News, GitHub, HuggingFace, arXiv, and X/Twitter. Requires optional API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
 
 Track 80+ AI entities across 6 sources. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
+
+---
+
+## `--intro` — Product Introduction
+
+If the user passes `--intro`, display the following introduction and **stop** (do not proceed to data collection):
+
+---
+
+**MorningAI** — Daily AI news tracker that monitors 80+ entities across 6 sources.
+
+**What it does:**
+- Collects updates from Reddit, Hacker News, GitHub, HuggingFace, arXiv, and X/Twitter
+- Scores and deduplicates items on a 1-10 scale with cross-source verification
+- Generates structured Markdown reports with 4 content types: Product, Model, Benchmark, Funding
+- Optional: infographic images (5 visual styles), message digests (WeChat/Telegram/Slack), social media copy (X/Xiaohongshu)
+
+**Sources (all free, no API keys required for basic usage):**
+| Source | Method | API Key |
+|--------|--------|---------|
+| Reddit | Public JSON | Not needed |
+| Hacker News | Algolia API | Not needed |
+| GitHub | REST API | Optional (`GITHUB_TOKEN` for higher rate limits) |
+| HuggingFace | Public API | Not needed |
+| arXiv | Public API | Not needed |
+| X/Twitter | Web search | Not needed |
+
+**Quick start:**
+```
+/morning-ai                     # Run with defaults (English, all types)
+/morning-ai --lang zh           # Chinese report
+/morning-ai --depth deep        # Comprehensive collection
+/morning-ai --exclude Funding   # Skip funding news
+```
+
+**Optional features (require API keys):**
+- Infographic images: set `IMAGE_GEN_PROVIDER` + provider API key
+- Social media copy: set `SOCIAL_ENABLED=true`
+- Message digest: set `MESSAGE_ENABLED=true`
+
+**Config file:** `~/.config/morning-ai/.env` — run `/morning-ai` without config to trigger guided setup.
+
+**Version:** 1.2.6 | [GitHub](https://github.com/octo-patch/MorningAI) | [ClawHub](https://clawhub.ai/skills/morning-ai)
+
+---
+
+After displaying the introduction, **stop**. Do not proceed to Step 0 or data collection.
 
 ---
 
