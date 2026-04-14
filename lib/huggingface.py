@@ -18,29 +18,47 @@ DEPTH_CONFIG = {"quick": 5, "default": 10, "deep": 20}
 
 
 def _fetch_model_description(model_id: str) -> str:
-    """Fetch model card description from HuggingFace API.
+    """Fetch model card description from HuggingFace README.
 
-    Returns first meaningful paragraph from the model card, or empty string.
+    Fetches the raw README.md and extracts the first meaningful paragraph
+    after the YAML frontmatter. Falls back to empty string on failure.
     """
-    url = f"{HF_API}/models/{quote(model_id, safe='/')}"
+    url = f"https://huggingface.co/{model_id}/raw/main/README.md"
     try:
-        data = http.get(url, timeout=10, retries=1)
+        text = http.get(url, timeout=10, retries=1, raw=True)
     except Exception:
         return ""
 
-    if not isinstance(data, dict):
+    if not isinstance(text, str) or len(text) < 20:
         return ""
 
-    # Try cardData fields first
-    card = data.get("cardData") or {}
-    desc = card.get("description") or card.get("summary") or ""
-    if desc:
-        return desc.strip()[:300]
+    # Strip YAML frontmatter
+    if text.startswith("---"):
+        end = text.find("---", 3)
+        if end > 0:
+            text = text[end + 3:]
 
-    # Try top-level description
-    desc = data.get("description") or ""
-    if desc:
-        return desc.strip()[:300]
+    import re
+
+    # Find first substantial paragraph (skip blanks, headers, links, badges, emoji lines)
+    for line in text.split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith(("#", "|", "[", "!", "<", "-", "*", ">")):
+            continue
+        if line.startswith("```"):
+            break
+        # Skip lines starting with emoji (common promotional banners)
+        if re.match(r'^[\U0001F000-\U0001FFFF\u2600-\u27BF\u2B50]', line):
+            continue
+        # Skip short lines and markdown link-only lines
+        if len(line) < 50:
+            continue
+        if re.match(r'^\[.*\]\(.*\)$', line):
+            continue
+        # Found a real paragraph
+        return line[:300]
 
     return ""
 
