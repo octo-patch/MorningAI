@@ -5,6 +5,7 @@ New collector — no last30days equivalent.
 """
 
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlencode, quote
 
@@ -14,6 +15,34 @@ from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_HUGGINGFAC
 HF_API = "https://huggingface.co/api"
 
 DEPTH_CONFIG = {"quick": 5, "default": 10, "deep": 20}
+
+
+def _fetch_model_description(model_id: str) -> str:
+    """Fetch model card description from HuggingFace API.
+
+    Returns first meaningful paragraph from the model card, or empty string.
+    """
+    url = f"{HF_API}/models/{quote(model_id, safe='/')}"
+    try:
+        data = http.get(url, timeout=10, retries=1)
+    except Exception:
+        return ""
+
+    if not isinstance(data, dict):
+        return ""
+
+    # Try cardData fields first
+    card = data.get("cardData") or {}
+    desc = card.get("description") or card.get("summary") or ""
+    if desc:
+        return desc.strip()[:300]
+
+    # Try top-level description
+    desc = data.get("description") or ""
+    if desc:
+        return desc.strip()[:300]
+
+    return ""
 
 
 def _log(msg: str):
@@ -197,21 +226,23 @@ def collect(
                 likes = model.get("likes", 0)
                 tags = model.get("tags", [])
 
+                # Metadata fallback summary
                 tag_str = ", ".join(tags[:5]) if tags else ""
-                summary_parts = []
+                meta_parts = []
                 if pipeline:
-                    summary_parts.append(f"Pipeline: {pipeline}")
+                    meta_parts.append(f"Pipeline: {pipeline}")
                 if downloads:
-                    summary_parts.append(f"{downloads:,} downloads")
+                    meta_parts.append(f"{downloads:,} downloads")
                 if likes:
-                    summary_parts.append(f"{likes} likes")
+                    meta_parts.append(f"{likes} likes")
                 if tag_str:
-                    summary_parts.append(f"Tags: {tag_str}")
+                    meta_parts.append(f"Tags: {tag_str}")
+                fallback_summary = " | ".join(meta_parts) if meta_parts else model_id
 
                 all_items.append(TrackerItem(
                     id=f"HF-{model_id}",
                     title=model_id,
-                    summary=" | ".join(summary_parts) if summary_parts else model_id,
+                    summary=fallback_summary,
                     entity=entity_name,
                     source=SOURCE_HUGGINGFACE,
                     source_url=model.get("url", f"https://huggingface.co/{model_id}"),
@@ -229,6 +260,30 @@ def collect(
 
         if entity_found:
             result.entities_with_updates += 1
+
+    # Enrich summaries with model card descriptions (concurrent)
+    if all_items:
+        _log(f"Fetching model card descriptions for {len(all_items)} models...")
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = {
+                executor.submit(_fetch_model_description, item.title): item
+                for item in all_items
+            }
+            for future in as_completed(futures):
+                item = futures[future]
+                try:
+                    desc = future.result(timeout=20)
+                    if desc:
+                        # Build enriched summary: description + key metadata
+                        meta = []
+                        if item.engagement.views:
+                            meta.append(f"{item.engagement.views:,} downloads")
+                        if item.engagement.likes:
+                            meta.append(f"{item.engagement.likes} likes")
+                        meta_str = " | ".join(meta)
+                        item.summary = f"{desc[:200]}. {meta_str}" if meta_str else desc[:300]
+                except Exception:
+                    pass
 
     result.items = all_items
     _log(f"Collected {len(all_items)} HF models from {result.entities_checked} entities")

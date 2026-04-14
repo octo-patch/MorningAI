@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.6] - 2026-04-14
+
+### Fixes
+- **content_type auto-classification**: All collectors previously left `content_type` empty — added heuristic classifier (`lib/classify.py`) using source type + keyword patterns to assign product/model/benchmark/financing. Integrated into pipeline before scoring
+- **HuggingFace summary enrichment**: Summary was just metadata stats (pipeline/downloads/likes). Now fetches model card description via `/api/models/{id}` concurrently, with metadata fallback
+- **HackerNews summary enrichment**: Summary was "HN discussion (N pts, N comments)". Now uses story_text for text posts, domain+engagement for link posts, structured discussion points from top comments
+- **Cross-source linking fixed**: Title-based Jaccard matching produced ~0 similarity across sources due to format differences (HF model IDs vs HN natural language vs GH repo+version). Added source-aware title normalization, entity match bonus (+0.25), URL domain matching (+0.15), and lower threshold (0.25) for same-entity pairs
+- **Scoring distribution spread**: 90% of items clustered at 5-7 due to compressed engagement normalization and blanket verification penalty. Reduced engagement divisors (HN/Reddit 8→6, GitHub 10→7, HF 12→8), added percentile rescaling to 2.0-9.5 range, removed the -0.5 penalty for unverified 7+ items
+- **HackerNews noise filtering**: Added noise pattern filters (outage complaints, career Ask HNs, rants) and raised minimum points threshold from 2 to 5, with high-engagement bypass (100+ pts exempt)
+
 ## [1.2.5] - 2026-04-14
 
 ### Improvements

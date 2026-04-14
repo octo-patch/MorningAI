@@ -6,6 +6,7 @@ Supports within-source dedup and cross-source linking.
 
 import re
 from typing import List, Set, Tuple
+from urllib.parse import urlparse
 
 from .schema import TrackerItem
 
@@ -176,13 +177,15 @@ def cross_source_link(
     if len(items) <= 1:
         return items
 
-    # Pre-compute texts for comparison (truncate long texts for fairness)
+    # Pre-compute normalized texts for cross-source comparison
     texts = []
     for item in items:
-        text = get_item_text(item)
-        if item.source == "x":
-            text = text[:100]
-        texts.append(text)
+        texts.append(_normalize_for_cross_source(item))
+
+    # Pre-compute URL domains for URL-based matching
+    domains = []
+    for item in items:
+        domains.append(_extract_url_domain(item.source_url))
 
     for i in range(len(items)):
         for j in range(i + 1, len(items)):
@@ -193,13 +196,73 @@ def cross_source_link(
             similarity = hybrid_similarity(texts[i], texts[j])
 
             # Entity match bonus: same entity increases likelihood of cross-ref
-            if items[i].entity and items[i].entity == items[j].entity:
-                similarity += 0.1
+            same_entity = items[i].entity and items[i].entity == items[j].entity
+            if same_entity:
+                similarity += 0.25
 
-            if similarity >= threshold:
+            # URL domain bonus: items linking to same domain
+            if domains[i] and domains[j] and domains[i] == domains[j]:
+                similarity += 0.15
+
+            # Use lower threshold for same-entity comparisons
+            effective_threshold = 0.25 if same_entity else threshold
+
+            if similarity >= effective_threshold:
                 if items[j].id not in items[i].cross_refs:
                     items[i].cross_refs.append(items[j].id)
                 if items[i].id not in items[j].cross_refs:
                     items[j].cross_refs.append(items[i].id)
 
     return items
+
+
+def _normalize_for_cross_source(item: TrackerItem) -> str:
+    """Normalize item text for cross-source comparison.
+
+    Different sources use very different title formats:
+    - HuggingFace: "nvidia/Gemma-4-31B-IT-NVFP4" (model IDs)
+    - GitHub: "anthropics/claude-code v2.1.107" (repo + version)
+    - HN/Reddit: Natural language titles
+
+    This function normalizes them to improve cross-source matching.
+    """
+    text = get_item_text(item)
+
+    if item.source == "huggingface":
+        # Split org/model format, expand separators
+        if "/" in text:
+            text = text.split("/", 1)[-1]  # drop org prefix
+        text = re.sub(r"[-_]", " ", text)
+
+    elif item.source == "github":
+        # Drop org prefix, remove version numbers
+        if "/" in text:
+            parts = text.split("/", 1)
+            text = parts[-1]
+        text = re.sub(r"\bv?\d+\.\d+\.\d+\b", "", text)  # remove semver
+        text = re.sub(r"[-_]", " ", text)
+
+    # Common cleanup for all sources
+    text = re.sub(r"\bv?\d+(?:\.\d+)+\b", "", text)  # version numbers like v2.1, 2.1.107
+    text = re.sub(r"\bv\d+\b", "", text)  # simple version tags like v2
+    text = re.sub(r"\b\d{4,}\b", "", text)  # long numbers (dates, IDs)
+    text = text.lower().strip()
+    return text
+
+
+def _extract_url_domain(url: str) -> str:
+    """Extract domain from URL for cross-source matching."""
+    if not url:
+        return ""
+    try:
+        parsed = urlparse(url)
+        domain = parsed.netloc or ""
+        if domain.startswith("www."):
+            domain = domain[4:]
+        # Exclude generic platforms (they host many unrelated items)
+        if domain in ("github.com", "news.ycombinator.com", "reddit.com",
+                       "huggingface.co", "arxiv.org", "x.com", "twitter.com"):
+            return ""
+        return domain
+    except Exception:
+        return ""

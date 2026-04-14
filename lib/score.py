@@ -5,6 +5,7 @@ Combines engagement, source reliability, and content relevance.
 Adapted from last30days score.py composite scoring approach.
 """
 
+import bisect
 import math
 from typing import List
 
@@ -48,31 +49,33 @@ def _compute_engagement_score(item: TrackerItem) -> float:
             0.55 * math.log1p(eng.score)
             + 0.45 * math.log1p(eng.num_comments)
         )
-        return min(1.0, raw / 8.0)
+        return min(1.0, raw / 6.0)
 
     elif item.source == SOURCE_HACKERNEWS:
         raw = (
             0.55 * math.log1p(eng.points)
             + 0.45 * math.log1p(eng.num_comments)
         )
-        return min(1.0, raw / 8.0)
+        return min(1.0, raw / 6.0)
 
     elif item.source == SOURCE_GITHUB:
         raw = (
             0.60 * math.log1p(eng.stars)
             + 0.40 * math.log1p(eng.forks)
         )
-        return min(1.0, raw / 10.0)
+        return min(1.0, raw / 7.0)
 
     elif item.source == SOURCE_HUGGINGFACE:
         raw = (
             0.50 * math.log1p(eng.views)  # downloads
             + 0.50 * math.log1p(eng.likes)
         )
-        return min(1.0, raw / 12.0)
+        return min(1.0, raw / 8.0)
 
     elif item.source == SOURCE_ARXIV:
-        return 0.5  # arXiv doesn't have engagement metrics
+        # Variable score based on author count (proxy for lab size/importance)
+        author_boost = min(0.2, eng.total * 0.02) if eng.total else 0
+        return 0.4 + author_boost
 
     elif item.source == SOURCE_WEB:
         return 0.4  # web search results have limited engagement info
@@ -130,8 +133,27 @@ def score_items(items: List[TrackerItem]) -> List[TrackerItem]:
     for item in items:
         item.importance = score_item(item)
 
+    # Rescale scores using percentile mapping for better distribution
+    _rescale_scores(items)
+
     items.sort(key=lambda x: x.importance, reverse=True)
     return items
+
+
+def _rescale_scores(items: List[TrackerItem]) -> None:
+    """Rescale scores to spread across 2.0-9.5 range using percentiles.
+
+    Preserves relative ordering while ensuring scores use the full range
+    instead of clustering around 5-7.
+    """
+    if len(items) < 5:
+        return
+
+    scores = sorted(i.importance for i in items)
+    n = len(scores)
+    for item in items:
+        pct = bisect.bisect_left(scores, item.importance) / n
+        item.importance = round(2.0 + pct * 7.5, 1)
 
 
 def apply_verification_bonus(items: List[TrackerItem]) -> List[TrackerItem]:
@@ -152,9 +174,7 @@ def apply_verification_bonus(items: List[TrackerItem]) -> List[TrackerItem]:
         if num_refs >= 2:
             item.verified = True
             item.importance = min(10.0, item.importance + 0.5)
-        elif item.importance >= 7.0 and num_refs < 2:
-            # High-score items need verification per morning-ai rules
-            item.importance = max(6.9, item.importance - 0.5)
+        else:
             item.verified = False
 
     items.sort(key=lambda x: x.importance, reverse=True)

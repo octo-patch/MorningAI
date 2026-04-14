@@ -20,6 +20,42 @@ ALGOLIA_ITEM_URL = "https://hn.algolia.com/api/v1/items"
 DEPTH_CONFIG = {"quick": 15, "default": 30, "deep": 60}
 ENRICH_LIMITS = {"quick": 3, "default": 5, "deep": 10}
 
+# Noise patterns to filter low-quality HN posts
+NOISE_PATTERNS = [
+    r"(?i)\bis\s+\w+\s+down\b",
+    r"(?i)\bdown\b.*\bagain\b",
+    r"(?i)\bregret\b.*\bai\b",
+    r"(?i)\brant\b",
+    r"(?i)^ask hn:.*\b(career|hire|interview|freelance)\b",
+]
+
+MIN_POINTS = 5
+
+
+def _is_noise(title: str, points: int) -> bool:
+    """Check if a story title matches noise patterns."""
+    if points >= 100:
+        return False
+    for pat in NOISE_PATTERNS:
+        if re.search(pat, title):
+            return True
+    return False
+
+
+def _extract_domain(url: str) -> str:
+    """Extract domain from URL for summary display."""
+    if not url:
+        return ""
+    try:
+        from urllib.parse import urlparse
+        parsed = urlparse(url)
+        domain = parsed.netloc or ""
+        if domain.startswith("www."):
+            domain = domain[4:]
+        return domain
+    except Exception:
+        return ""
+
 
 def _log(msg: str):
     if sys.stderr.isatty():
@@ -61,7 +97,7 @@ def search(
     params = {
         "query": query,
         "tags": "story",
-        "numericFilters": f"created_at_i>{from_ts},created_at_i<{to_ts},points>2",
+        "numericFilters": f"created_at_i>{from_ts},created_at_i<{to_ts},points>{MIN_POINTS}",
         "hitsPerPage": str(count),
     }
     url = f"{ALGOLIA_SEARCH_URL}?{urlencode(params)}"
@@ -128,12 +164,28 @@ def collect(
 
             for i, hit in enumerate(hits):
                 object_id = hit.get("objectID", "")
+                title = hit.get("title", "")
                 points = hit.get("points") or 0
                 num_comments_val = hit.get("num_comments") or 0
                 created_at_i = hit.get("created_at_i")
                 date_str = _unix_to_date(created_at_i) if created_at_i else None
                 article_url = hit.get("url") or ""
+                story_text = hit.get("story_text") or ""
                 hn_url = f"https://news.ycombinator.com/item?id={object_id}"
+
+                if _is_noise(title, points):
+                    continue
+
+                # Build meaningful summary
+                if story_text:
+                    # Text posts (Ask HN, Show HN): use story text
+                    summary = _strip_html(story_text)[:300]
+                elif article_url:
+                    # Link posts: include domain for context
+                    domain = _extract_domain(article_url)
+                    summary = f"via {domain} ({points} pts, {num_comments_val} comments)" if domain else f"({points} pts, {num_comments_val} comments)"
+                else:
+                    summary = f"HN discussion ({points} pts, {num_comments_val} comments)"
 
                 rank_score = max(0.3, 1.0 - (i * 0.02))
                 engagement_boost = min(0.2, math.log1p(points) / 40)
@@ -141,15 +193,15 @@ def collect(
 
                 all_items.append(TrackerItem(
                     id=f"HN-{object_id}",
-                    title=hit.get("title", ""),
-                    summary=f"HN discussion ({points} pts, {num_comments_val} comments)",
+                    title=title,
+                    summary=summary,
                     entity=entity_name,
                     source=SOURCE_HACKERNEWS,
                     source_url=article_url or hn_url,
                     source_label=f"Hacker News",
                     date=date_str,
                     date_confidence="high" if date_str else "low",
-                    raw_text=hit.get("title", ""),
+                    raw_text=title,
                     engagement=Engagement(points=points, num_comments=num_comments_val),
                     relevance=round(relevance, 2),
                 ))
@@ -170,7 +222,7 @@ def collect(
             try:
                 insights = future.result(timeout=15)
                 if insights:
-                    item.summary += " | Top insights: " + "; ".join(insights[:3])
+                    item.summary += "\nKey discussion points: " + "; ".join(insights[:3])
             except Exception:
                 pass
 
