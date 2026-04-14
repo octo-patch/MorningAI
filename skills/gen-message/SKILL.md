@@ -7,10 +7,12 @@ description: Generate concise message digest with image for sharing on messaging
 
 Transform the daily AI news report data into a concise, copy-paste-friendly **message digest** optimized for sharing on messaging platforms. Produces two output files:
 
-1. **Text digest** (`message_{DATE}.md`) — bold titles, one-line summaries, reference links
+1. **Text digest** (`message_{DATE}.md`) — bold titles, one-line summaries, source links
 2. **Digest image** (`message_{DATE}.png`) — 9:16 portrait infographic with compact card layout
 
-The text is designed for direct copy-paste into any messaging app. The image provides a visual companion for platforms that support image attachments.
+The message digest shares the **same data pipeline** as the full report — all items go through the standard collect → score → deduplicate → cross-source link → verification pipeline. The only difference is the final output format: the full report produces a detailed multi-section Markdown document, while the message digest condenses the same verified data into a compact, share-friendly format.
+
+**Cross-source verification still applies:** Items with score 7+ must be verified by 2+ independent sources before inclusion. The `verified` and `verify_sources` fields from `data_{DATE}.json` are authoritative. Do NOT include unverified high-score items — the same factual rigor applies regardless of output format.
 
 ---
 
@@ -50,11 +52,12 @@ The text is designed for direct copy-paste into any messaging app. The image pro
 
 ## Content Selection Rules
 
-1. **Read data**: Load `data_{DATE}.json` from the working directory
+1. **Read data**: Load `data_{DATE}.json` from the working directory (this data has already been scored, deduplicated, and cross-source verified by the collection pipeline)
 2. **Filter by score**: Only items with `importance >= MESSAGE_MIN_SCORE`
-3. **Sort**: By importance score descending (highest first)
-4. **Limit**: Take top N items (from `MESSAGE_MAX_ITEMS`)
-5. **Translate**: If data language differs from `MESSAGE_LANG`, translate summaries. Entity names (proper nouns) stay unchanged.
+3. **Verify**: For items with score 7+, confirm `verified == true` — skip unverified high-score items
+4. **Sort**: By importance score descending (highest first)
+5. **Limit**: Take top N items (from `MESSAGE_MAX_ITEMS`)
+6. **Translate**: If data language differs from `MESSAGE_LANG`, translate summaries. Entity names (proper nouns) stay unchanged.
 
 ---
 
@@ -99,7 +102,7 @@ Each item follows this structure:
 For GitHub Trending items or items with notable engagement metrics:
 
 ```
-🔥 **GitHub 热门项目：{repo-name}（Stars 暴涨！）**
+🔥 **GitHub Trending: {repo-name} (Stars Surging!)**
 ⭐ {star_count}(+{delta}) | {one-line description}
 🔗 {source_url}
 ```
@@ -111,8 +114,8 @@ For GitHub Trending items or items with notable engagement metrics:
 Each item ends with a source link line:
 
 ```
-🔥 **Anthropic 发布 Claude 4.5 Sonnet**
-新一代中端模型，编程能力提升18%，200K上下文窗口。
+🔥 **Anthropic Releases Claude 4.5 Sonnet**
+New mid-tier model with +18% SWE-Bench, 200K context, 40% faster output.
 🔗 https://anthropic.com/news/claude-4-5-sonnet
 ```
 
@@ -227,51 +230,6 @@ cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --pr
 
 ## Example Output
 
-### Chinese (`--lang zh`)
-
-```
-AI 每日速报 2026-04-08
-
-共 8 条重要更新
-
-🔥 **Anthropic 发布 Claude 4.5 Sonnet**
-新一代中端模型，编程能力提升18%（SWE-Bench），200K上下文窗口，输出速度快40%。API 和 claude.ai 即刻可用。
-🔗 https://x.com/AnthropicAI/status/example
-
-⭐ **Google Gemini 2.5 Flash 进入公测**
-Flash级模型支持原生多模态推理，100万上下文窗口。AI Studio 免费可用。
-🔗 https://x.com/GoogleDeepMind/status/example
-
-⭐ **Cursor 后台 Agent 正式上线**
-自主后台Agent正式发布，支持多文件重构、测试生成和自动提PR，Pro 最多10个并发。
-🔗 https://x.com/cursor_ai/status/example
-
-⭐ **DeepSeek 开源 V3-0407 模型**
-更新版V3模型，671B参数MoE架构，MIT协议完全商用。权重已在HuggingFace发布。
-🔗 https://github.com/deepseek-ai/DeepSeek-V3
-
-⭐ **OpenAI 开源 Codex CLI**
-终端编程Agent开源发布，支持建议、自动编辑和全自动三种模式，MIT协议。
-🔗 https://github.com/openai/codex
-
-⭐ **LMSYS Chatbot Arena 四月排名更新**
-Claude 4.5 Sonnet 升至总榜第2（ELO 1287），Gemini 2.5 Pro 保持编程类第1。
-🔗 https://lmarena.ai
-
-⭐ **GitHub Copilot Coding Agent 公测**
-GitHub自主Agent可处理Issue并提交PR，在安全云沙箱中运行，Pro+和Enterprise免费。
-🔗 https://github.blog/changelog/copilot-coding-agent
-
-⭐ **Windsurf 获得2亿美元C轮融资**
-AI IDE公司获编程工具领域最大单轮融资，估值30亿美元，计划招聘200名工程师。
-🔗 https://techcrunch.com/2026/04/07/windsurf-raises-200m
-
----
-Powered by MorningAI | 完整报告: report_2026-04-08.md
-```
-
-### English (`--lang en`)
-
 ```
 AI Daily Digest 2026-04-08
 
@@ -287,9 +245,27 @@ Flash-tier model with native multimodal reasoning, 1M context. Free tier on AI S
 
 ⭐ **Cursor Background Agents Now Generally Available**
 Autonomous background agents for multi-file refactoring, test generation, and PR creation. Max 10 concurrent on Pro.
-🔗 https://x.com/cursor_ai/status/example
+🔗 https://cursor.com/changelog/background-agents-ga
 
-...
+⭐ **DeepSeek Open-Sources V3-0407 Model**
+Updated V3 with 671B MoE architecture, MIT license. Weights available on HuggingFace.
+🔗 https://github.com/deepseek-ai/DeepSeek-V3
+
+⭐ **OpenAI Open-Sources Codex CLI**
+Terminal-based coding agent with suggest, auto-edit, and full-auto modes. MIT license.
+🔗 https://github.com/openai/codex
+
+⭐ **LMSYS Chatbot Arena April Rankings Update**
+Claude 4.5 Sonnet enters #2 overall (ELO 1287). Gemini 2.5 Pro holds #1 in coding.
+🔗 https://lmarena.ai
+
+⭐ **GitHub Copilot Coding Agent Public Preview**
+Autonomous agent handles issues and creates PRs in secure cloud sandbox. Free for Pro+ and Enterprise.
+🔗 https://github.blog/changelog/copilot-coding-agent
+
+⭐ **Windsurf Raises $200M Series C at $3B Valuation**
+Largest round in AI coding tools space. Plans to hire 200 engineers and expand enterprise features.
+🔗 https://techcrunch.com/2026/04/07/windsurf-raises-200m
 
 ---
 Powered by MorningAI | Full report: report_2026-04-08.md

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.2] - 2026-04-14
+
+### Improvements
+- **Message digest: enforce cross-source verification**: Message mode now explicitly requires the same cross-source verification as the full report — items with score 7+ must have `verified == true` (2+ independent sources) before inclusion
+- **Examples switched to English**: All examples in gen-message SKILL.md and digest template are now in English for consistency
+
 ## [1.2.1] - 2026-04-14
 
 ### Improvements
