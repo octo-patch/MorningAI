@@ -1,20 +1,12 @@
 # Changelog
 
-## [1.2.3] - 2026-04-14
-
-### Improvements
-- **Message digest: all items require traceable source**: Every item in the digest must have a valid `source_url` to an authoritative primary source, regardless of score. Items without a credible source link are skipped. 7+ score items additionally require cross-source verification (`verified == true`)
-
 ## [1.2.2] - 2026-04-14
 
 ### Improvements
-- **Message digest: enforce cross-source verification**: Message mode now explicitly requires the same cross-source verification as the full report — items with score 7+ must have `verified == true` (2+ independent sources) before inclusion
+- **Message digest: all items require traceable source**: Every item must have a valid `source_url` to an authoritative primary source, regardless of score. 7+ score items additionally require cross-source verification (`verified == true`, 2+ independent sources)
+- **Message digest: inline source links by default**: Each item ends with a `🔗 URL` source link. Changed `MESSAGE_LINKS` default from `bottom` to `inline`
 - **Examples switched to English**: All examples in gen-message SKILL.md and digest template are now in English for consistency
-
-## [1.2.1] - 2026-04-14
-
-### Improvements
-- **Message digest: inline source links by default**: Each item now ends with a `🔗 URL` source link. Changed `MESSAGE_LINKS` default from `bottom` to `inline` so readers can immediately access the original source for every item
+- **Enhanced X/Twitter search**: Multi-layer search strategy (official accounts → CEO/personnel → KOLs), RT/quote tweet tracing to original post time, structured per-category search with source priority hierarchy
 
 ## [1.2.0] - 2026-04-14
 

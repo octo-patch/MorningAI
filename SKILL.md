@@ -1,6 +1,6 @@
 ---
 name: morning-ai
-version: "1.2.3"
+version: "1.2.2"
 description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 5 automated sources + agent X/Twitter search every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
 argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *", morning-ai --lang zh (with MESSAGE_ENABLED=true for message digest)'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
@@ -167,9 +167,75 @@ If the user provides `--exclude` types (e.g. `--exclude Funding`), note which ty
 
 After the automated collection completes, use **web search** to discover recent X/Twitter updates from tracked entities. The tracked X handles are listed in `{SKILL_DIR}/lib/entities.py` under `X_HANDLES`.
 
-1. Search for recent AI news on X/Twitter using web search — focus on high-priority entities (major AI labs, trending products, key people)
-2. For each discovered update, verify timeliness (must be within the 24-hour collection window)
-3. Incorporate verified X/Twitter findings into the report in Step 3, attributing the source as X/Twitter with a link to the original post
+#### Search Strategy: Multi-Layer Account Checking
+
+Search X/Twitter in **three layers**, in priority order:
+
+**Layer 1 — Official Accounts** (highest priority):
+Search for recent posts from official company/product accounts. These are the most authoritative X sources.
+- Examples: `@OpenAI`, `@AnthropicAI`, `@GoogleDeepMind`, `@cursor_ai`, `@deepseek_ai`
+- Focus: Model releases, product launches, API updates, pricing changes
+
+**Layer 2 — CEO / Core Personnel Accounts**:
+Check key people's accounts for announcements, previews, and context that official accounts may not cover.
+- Examples: `@sama` (OpenAI), `@DarioAmodei` (Anthropic), `@JeffDean` (Google), `@ylecun` (Meta), `@elonmusk` (xAI)
+- Focus: Early previews, strategic context, technical details, competitive commentary
+
+**Layer 3 — KOLs & Benchmark Institutions**:
+Check AI opinion leaders and evaluation accounts for independent analysis, benchmark results, and trending discoveries.
+- Examples: `@karpathy`, `@_akhaliq`, `@ArtificialAnlys`, `@huggingface`, `@swyx`
+- Focus: Paper highlights, benchmark rankings, community trends, independent testing
+
+#### Search Execution
+
+For each search depth:
+
+| Depth | Layer 1 (Official) | Layer 2 (Personnel) | Layer 3 (KOLs) |
+|-------|-------------------|--------------------|-----------------| 
+| `quick` | Top 5 entities by priority | Skip | Skip |
+| `default` | All major entities (~20) | Top CEO accounts (~10) | Top KOLs (~5) |
+| `deep` | All entities with X handles | All personnel accounts | All KOLs + benchmark accounts |
+
+Use web search queries like:
+- `site:x.com @{handle} since:{yesterday}` — for specific account posts
+- `site:x.com "{entity name}" AI announcement` — for broader discovery
+- `site:x.com AI model release OR benchmark OR open-source {date}` — for trending AI news
+
+#### RT/Quote Tweet Handling
+
+When a discovered post is a retweet (RT) or quote tweet:
+1. **Trace to the original post** — the event timestamp is the **original post time**, not the RT/quote time
+2. Validate the **original post time** falls within the 24-hour collection window `[Yesterday 08:00, Today 08:00) UTC+8`
+3. Use the **original post URL** as the `source_url`, not the RT/quote URL
+4. Credit the original author in `source_label` (e.g., `"@AnthropicAI on X (via @karpathy RT)"`)
+
+#### Timeliness Validation
+
+- All X post times must be converted to **UTC+8** for window validation
+- The collection window is `[Yesterday 08:00, Today 08:00) UTC+8`
+- Posts outside this window are **rejected** — do NOT include them regardless of relevance
+- For RT/quote tweets, validate the **original post time**, not the retweet time
+
+#### Source Priority for X-Sourced Items
+
+| Priority | Source Type | Credibility |
+|----------|-----------|-------------|
+| 1 | Official blog / changelog | Highest |
+| 2 | Official X/Twitter account | High |
+| 3 | API changelog / docs | High |
+| 4 | Official GitHub release | High |
+| 5 | CEO / core personnel X account | Medium-High |
+| 6 | Benchmark institution X account | Medium |
+| 7 | KOL X account | Reference only — requires cross-verification |
+
+Items sourced **only** from KOL accounts (Priority 7) should be scored conservatively and flagged for cross-verification with an official source.
+
+#### Incorporating X Findings
+
+For each verified X/Twitter update:
+1. Create a TrackerItem with `source: "x"`, `source_url` pointing to the original tweet, and `source_label` as `"@{handle} on X"`
+2. If the same event was already found by an automated collector (Reddit, HN, GitHub, etc.), merge it as a `cross_ref` rather than creating a duplicate — this strengthens the verification score
+3. If it's a genuinely new finding not in the automated data, add it as a new item with appropriate scoring
 
 ---
 
