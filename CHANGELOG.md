@@ -2,6 +2,16 @@
 
 ## [1.2.6] - 2026-04-14
 
+### New Features
+- **`--intro` parameter**: Display product introduction page and stop — no data collection, useful for first-time users
+
+### Improvements
+- **Rebranded to MorningAI**: All report headers, templates, and references updated from "AI News Daily" to "MorningAI"
+- **HuggingFace model descriptions**: Fetch README.md from repo instead of API cardData for richer, more accurate model descriptions
+- **Reddit concurrent requests**: Parallel subreddit fetching for faster collection; collector timeout increased to 600s
+- **Infographic generation**: Cover image always generated; combined long image preserved as default output
+- **Example dates updated**: All sample data and references updated from 2026-04-08 to 2026-04-14
+
 ### Fixes
 - **content_type auto-classification**: All collectors previously left `content_type` empty — added heuristic classifier (`lib/classify.py`) using source type + keyword patterns to assign product/model/benchmark/financing. Integrated into pipeline before scoring
 - **HuggingFace summary enrichment**: Summary was just metadata stats (pipeline/downloads/likes). Now fetches model card description via `/api/models/{id}` concurrently, with metadata fallback
