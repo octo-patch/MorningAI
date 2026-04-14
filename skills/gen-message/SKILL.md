@@ -12,7 +12,7 @@ Transform the daily AI news report data into a concise, copy-paste-friendly **me
 
 The message digest shares the **same data pipeline** as the full report — all items go through the standard collect → score → deduplicate → cross-source link → verification pipeline. The only difference is the final output format: the full report produces a detailed multi-section Markdown document, while the message digest condenses the same verified data into a compact, share-friendly format.
 
-**Cross-source verification still applies:** Items with score 7+ must be verified by 2+ independent sources before inclusion. The `verified` and `verify_sources` fields from `data_{DATE}.json` are authoritative. Do NOT include unverified high-score items — the same factual rigor applies regardless of output format.
+**Factual integrity applies to all items:** Every item in the digest — regardless of score — must have a traceable, authoritative source (`source_url`). Items with score 7+ additionally require cross-source verification (`verified == true`, 2+ independent sources). Never include an item whose factual claims cannot be linked to a concrete primary source.
 
 ---
 
@@ -54,7 +54,7 @@ The message digest shares the **same data pipeline** as the full report — all 
 
 1. **Read data**: Load `data_{DATE}.json` from the working directory (this data has already been scored, deduplicated, and cross-source verified by the collection pipeline)
 2. **Filter by score**: Only items with `importance >= MESSAGE_MIN_SCORE`
-3. **Verify**: For items with score 7+, confirm `verified == true` — skip unverified high-score items
+3. **Verify**: Every item included in the digest must have a valid `source_url` pointing to an authoritative primary source. For items with score 7+, additionally confirm `verified == true` (2+ independent sources). **No item — regardless of score — should be included if its factual claims cannot be traced back to a concrete source.** If an item lacks a credible `source_url`, skip it.
 4. **Sort**: By importance score descending (highest first)
 5. **Limit**: Take top N items (from `MESSAGE_MAX_ITEMS`)
 6. **Translate**: If data language differs from `MESSAGE_LANG`, translate summaries. Entity names (proper nouns) stay unchanged.

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.3] - 2026-04-14
+
+### Improvements
+- **Message digest: all items require traceable source**: Every item in the digest must have a valid `source_url` to an authoritative primary source, regardless of score. Items without a credible source link are skipped. 7+ score items additionally require cross-source verification (`verified == true`)
+
 ## [1.2.2] - 2026-04-14
 
 ### Improvements
