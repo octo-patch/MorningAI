@@ -5,7 +5,7 @@ Supports single-image mode (--prompt) and batch mode (--batch manifest.json).
 
 Usage:
     # Single image
-    python3 skills/gen-infographic/scripts/gen_infographic.py --prompt "9:16 portrait infographic, AI News Daily ..." -o cover.png
+    python3 skills/gen-infographic/scripts/gen_infographic.py --prompt "9:16 portrait infographic, MorningAI ..." -o cover.png
 
     # Batch mode (multiple images from manifest)
     python3 skills/gen-infographic/scripts/gen_infographic.py --batch manifest.json
@@ -15,7 +15,7 @@ Usage:
 
 Manifest JSON format:
     [
-      {"prompt": "9:16 portrait infographic, AI News Daily ...", "output": "news_infographic_2026-04-08.png"},
+      {"prompt": "9:16 portrait infographic, MorningAI ...", "output": "news_infographic_2026-04-08.png"},
       {"prompt": "9:16 portrait infographic, Model Updates ...", "output": "news_infographic_2026-04-08_model.png"}
     ]
 """

@@ -10,9 +10,9 @@ This template defines the exact output format for `message_{DATE}.md`.
 
 | `--lang` | Header Line 1 | Header Line 2 |
 |----------|---------------|----------------|
-| `zh` | `AI 每日速报 {YYYY-MM-DD}` | `共 {N} 条重要更新` |
-| `en` | `AI Daily Digest {YYYY-MM-DD}` | `{N} notable updates today` |
-| `ja` | `AI デイリーダイジェスト {YYYY-MM-DD}` | `本日の注目 {N} 件` |
+| `zh` | `MorningAI {YYYY-MM-DD}` | `共 {N} 条重要更新` |
+| `en` | `MorningAI {YYYY-MM-DD}` | `{N} notable updates today` |
+| `ja` | `MorningAI {YYYY-MM-DD}` | `本日の注目 {N} 件` |
 
 ### Footer
 
@@ -121,7 +121,7 @@ When set to `bottom`, omit `🔗` lines from items and group links as a referenc
 ## Complete Example
 
 ```
-AI Daily Digest 2026-04-08
+MorningAI 2026-04-08
 
 8 notable updates today
 

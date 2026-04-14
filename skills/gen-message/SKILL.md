@@ -68,9 +68,9 @@ The message digest shares the **same data pipeline** as the full report — all 
 
 | Language | Header Text | Item Count Format |
 |----------|-------------|-------------------|
-| `zh` | `AI 每日速报 {DATE}` | `共 {N} 条重要更新` |
-| `en` | `AI Daily Digest {DATE}` | `{N} notable updates today` |
-| `ja` | `AI デイリーダイジェスト {DATE}` | `本日の注目 {N} 件` |
+| `zh` | `MorningAI {DATE}` | `共 {N} 条重要更新` |
+| `en` | `MorningAI {DATE}` | `{N} notable updates today` |
+| `ja` | `MorningAI {DATE}` | `本日の注目 {N} 件` |
 
 ### Emoji Markers by Score
 
@@ -237,7 +237,7 @@ cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --pr
 ## Example Output
 
 ```
-AI Daily Digest 2026-04-08
+MorningAI 2026-04-08
 
 8 notable updates today
 

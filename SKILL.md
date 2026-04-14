@@ -47,7 +47,7 @@ metadata:
       - clawhub
 ---
 
-# morning-ai: AI News Daily Report Generator
+# morning-ai: MorningAI Report Generator
 
 > **Permissions overview:** Collects public data from Reddit, Hacker News, GitHub, HuggingFace, arXiv, and X/Twitter. Requires optional API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
 

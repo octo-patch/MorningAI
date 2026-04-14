@@ -7,7 +7,7 @@ to control visual appearance. Selected via IMAGE_STYLE config (default: classic)
 STYLE_PRESETS = {
     "classic": (
         'Style: Clean editorial magazine layout. Off-white (#F5F5F0) background with subtle warm gray grid lines. '
-        'Bold sans-serif header "AI News Daily" in black with a vivid accent color underline. '
+        'Bold sans-serif header "MorningAI" in black with a vivid accent color underline. '
         'Each card is a white rectangle with soft drop shadow (4px blur, 10% black), compact spacing between cards. '
         'Use a refined accent palette: deep navy (#1A2744) for card titles, muted teal (#2A9D8F) for bullet icons, '
         'slate gray (#4A5568) for body text. NO gradients, NO textures, NO background patterns \u2014 pure flat white space.\n'
@@ -22,7 +22,7 @@ STYLE_PRESETS = {
     ),
     "dark": (
         'Style: Dark mode editorial layout. Deep charcoal (#1A1A2E) background. '
-        'Bold sans-serif header "AI News Daily" in white (#FAFAFA) with electric blue (#00D4FF) accent underline. '
+        'Bold sans-serif header "MorningAI" in white (#FAFAFA) with electric blue (#00D4FF) accent underline. '
         'Each card is a dark slate (#16213E) rectangle with subtle 1px border in muted blue (#0F3460), '
         'compact spacing between cards. Accent palette: white (#FAFAFA) for card titles, '
         'soft violet (#7B68EE) for bullet icons, light gray (#B0BEC5) for body text. '
@@ -38,7 +38,7 @@ STYLE_PRESETS = {
     ),
     "glassmorphism": (
         'Style: Glassmorphism editorial layout. Soft gradient background blending from lavender (#E8EAF6) top-left '
-        'to pale rose (#FCE4EC) bottom-right. Bold sans-serif header "AI News Daily" in dark charcoal (#212121) '
+        'to pale rose (#FCE4EC) bottom-right. Bold sans-serif header "MorningAI" in dark charcoal (#212121) '
         'with warm coral (#FF6B6B) accent underline. Each card is a semi-transparent frosted white panel '
         '(rgba(255,255,255,0.65)) with backdrop blur effect, rounded corners (16px), and subtle white border '
         '(1px, 30% opacity). Accent palette: charcoal (#212121) for card titles, soft indigo (#5C6BC0) for bullet icons, '
@@ -53,7 +53,7 @@ STYLE_PRESETS = {
     ),
     "newspaper": (
         'Style: Classic newspaper editorial layout. Warm cream (#FFF8E7) background with very faint paper texture grain. '
-        'Bold serif header "AI News Daily" in deep black (#1A1A1A) with crimson red (#B71C1C) thin rule line below. '
+        'Bold serif header "MorningAI" in deep black (#1A1A1A) with crimson red (#B71C1C) thin rule line below. '
         'Each card is separated by thin black hairline rules (1px) \u2014 NO card backgrounds, NO shadows, NO boxes. '
         'Content flows in a column-based newspaper grid. Accent palette: deep black (#1A1A1A) for card titles in bold serif, '
         'dark gray (#333333) for bullet text in serif, medium gray (#666666) for subtitles in italic serif.\n'
@@ -68,7 +68,7 @@ STYLE_PRESETS = {
     ),
     "tech": (
         'Style: Tech terminal aesthetic layout. Near-black background (#0D1117) with very faint dot grid pattern '
-        '(8px spacing, 5% white). Bold monospace header "AI News Daily" in bright cyan (#00FFCC) with a blinking cursor '
+        '(8px spacing, 5% white). Bold monospace header "MorningAI" in bright cyan (#00FFCC) with a blinking cursor '
         'underscore effect. Each card is a dark panel (#161B22) with 1px border in dim cyan (#1A3A3A), rounded corners (4px). '
         'Accent palette: bright green (#39FF14) for card titles in monospace bold, amber (#FFB000) for bullet markers '
         'as `>` symbols, light gray (#C9D1D9) for body text in monospace. '
@@ -102,7 +102,7 @@ CONTENT_DENSITY = (
 SECTION_SUFFIX = (
     "\n\nSECTION CONTINUITY RULES (override any conflicting style instructions above):\n"
     "- Do NOT render any top header, banner, branding, or title bar — "
-    'no "AI News Daily" header or similar. Start directly with the section title.\n'
+    'no "MorningAI" header or similar. Start directly with the section title.\n'
     "- Top edge: no decorative border, rule, or extra padding — "
     "content starts near the top so the previous section flows into this one.\n"
     "- Bottom edge: no footer, closing border, or extra padding — "

@@ -219,8 +219,8 @@ Image text language **must match the target platform**, not the report source la
 
 | Platform | Image Language | Header Text |
 |----------|---------------|-------------|
-| **X** | **English only** | "AI News Daily" |
-| **Xiaohongshu** | **Chinese only** | "AI 每日速报" |
+| **X** | **English only** | "MorningAI" |
+| **Xiaohongshu** | **Chinese only** | "MorningAI" |
 
 All card titles, bullet points, section headers, and any text rendered on the image must be in the platform's language. Entity names (proper nouns like OpenAI, DeepSeek) remain unchanged.
 
@@ -251,14 +251,14 @@ The recommended style is a default — channels can override via `image_style` f
 **X images**:
 - Aspect ratio: 16:9 (landscape) or 1:1 (square)
 - **All text in English** — titles, bullets, headers, everything
-- Header: "AI News Daily"
+- Header: "MorningAI"
 - Apply the persona's recommended image style (see mapping above)
 - Single image per tweet (or up to 4 for threads)
 
 **Xiaohongshu images**:
 - Aspect ratio: 3:4 (portrait) or 1:1 (square)
 - **All text in Chinese** — titles, bullets, headers, everything
-- Header: "AI 每日速报"
+- Header: "MorningAI"
 - Apply the style's recommended image style (see mapping above), plus Xiaohongshu-specific adaptations:
   - Larger font sizes for mobile readability
   - Rounded card corners (16px)
@@ -301,7 +301,7 @@ CRITICAL RULES:
 ```
 
 **Variable substitution:**
-- `{HEADER_TEXT}` → "AI News Daily" for X, "AI 每日速报" for Xiaohongshu
+- `{HEADER_TEXT}` → "MorningAI" for X, "MorningAI" for Xiaohongshu
 - `{LANG}` → "English" for X, "Chinese" for Xiaohongshu
 - `{STYLE_BLOCK}` → from the persona's recommended image style (see `skills/gen-infographic/SKILL.md` Style Presets)
 

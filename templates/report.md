@@ -1,4 +1,4 @@
-# AI News Daily {DATE}
+# MorningAI {DATE}
 
 **Coverage Period**: [{YESTERDAY} 08:00, {TODAY} 08:00) UTC+8
 **Generated At**: {TIMESTAMP}
