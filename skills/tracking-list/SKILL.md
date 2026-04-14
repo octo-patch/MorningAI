@@ -1,5 +1,6 @@
 ---
 name: tracking-list
+version: "1.2.2"
 description: Unified AI News Tracking Specification - covers Product/Model/Benchmark/Funding types with tracking scope, source standards, timeliness checks, scoring criteria, and record format
 ---
 
@@ -306,8 +307,6 @@ Timeliness Check:
 
 ## Draft Record Format
 
-> **Language rule**: Default is **English**. Titles (Entity name + Event description) and summary bullet points must be written in English unless `--lang` specifies otherwise. Entity names are proper nouns — keep them as-is. Translate source content if it is in a different language than the target.
-
 ### Valid Record Format
 
 ```markdown
@@ -383,6 +382,26 @@ Timeliness Check:
 | Entity | Summary | Skip Reason | Source |
 |--------|---------|-------------|--------|
 | [Entity name] | [Content description] | Pure marketing / Unconfirmed rumor / Outside window / Duplicate coverage / Tips sharing | [link](url) |
+```
+
+### Mid-Score Compact Format (5-6)
+
+```markdown
+- **Entity** (X.X): Event description with specifics (version, capability, metric).
+  - Detail 1: what changed, key numbers, comparison with previous version or competitors
+  - Detail 2: additional context, availability, or technical specifics
+  - Detail 3: implications or notable aspects
+  Source: [Name](URL)
+```
+
+### Lower-Score Compact Format (3-4)
+
+Use compact table format. The Source column must contain clickable `[Name](URL)` links.
+
+```markdown
+| Entity | Score | Event | Source |
+|--------|-------|-------|--------|
+| Entity name | X.X | Brief description with one key detail | [Name](URL) |
 ```
 
 ---

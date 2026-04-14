@@ -1,7 +1,7 @@
 ---
 name: morning-ai
 version: "1.2.2"
-description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 5 automated sources + agent X/Twitter search every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
+description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 6 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
 argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *", morning-ai --lang zh (with MESSAGE_ENABLED=true for message digest)'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
@@ -49,9 +49,9 @@ metadata:
 
 # morning-ai: AI News Daily Report Generator
 
-> **Permissions overview:** Collects public data from Reddit, Hacker News, GitHub, HuggingFace, and arXiv. X/Twitter updates are discovered via agent web search. Requires optional API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
+> **Permissions overview:** Collects public data from Reddit, Hacker News, GitHub, HuggingFace, arXiv, and X/Twitter. Requires optional API keys configured in `.env` or `~/.config/morning-ai/.env`. Writes report files to the current working directory. See [Configuration](#configuration) for details.
 
-Track 76+ AI entities across 5 automated data sources + agent-driven X/Twitter search. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
+Track 80+ AI entities across 6 sources. Collect updates from the past 24 hours, score and deduplicate them, and generate a structured Markdown daily report. Covers 4 types: **Product** (feature launches, version releases), **Model** (new models, open-source weights), **Benchmark** (leaderboard changes, papers), **Funding** (rounds, acquisitions, milestones).
 
 ---
 
@@ -77,11 +77,10 @@ if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || 
 
 Walk the user through setup interactively, waiting for their response at each step:
 
-1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 5 automated sources + agent X/Twitter search, generates scored daily reports
-2. **Show what works for free** — 5 automated sources (4 need no API keys, 1 optional):
-   - Reddit (public JSON), Hacker News (Algolia API), HuggingFace (public API), arXiv (public API)
+1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 6 sources (Reddit, Hacker News, GitHub, HuggingFace, arXiv, X/Twitter), generates scored daily reports
+2. **Show what works for free** — 6 sources (5 need no API keys, 1 optional):
+   - Reddit (public JSON), Hacker News (Algolia API), HuggingFace (public API), arXiv (public API), X/Twitter (web search)
    - GitHub (public API, optional `GITHUB_TOKEN` for higher rate limits)
-   - X/Twitter updates are discovered via agent web search (no API key needed)
 3. **Ask the user** if they want to enable GitHub with higher rate limits:
 
 | Key | Source | Get it at |
@@ -163,7 +162,7 @@ cd {SKILL_DIR} && python3 skills/tracking-list/scripts/collect.py --date {YYYY-M
 
 If the user provides `--exclude` types (e.g. `--exclude Funding`), note which types to filter out in Step 3.
 
-### X/Twitter Search (Agent-driven)
+### X/Twitter Search
 
 After the automated collection completes, use **web search** to discover recent X/Twitter updates from tracked entities. The tracked X handles are listed in `{SKILL_DIR}/lib/entities.py` under `X_HANDLES`.
 
@@ -172,18 +171,15 @@ After the automated collection completes, use **web search** to discover recent 
 Search X/Twitter in **three layers**, in priority order:
 
 **Layer 1 — Official Accounts** (highest priority):
-Search for recent posts from official company/product accounts. These are the most authoritative X sources.
-- Examples: `@OpenAI`, `@AnthropicAI`, `@GoogleDeepMind`, `@cursor_ai`, `@deepseek_ai`
+Search for recent posts from official company/product accounts. Handles are listed in entity files under `{SKILL_DIR}/entities/`.
 - Focus: Model releases, product launches, API updates, pricing changes
 
 **Layer 2 — CEO / Core Personnel Accounts**:
-Check key people's accounts for announcements, previews, and context that official accounts may not cover.
-- Examples: `@sama` (OpenAI), `@DarioAmodei` (Anthropic), `@JeffDean` (Google), `@ylecun` (Meta), `@elonmusk` (xAI)
+Check key people's accounts for announcements, previews, and context that official accounts may not cover. Listed as "Key People" in each entity file.
 - Focus: Early previews, strategic context, technical details, competitive commentary
 
 **Layer 3 — KOLs & Benchmark Institutions**:
-Check AI opinion leaders and evaluation accounts for independent analysis, benchmark results, and trending discoveries.
-- Examples: `@karpathy`, `@_akhaliq`, `@ArtificialAnlys`, `@huggingface`, `@swyx`
+Check AI opinion leaders and evaluation accounts for independent analysis, benchmark results, and trending discoveries. See `{SKILL_DIR}/entities/kol.md` and `{SKILL_DIR}/entities/benchmarks-academic.md`.
 - Focus: Paper highlights, benchmark rankings, community trends, independent testing
 
 #### Search Execution
@@ -267,120 +263,16 @@ This specification defines:
 
 **Report generation rules:**
 - **Language**: Default is **English**. Write ALL content in English unless `--lang` is explicitly specified. If source data is in a different language, translate it. Entity names (proper nouns) stay as-is.
-- **Source links**: Every item in the report MUST include a clickable source link `[Source Name](URL)` pointing to the original content. This applies to all sections: TLDR items, high-score detailed entries, and compact table rows. Readers must be able to click through to the original source for every item.
-- **Detail quality**: Summary bullet points must include specific details — version numbers, percentage improvements, parameter counts, pricing, availability dates, benchmark scores. Avoid vague descriptions like "improved performance" or "major update" without concrete numbers or specifics.
-- **Factual verification (CRITICAL)**: Every specific number (parameter count, benchmark score, pricing, context length, version number, funding amount) MUST be verified from an authoritative primary source (HuggingFace model card, official blog, changelog, benchmark site, etc.) before inclusion. **Never write a number from memory or inference** — if the detail cannot be confirmed from the collected source data, OMIT it rather than guess. An absent detail is always better than a wrong one. See `skills/tracking-list/SKILL.md` → "Factual Detail Verification" for the full protocol.
+- **Source links**: Every item MUST include a clickable source link `[Source Name](URL)` pointing to the original content. This applies to all sections: TLDR, detailed entries, and compact table rows.
+- **Detail quality**: Summary bullet points must include specific details — version numbers, percentage improvements, parameter counts, pricing, availability dates, benchmark scores. Avoid vague descriptions without concrete numbers.
+- **Factual verification**: See `skills/tracking-list/SKILL.md` → "Factual Detail Verification" for the full protocol. Never write a number from memory or inference — omit unverifiable details.
 - Filter out any excluded types (if `--exclude` was specified)
 - Sort items by score within each type section
-
-### Report Detail Level Requirements
-
-Write reports as **detailed and comprehensive as possible**. Each item should have enough bullet points to cover all important aspects of the news.
-
-**Bullet point count by score:**
-
-| Score | Min Bullet Points | Content Depth |
-|-------|------------------|---------------|
-| **9-10** | 5-8 points | Exhaustive coverage: what, why, how, technical specs, competitive context, availability, pricing, ecosystem impact |
-| **7-8** | 4-6 points | Thorough coverage: what happened, key specs/numbers, why it matters, who's affected, timeline |
-| **5-6** | 3-4 points | Solid coverage: what changed, key numbers, context |
-| **3-4** | 1-2 points | Brief but specific: what changed, one key detail |
-
-**Each bullet point must be substantive** — include at least one of:
-- Specific numbers (benchmarks, parameters, pricing, performance gains)
-- Named comparisons (vs. competitor X, vs. previous version Y)
-- Concrete capabilities (what users can now do)
-- Dates/timelines (when available, when rolling out)
-- Technical details (architecture, training data, methods)
-
-**"Why It Matters" section** (required for 7+ scores):
-- Must be **analytical, not descriptive** — explain implications, not just restate facts
-- Include competitive context (how this positions the company vs rivals)
-- Include user/industry impact (what changes for practitioners, researchers, or end users)
-- 2-4 sentences for 9-10 scores, 1-2 sentences for 7-8 scores
-
-**"Key Data" table** (required for 7+ scores when quantitative data exists):
-- Include benchmark scores with delta vs previous/competitor
-- Include pricing with comparison
-- Include model specs (parameters, context length, modalities)
-- Include business metrics (funding amount, valuation, user count)
-
 - **TLDR section**: Only items with score 7+ (across all types), sorted high to low. Each item includes a one-line summary with specifics, plus an _Impact_ sentence explaining why it matters. Must include a source link `[[Source](URL)]` at the end.
 - **Type sections**: Group by score range (9-10 / 7-8 / 5-6 / 3-4)
 - For items with score 7+, include multi-source verification if available
-- Use the record format from the tracking specification
+- **Item format**: Follow the record format defined in the tracking specification (read in Step 2), including detail level requirements, "Why It Matters", and "Key Data" sections. For mid-score (5-6) and lower-score (3-4) items, use the compact formats defined there.
 - Fill in the statistics summary table
-
-**Item format in report:**
-
-For top-score items (9-10):
-```markdown
-### {Entity} - {Event description}
-
-| Field | Value |
-|-------|-------|
-| **Type** | Product / Model / Benchmark / Funding |
-| **Score** | X.X |
-| **Published** | YYYY-MM-DD HH:MM UTC+8 |
-| **Source** | [Source Name](URL) |
-
-**Summary:**
-- Key point 1 (with specific numbers, versions, or metrics)
-- Key point 2 (competitive comparison or positioning)
-- Key point 3 (technical specs or architecture details)
-- Key point 4 (availability, pricing, or rollout timeline)
-- Key point 5 (ecosystem impact or integration details)
-- (5-8 bullet points total — cover all important aspects exhaustively)
-
-**Why It Matters:**
-> 2-4 sentence analysis: industry impact, competitive significance, and what this changes for end users. Don't restate the summary — explain the implications and strategic context.
-
-**Key Data** (required when quantitative metrics are available):
-| Metric | Value |
-|--------|-------|
-| e.g. Benchmark | e.g. 92.3% (+5.1% vs previous) |
-| e.g. Parameters | e.g. 671B total / 37B active |
-| e.g. Pricing | e.g. $3/M input, $15/M output |
-| e.g. Context | e.g. 1M tokens (+4x vs v3) |
-```
-
-For important items (7-8):
-```markdown
-### {Entity} - {Event description}
-
-| Field | Value |
-|-------|-------|
-| **Type** | Product / Model / Benchmark / Funding |
-| **Score** | X.X |
-| **Published** | YYYY-MM-DD HH:MM UTC+8 |
-| **Source** | [Source Name](URL) |
-
-**Summary:**
-- Key point 1 (with specific numbers, versions, or metrics)
-- Key point 2 (what changed and why)
-- Key point 3 (who's affected and how)
-- Key point 4 (technical or business details)
-- (4-6 bullet points total)
-
-**Why It Matters:**
-> 1-2 sentence analysis: industry impact, competitive significance, or what this changes for end users.
-
-**Key Data** (include when quantitative metrics are available):
-| Metric | Value |
-|--------|-------|
-| e.g. Benchmark | e.g. 92.3% (+5.1% vs previous) |
-```
-
-For mid-score items (5-6), use multi-line format with 3-4 concrete points:
-```markdown
-- **Entity** (X.X): Event description with specifics (version, capability, metric).
-  - Detail 1: what changed, key numbers, comparison with previous version or competitors
-  - Detail 2: additional context, availability, or technical specifics
-  - Detail 3: implications or notable aspects
-  Source: [Name](URL)
-```
-
-For lower-score items (3-4), use compact table format. The Source column must contain clickable `[Name](URL)` links.
 
 ---
 
@@ -586,18 +478,11 @@ GITHUB_TOKEN=ghp_xxx
 | GitHub | Public API (optional token for higher limits) | 60 req/hr (unauthenticated) |
 | HuggingFace | Public API | Generous |
 | arXiv | Public API | Generous |
-| X/Twitter | Agent web search | N/A |
+| X/Twitter | Web search | Generous |
 
 ### Message Digest Configuration
 
-| Key | Description | Default |
-|-----|-------------|---------|
-| `MESSAGE_ENABLED` | Enable message digest generation | `false` |
-| `MESSAGE_MIN_SCORE` | Minimum importance score to include | `5` |
-| `MESSAGE_MAX_ITEMS` | Maximum number of items in digest | `10` |
-| `MESSAGE_LANG` | Language override (default: from `--lang`) | (from `--lang`) |
-| `MESSAGE_IMAGE_STYLE` | Image style override | (from `IMAGE_STYLE`) |
-| `MESSAGE_LINKS` | Link placement: `inline` (after each item) or `bottom` (reference list) | `inline` |
+See `skills/gen-message/SKILL.md` for message digest configuration variables (`MESSAGE_ENABLED`, `MESSAGE_MIN_SCORE`, `MESSAGE_MAX_ITEMS`, etc.).
 
 ---
 
