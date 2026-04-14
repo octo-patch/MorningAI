@@ -1,6 +1,6 @@
 ---
 name: gen-message
-version: "1.2.4"
+version: "1.2.5"
 description: Generate concise message digest with image for sharing on messaging platforms (WeChat, Telegram, Slack, etc.)
 ---
 

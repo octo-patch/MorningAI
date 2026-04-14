@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.5] - 2026-04-14
+
+### Improvements
+- **Claude Code skill discovery via symlink**: Add `skills/morning-ai/SKILL.md` symlink pointing to root `SKILL.md`, enabling Claude Code to discover the main skill through its `skills/` directory scan while keeping root `SKILL.md` intact for Codex, OpenCode, and OpenClaw
+
 ## [1.2.4] - 2026-04-14
 
 ### Fixes
