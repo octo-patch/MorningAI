@@ -24,6 +24,7 @@ from lib import env, cache
 from lib.schema import TrackerItem, CollectionResult, DailyReport
 from lib.score import score_items, apply_verification_bonus
 from lib.dedupe import dedupe_by_source, cross_source_link
+from lib.classify import classify_items
 from lib import entities
 
 
@@ -132,7 +133,7 @@ def run_collection(
         for future in as_completed(futures):
             name = futures[future]
             try:
-                result = future.result(timeout=120)
+                result = future.result(timeout=600)
                 collection_results.append(result)
                 all_items.extend(result.items)
                 _log(f"[{name}] Done: {len(result.items)} items, {len(result.errors)} errors")
@@ -145,7 +146,10 @@ def run_collection(
     collect_time = time.time() - start_time
     _log(f"Collection complete: {len(all_items)} raw items in {collect_time:.1f}s")
 
-    # Pipeline: Score → Dedupe by source → Cross-source link → Verification bonus → Final dedupe
+    # Pipeline: Classify → Score → Dedupe by source → Cross-source link → Verification bonus
+    _log("Classifying content types...")
+    all_items = classify_items(all_items)
+
     _log("Scoring items...")
     all_items = score_items(all_items)
 

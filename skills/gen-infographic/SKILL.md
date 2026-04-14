@@ -22,12 +22,17 @@ Generate multiple infographics for the daily report:
 | Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 9:16 |
 | Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 9:16 |
 | Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 9:16 |
-| Combined | `news_infographic_YYYY-MM-DD_combined.png` | Always (final output) | long |
 
-- **Cover uses 9:16 portrait format** — same as per-type sections, for seamless vertical stitching
-- **Per-type sections use 9:16 portrait format** — automatically stitched below the cover into a single vertical long image (`_combined.png`)
-- **Always generate cover + sections + stitch** — regardless of how many qualifying items exist
+- **All images use 9:16 portrait format** — each image is a standalone card, ready for multi-image posting
+- **No combined/stitched image** — individual images are the final output
 - **Format**: PNG
+
+### Platform Posting Limits
+
+| Platform | Max Images | Strategy |
+|----------|-----------|----------|
+| **X (Twitter)** | 4 per tweet | Cover + top 3 section images (by item count) |
+| **Xiaohongshu** | 9 per post (carousel) | Cover + all section images |
 
 > **`IMAGE_GEN_TYPES` config**: Controls which per-type images to generate. Default: `auto` (only types with 7+ items). Options: `all` (all types with any items), `none` (cover only), or comma-separated types like `model,product`.
 
@@ -211,17 +216,20 @@ CRITICAL RULES:
 
 ### Combined Prompt Template — not used
 
-> **Removed.** All reports now use Cover (9:16) + Per-Type Sections (9:16) + stitch, regardless of item count.
+> **Removed.** All reports now use Cover (9:16) + Per-Type Sections (9:16) as individual images for multi-image posting.
 
 ---
 
 ## Image Strategy
 
-Image generation always produces a **single combined long image** as the final output:
+Image generation produces **individual standalone images** — no stitching:
 
 1. **Cover** (9:16 portrait): Top 4-5 items across all types — Cover Prompt Template
 2. **Per-type sections** (9:16 portrait): One for each type with 7+ score items — Per-Type Prompt Template
-3. **Stitch**: Cover + sections vertically into `news_infographic_YYYY-MM-DD_combined.png`
+
+When posting to social platforms, select images based on platform limits:
+- **X**: Cover + top 3 sections (4 images max per tweet)
+- **Xiaohongshu**: Cover + all sections (up to 9 images as carousel)
 
 > If only 1-2 qualifying items exist, the cover still generates with extra whitespace. Per-type sections are skipped for types with no 7+ items.
 
@@ -238,18 +246,18 @@ Manifest example:
 
 ### 3. Generate Images
 
-Follow the **Image Strategy** section above — always generate cover + per-type sections + stitch.
+Follow the **Image Strategy** section above — generate cover + per-type sections as individual images.
 
 **Option A** — Native tool (if supported):
-Generate each image using your tool's built-in capability, then stitch.
+Generate each image using your tool's built-in capability.
 
 **Option B** — Python script (default, recommended):
-Build a manifest JSON and run with `--stitch`:
+Build a manifest JSON and run:
 
 ```bash
-cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json --stitch
+cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
 ```
-> Cover is 9:16 portrait, sections are 9:16 portrait. Requires `pip install Pillow`. Produces `news_infographic_YYYY-MM-DD_combined.png`.
+> All images are 9:16 portrait. Requires `pip install Pillow` only if using `--stitch` (optional, not recommended for social posting).
 
 ### 4. Post-generation Verification (required)
 

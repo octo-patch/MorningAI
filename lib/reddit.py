@@ -9,6 +9,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_REDDIT
@@ -226,47 +227,69 @@ def collect(
     all_items = []
     seen_urls = set()
 
-    # Phase 1: Fetch hot posts from entity-specific subreddits
+    # Phase 1: Fetch hot posts from entity-specific subreddits (concurrent)
     if entity_subreddits:
+        phase1_tasks = []
         for entity_name, entity_subs in entity_subreddits.items():
             result.entities_checked += 1
-            entity_found = False
-
             for sub in entity_subs:
-                items = fetch_subreddit(sub, from_date, to_date, depth)
+                phase1_tasks.append((entity_name, sub))
+
+        phase1_results: Dict[str, List[TrackerItem]] = {}
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            futures = {
+                pool.submit(fetch_subreddit, sub, from_date, to_date, depth): (entity_name, sub)
+                for entity_name, sub in phase1_tasks
+            }
+            for future in as_completed(futures):
+                entity_name, sub = futures[future]
+                try:
+                    items = future.result()
+                except Exception:
+                    items = []
                 if items:
                     for item in items:
                         item.entity = entity_name
                         seen_urls.add(item.source_url)
-                    all_items.extend(items)
-                    entity_found = True
-                time.sleep(0.5)
+                    phase1_results.setdefault(entity_name, []).extend(items)
 
-            if entity_found:
-                result.entities_with_updates += 1
+        for entity_name, items in phase1_results.items():
+            all_items.extend(items)
+            result.entities_with_updates += 1
 
-    # Phase 2: Keyword search in general subreddits
+    # Phase 2: Keyword search in general subreddits (concurrent)
+    phase2_tasks = []
     for entity_name, keywords in entities.items():
         if entity_name not in (entity_subreddits or {}):
             result.entities_checked += 1
-        entity_found = False
-
         for keyword in keywords:
             for sub in subs:
-                items = search_subreddit(keyword, sub, from_date, to_date, depth)
-                if items:
-                    for item in items:
-                        item.entity = entity_name
-                    # Dedupe against entity-specific results
-                    items = [i for i in items if i.source_url not in seen_urls]
-                    for item in items:
-                        seen_urls.add(item.source_url)
-                    all_items.extend(items)
-                    entity_found = True
-                # Rate limit: small delay between requests
-                time.sleep(0.5)
+                phase2_tasks.append((entity_name, keyword, sub))
 
-        if entity_found and entity_name not in (entity_subreddits or {}):
+    phase2_results: Dict[str, List[TrackerItem]] = {}
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        futures = {
+            pool.submit(search_subreddit, keyword, sub, from_date, to_date, depth): (entity_name, keyword, sub)
+            for entity_name, keyword, sub in phase2_tasks
+        }
+        for future in as_completed(futures):
+            entity_name, keyword, sub = futures[future]
+            try:
+                items = future.result()
+            except Exception:
+                items = []
+            if items:
+                for item in items:
+                    item.entity = entity_name
+                # Dedupe against entity-specific results
+                items = [i for i in items if i.source_url not in seen_urls]
+                for item in items:
+                    seen_urls.add(item.source_url)
+                phase2_results.setdefault(entity_name, []).extend(items)
+
+    for entity_name, items in phase2_results.items():
+        all_items.extend(items)
+        if entity_name not in (entity_subreddits or {}):
             result.entities_with_updates += 1
 
     result.items = all_items
