@@ -18,6 +18,7 @@ HUGGINGFACE_AUTHORS = _builtin["huggingface_authors"]
 ARXIV_QUERIES = _builtin["arxiv_queries"]
 WEB_QUERIES = _builtin["web_queries"]
 REDDIT_KEYWORDS = _builtin["reddit_keywords"]
+REDDIT_SUBREDDITS = _builtin["reddit_subreddits"]
 HN_KEYWORDS = _builtin["hn_keywords"]
 
 # Merge custom entities on top
@@ -28,5 +29,6 @@ merge_into_registries(
     ARXIV_QUERIES,
     WEB_QUERIES,
     REDDIT_KEYWORDS,
+    REDDIT_SUBREDDITS,
     HN_KEYWORDS,
 )

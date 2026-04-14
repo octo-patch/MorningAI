@@ -17,6 +17,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | **Key People** | [@DavidHolz](https://x.com/DavidHolz) - David Holz, CEO |
 | **Official Website** | https://www.midjourney.com |
 | **Discord** | https://discord.gg/midjourney |
+| **Reddit Community** | [r/midjourney](https://www.reddit.com/r/midjourney/) |
 
 #### 2. FLUX / Black Forest Labs
 
@@ -58,6 +59,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | **HuggingFace** | https://huggingface.co/stabilityai |
 | **Discord** | https://discord.gg/stablediffusion |
 | **Reddit Keywords** | Stable Diffusion, Stability AI |
+| **Reddit Community** | [r/StableDiffusion](https://www.reddit.com/r/StableDiffusion/) |
 
 #### 7. Lightricks
 
@@ -101,6 +103,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 |------|------|
 | **X Official Account** | [@elevenlabsio](https://x.com/elevenlabsio) |
 | **Official Blog** | https://elevenlabs.io/blog |
+| **Reddit Community** | [r/ElevenLabs](https://www.reddit.com/r/ElevenLabs/) |
 
 #### 12. Udio / Suno (Music AI)
 
@@ -110,6 +113,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | **X Official Account (Suno)** | [@SunoAIMusic](https://x.com/SunoAIMusic) |
 | **Udio Website** | https://www.udio.com |
 | **Suno Website** | https://suno.com |
+| **Reddit Community** | [r/SunoAI](https://www.reddit.com/r/SunoAI/), [r/udio](https://www.reddit.com/r/udio/) |
 
 ---
 

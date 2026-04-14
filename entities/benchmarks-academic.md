@@ -49,6 +49,8 @@ Entity registry for benchmark organizations, academic research channels, and ind
 |------|-----|------|
 | Reddit r/MachineLearning | https://reddit.com/r/MachineLearning | ML academic discussion |
 | Reddit r/LocalLLaMA | https://reddit.com/r/LocalLLaMA | Open-source LLM community |
+| Reddit r/artificial | https://reddit.com/r/artificial | AI general discussion |
+| Reddit r/singularity | https://reddit.com/r/singularity | AI frontier discussion |
 
 ### Industry Media (for lead discovery only, must trace to source)
 

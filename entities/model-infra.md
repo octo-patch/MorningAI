@@ -18,6 +18,7 @@ Entity registry for model providers and inference infrastructure platforms.
 | **HuggingFace** | https://huggingface.co/nvidia |
 | **arXiv** | https://arxiv.org/search/?query=NVIDIA+AI |
 | **Reddit Keywords** | NVIDIA AI, CUDA |
+| **Reddit Community** | [r/nvidia](https://www.reddit.com/r/nvidia/) |
 
 ### 2. Mistral AI
 
@@ -31,6 +32,7 @@ Entity registry for model providers and inference infrastructure platforms.
 | **HuggingFace** | https://huggingface.co/mistralai |
 | **arXiv** | https://arxiv.org/search/?query=Mistral+AI |
 | **Reddit Keywords** | Mistral |
+| **Reddit Community** | [r/MistralAI](https://www.reddit.com/r/MistralAI/) |
 | **HN Keywords** | Mistral |
 
 ### 3. Cohere
@@ -42,6 +44,7 @@ Entity registry for model providers and inference infrastructure platforms.
 | **GitHub** | https://github.com/cohere-ai |
 | **HuggingFace** | https://huggingface.co/CohereForAI |
 | **Reddit Keywords** | Cohere, Command R |
+| **Reddit Community** | [r/CohereAI](https://www.reddit.com/r/CohereAI/) |
 
 ### 4. Perplexity AI
 
@@ -51,6 +54,7 @@ Entity registry for model providers and inference infrastructure platforms.
 | **Key People** | [@AravSrinivas](https://x.com/AravSrinivas) - Aravind Srinivas, CEO<br>[@DenisYarats](https://x.com/DenisYarats) - Denis Yarats, CTO |
 | **Official Blog** | https://www.perplexity.ai/hub/blog |
 | **Reddit Keywords** | Perplexity |
+| **Reddit Community** | [r/perplexity_ai](https://www.reddit.com/r/perplexity_ai/) |
 | **HN Keywords** | Perplexity |
 
 ### 5. Amazon/AWS (AI)

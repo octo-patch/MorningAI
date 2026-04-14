@@ -1,10 +1,8 @@
 ---
 name: gen-message
-version: "1.2.2"
+version: "1.2.3"
 description: Generate concise message digest with image for sharing on messaging platforms (WeChat, Telegram, Slack, etc.)
 ---
-
-> **Agent-driven skill** — this specification guides the agent to generate message digests. No Python CLI script required; the agent follows the rules below using its built-in capabilities.
 
 ## Objective
 

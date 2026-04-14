@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.3] - 2026-04-14
+
+### Improvements
+- **Reddit: entity-specific subreddit support**: Each entity can now define dedicated subreddits via `Reddit Community` field (e.g. `r/DeepSeek`, `r/ClaudeAI`). The collector fetches hot posts directly from these communities — no keyword search needed since the entire subreddit is about that entity
+- **Two-phase Reddit collection**: Phase 1 fetches hot posts from entity-specific subreddits; Phase 2 keyword-searches general subreddits (`MachineLearning`, `LocalLLaMA`, `artificial`, `singularity`) as before, with cross-phase deduplication
+- **25 entity-specific subreddits added**: Covers AI labs (r/OpenAI, r/ChatGPT, r/ClaudeAI, r/Gemini, r/DeepSeek, r/Grok, etc.), coding agents (r/cursor, r/Windsurf, r/ClineAI), model infra (r/MistralAI, r/perplexity_ai), vision/media (r/midjourney, r/StableDiffusion, r/SunoAI), and apps (r/CharacterAI)
+- **Custom entity template updated**: `Reddit Community` added as a supported platform field in `custom-example.md`
+- **Cache TTL default reduced to 1 hour**: `--cache-ttl` now defaults to 1h; added `--no-cache` and `--clear-cache` flags
+
 ## [1.2.2] - 2026-04-14
 
 ### Improvements

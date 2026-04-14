@@ -11,15 +11,16 @@
      - Multiple values per field: separate with commas
 
      SUPPORTED PLATFORMS:
-     | Platform     | Description                | Example Value                         |
-     |------------- |--------------------------- |---------------------------------------|
-     | X            | X/Twitter handles          | @handle1, @handle2                    |
-     | GitHub       | Orgs or user/repo          | org-name, user/repo                   |
-     | HuggingFace  | HF author/org names        | author1, author2                      |
-     | arXiv        | arXiv search terms         | search term 1, search term 2          |
-     | Web          | Blog/changelog URLs        | site:example.com/blog                 |
-     | Reddit       | Reddit search keywords     | keyword1, keyword2                    |
-     | HN           | Hacker News keywords       | keyword1                              |
+     | Platform         | Description                | Example Value                         |
+     |----------------- |--------------------------- |---------------------------------------|
+     | X                | X/Twitter handles          | @handle1, @handle2                    |
+     | GitHub           | Orgs or user/repo          | org-name, user/repo                   |
+     | HuggingFace      | HF author/org names        | author1, author2                      |
+     | arXiv            | arXiv search terms         | search term 1, search term 2          |
+     | Web              | Blog/changelog URLs        | site:example.com/blog                 |
+     | Reddit           | Reddit search keywords     | keyword1, keyword2                    |
+     | Reddit Community | Dedicated subreddits       | r/ExampleAI, r/ExampleProduct         |
+     | HN               | Hacker News keywords       | keyword1                              |
 -->
 
 ## Example Corp
@@ -31,6 +32,7 @@
 | HuggingFace | example-ai |
 | arXiv | Example Corp |
 | Reddit | Example AI, ExampleModel |
+| Reddit Community | r/ExampleAI |
 | HN | Example Corp |
 
 ## Another Project

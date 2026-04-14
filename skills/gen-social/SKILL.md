@@ -1,10 +1,8 @@
 ---
 name: gen-social
-version: "1.2.2"
+version: "1.2.3"
 description: Generate platform-specific social media copy and images for content distribution
 ---
-
-> **Agent-driven skill** — this specification guides the agent to generate social content. No Python CLI script required; the agent follows the rules below using its built-in capabilities.
 
 ## Objective
 

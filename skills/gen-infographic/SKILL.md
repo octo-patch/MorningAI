@@ -1,6 +1,6 @@
 ---
 name: gen-infographic
-version: "1.2.2"
+version: "1.2.3"
 description: Generate cover and per-type infographics for AI News Daily
 ---
 

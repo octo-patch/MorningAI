@@ -47,7 +47,10 @@ def get_time_window(date_str: str) -> tuple:
 def collect_reddit(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
     """Collect from Reddit."""
     from lib import reddit
-    return reddit.collect(entities.REDDIT_KEYWORDS, from_date, to_date, depth=depth)
+    return reddit.collect(
+        entities.REDDIT_KEYWORDS, from_date, to_date,
+        entity_subreddits=entities.REDDIT_SUBREDDITS, depth=depth,
+    )
 
 
 def collect_hackernews(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
@@ -210,14 +213,25 @@ def main():
                         help="Specific sources to collect (default: all)")
     parser.add_argument("--output", "-o", default=None,
                         help="Output JSON file path (default: stdout)")
-    parser.add_argument("--cache-ttl", type=int, default=12,
-                        help="Cache TTL in hours (default: 12)")
+    parser.add_argument("--cache-ttl", type=int, default=1,
+                        help="Cache TTL in hours (default: 1, 0 to disable)")
+    parser.add_argument("--no-cache", action="store_true",
+                        help="Skip cache entirely (equivalent to --cache-ttl 0)")
+    parser.add_argument("--clear-cache", action="store_true",
+                        help="Clear all cached data and exit")
     args = parser.parse_args()
 
+    # Clear cache and exit
+    if args.clear_cache:
+        cache.clear_cache()
+        _log("Cache cleared")
+        return
+
     # Check cache
+    ttl = 0 if args.no_cache else args.cache_ttl
     cache_key = cache.get_cache_key("daily", args.date, args.depth)
-    if args.cache_ttl > 0:
-        cached = cache.load_cache(cache_key, args.cache_ttl)
+    if ttl > 0:
+        cached = cache.load_cache(cache_key, ttl)
         if cached:
             _log("Using cached report")
             if args.output:
@@ -231,7 +245,7 @@ def main():
     report_dict = report.to_dict()
 
     # Save cache
-    if args.cache_ttl > 0:
+    if ttl > 0:
         cache.save_cache(cache_key, report_dict)
 
     # Output

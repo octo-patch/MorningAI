@@ -135,10 +135,76 @@ def _compute_relevance(score: int, num_comments: int) -> float:
     return round(score_c * 0.6 + comments_c * 0.4, 3)
 
 
+def fetch_subreddit(
+    subreddit: str,
+    from_date: str,
+    to_date: str,
+    depth: str = "default",
+) -> List[TrackerItem]:
+    """Fetch hot posts from a dedicated subreddit (no keyword filter).
+
+    Used for entity-specific subreddits where all posts are relevant.
+    """
+    limit = DEPTH_LIMITS.get(depth, DEPTH_LIMITS["default"])
+    url = (
+        f"https://www.reddit.com/r/{subreddit}/hot.json"
+        f"?limit={limit}&raw_json=1"
+    )
+
+    data = _fetch_json(url)
+    if not data:
+        return []
+
+    children = data.get("data", {}).get("children", [])
+    items = []
+
+    for i, child in enumerate(children):
+        if child.get("kind") != "t3":
+            continue
+        post = child.get("data", {})
+        permalink = str(post.get("permalink", "")).strip()
+        if not permalink or "/comments/" not in permalink:
+            continue
+
+        # Skip pinned/stickied posts
+        if post.get("stickied"):
+            continue
+
+        date = _parse_date(post.get("created_utc"))
+        if date and (date < from_date or date > to_date):
+            continue
+
+        score_val = int(post.get("score", 0) or 0)
+        num_comments = int(post.get("num_comments", 0) or 0)
+
+        items.append(TrackerItem(
+            id=f"R-{subreddit}-h{i}",
+            title=str(post.get("title", "")).strip(),
+            summary=str(post.get("selftext", ""))[:300],
+            entity="",  # filled by caller
+            source=SOURCE_REDDIT,
+            source_url=f"https://www.reddit.com{permalink}",
+            source_label=f"r/{subreddit}",
+            date=date,
+            date_confidence="high" if date else "low",
+            raw_text=str(post.get("selftext", "")),
+            engagement=Engagement(
+                score=score_val,
+                num_comments=num_comments,
+                upvote_ratio=float(post.get("upvote_ratio", 0) or 0),
+            ),
+            relevance=_compute_relevance(score_val, num_comments),
+        ))
+
+    _log(f"r/{subreddit} (hot): {len(items)} posts")
+    return items
+
+
 def collect(
     entities: Dict[str, List[str]],
     from_date: str,
     to_date: str,
+    entity_subreddits: Optional[Dict[str, List[str]]] = None,
     subreddits: Optional[List[str]] = None,
     depth: str = "default",
 ) -> CollectionResult:
@@ -148,7 +214,8 @@ def collect(
         entities: Dict mapping entity name -> list of search keywords
         from_date: Start date YYYY-MM-DD
         to_date: End date YYYY-MM-DD
-        subreddits: Subreddits to search (default: AI-focused)
+        entity_subreddits: Dict mapping entity name -> list of dedicated subreddit names
+        subreddits: General subreddits to search (default: AI-focused)
         depth: Search depth
 
     Returns:
@@ -157,9 +224,31 @@ def collect(
     subs = subreddits or DEFAULT_SUBREDDITS
     result = CollectionResult(source=SOURCE_REDDIT)
     all_items = []
+    seen_urls = set()
 
+    # Phase 1: Fetch hot posts from entity-specific subreddits
+    if entity_subreddits:
+        for entity_name, entity_subs in entity_subreddits.items():
+            result.entities_checked += 1
+            entity_found = False
+
+            for sub in entity_subs:
+                items = fetch_subreddit(sub, from_date, to_date, depth)
+                if items:
+                    for item in items:
+                        item.entity = entity_name
+                        seen_urls.add(item.source_url)
+                    all_items.extend(items)
+                    entity_found = True
+                time.sleep(0.5)
+
+            if entity_found:
+                result.entities_with_updates += 1
+
+    # Phase 2: Keyword search in general subreddits
     for entity_name, keywords in entities.items():
-        result.entities_checked += 1
+        if entity_name not in (entity_subreddits or {}):
+            result.entities_checked += 1
         entity_found = False
 
         for keyword in keywords:
@@ -168,12 +257,16 @@ def collect(
                 if items:
                     for item in items:
                         item.entity = entity_name
+                    # Dedupe against entity-specific results
+                    items = [i for i in items if i.source_url not in seen_urls]
+                    for item in items:
+                        seen_urls.add(item.source_url)
                     all_items.extend(items)
                     entity_found = True
                 # Rate limit: small delay between requests
                 time.sleep(0.5)
 
-        if entity_found:
+        if entity_found and entity_name not in (entity_subreddits or {}):
             result.entities_with_updates += 1
 
     result.items = all_items

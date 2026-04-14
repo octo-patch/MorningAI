@@ -68,6 +68,7 @@ Entity registry for AI app-building platforms and consumer AI products.
 |------|------|
 | **X Official Account** | [@character_ai](https://x.com/character_ai) |
 | **Official Website** | https://character.ai |
+| **Reddit Community** | [r/CharacterAI](https://www.reddit.com/r/CharacterAI/) |
 
 ---
 

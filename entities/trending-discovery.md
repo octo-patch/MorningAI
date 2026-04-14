@@ -37,7 +37,10 @@ Entity registry for trending platform scanning — discovers emerging AI tools, 
 |------|------|
 | **r/singularity** | https://reddit.com/r/singularity | AI frontier discussion |
 | **r/artificial** | https://reddit.com/r/artificial | AI general discussion |
+| **r/MachineLearning** | https://reddit.com/r/MachineLearning | ML academic discussion |
+| **r/LocalLLaMA** | https://reddit.com/r/LocalLLaMA | Open-source LLM community |
 | **Filter Criteria** | Top upvoted posts within 24h |
+| **Note** | Entity-specific subreddits (e.g. r/DeepSeek, r/ClaudeAI) are fetched per-entity via `Reddit Community` field |
 
 ---
 

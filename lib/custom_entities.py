@@ -30,6 +30,7 @@ PLATFORM_KEYS = {
     "arxiv": "arxiv_queries",
     "web": "web_queries",
     "reddit": "reddit_keywords",
+    "reddit_community": "reddit_subreddits",
     "hn": "hn_keywords",
 }
 
@@ -116,6 +117,22 @@ def _parse_multi(value: str) -> List[str]:
     return [v.strip() for v in value.split(",") if v.strip()]
 
 
+def _extract_subreddits(value: str) -> List[str]:
+    """Extract subreddit names from Reddit Community field.
+
+    Handles formats like:
+      - [r/DeepSeek](https://www.reddit.com/r/DeepSeek/)
+      - r/DeepSeek
+      - https://www.reddit.com/r/DeepSeek/
+    """
+    subs = []
+    for match in re.finditer(r'r/(\w+)', value):
+        sub = match.group(1)
+        if sub not in subs:
+            subs.append(sub)
+    return subs
+
+
 def _parse_x_handles_custom(value: str) -> List[str]:
     """Parse X handles from custom format, stripping @ prefix."""
     return [h.lstrip("@") for h in _parse_multi(value)]
@@ -156,6 +173,8 @@ def _classify_attr(attr: str) -> str:
         return "key_people"
     if lower == "reddit keywords":
         return "reddit"
+    if lower == "reddit community":
+        return "reddit_community"
     if lower == "hn keywords":
         return "hn"
 
@@ -292,6 +311,12 @@ def _store_attr(result: dict, entity: str, attr_name: str, value: str):
         keywords = _parse_multi(value)
         if keywords:
             result["reddit_keywords"][entity] = keywords
+    elif platform == "reddit_community":
+        subs = _extract_subreddits(value)
+        if subs:
+            result["reddit_subreddits"].setdefault(entity, []).extend(
+                s for s in subs if s not in result["reddit_subreddits"].get(entity, [])
+            )
     elif platform == "hn":
         keywords = _parse_multi(value)
         if keywords:
@@ -411,6 +436,10 @@ def parse_custom_file(path: Path) -> Dict[str, Dict[str, Any]]:
                 result["web_queries"][entity_name] = _parse_multi(value)
             elif platform == "reddit":
                 result["reddit_keywords"][entity_name] = _parse_multi(value)
+            elif platform in ("reddit community", "reddit_community"):
+                subs = _extract_subreddits(value)
+                if subs:
+                    result["reddit_subreddits"][entity_name] = subs
             elif platform == "hn":
                 result["hn_keywords"][entity_name] = _parse_multi(value)
 
@@ -460,6 +489,7 @@ def merge_into_registries(
     arxiv_queries: dict,
     web_queries: dict,
     reddit_keywords: dict,
+    reddit_subreddits: dict,
     hn_keywords: dict,
 ) -> None:
     """Load custom entities and merge into the provided registry dicts."""
@@ -471,4 +501,5 @@ def merge_into_registries(
     arxiv_queries.update(custom["arxiv_queries"])
     web_queries.update(custom["web_queries"])
     reddit_keywords.update(custom["reddit_keywords"])
+    reddit_subreddits.update(custom["reddit_subreddits"])
     hn_keywords.update(custom["hn_keywords"])
