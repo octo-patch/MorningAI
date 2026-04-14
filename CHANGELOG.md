@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.0] - 2026-04-14
+
+### New Features
+- **Message digest mode** (`MESSAGE_ENABLED=true`): Generate concise, copy-paste-friendly message digests for sharing on messaging platforms (WeChat, Telegram, Slack). Each item gets a bold title + one-line summary + emoji marker (🔥/⭐/🔷 by score). Optional 9:16 portrait image for visual sharing. Configurable via `MESSAGE_MIN_SCORE`, `MESSAGE_MAX_ITEMS`, `MESSAGE_LINKS` (bottom/inline)
+
 ## [1.1.8] - 2026-04-14
 
 ### Fixes

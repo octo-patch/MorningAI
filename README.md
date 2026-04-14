@@ -16,6 +16,7 @@
 - **Smart Scoring** — 5-dimension weighted scoring: Impact (30%), Differentiation (25%), Breakthrough (20%), Coverage (15%), Timeliness (10%). Score 7+ items auto-verified across multiple independent sources
 - **Custom Watchlists** — Add your own entities via simple markdown files — no code changes needed
 - **5 Infographic Styles** — `classic`, `dark`, `glassmorphism`, `newspaper`, `tech` — ready for social sharing
+- **Message Digest** — Concise, copy-paste-friendly digest with one-line summaries + links, optimized for WeChat, Telegram, Slack and other messaging platforms
 - **Scheduled & Unattended** — Idempotent daily runs, no interactive prompts, partial success support
 
 ## Sample Output
@@ -54,6 +55,8 @@ SKILL.md (loaded by any AI tool)
     +- Step 3: Write report_{date}.md  ->  structured daily report
     |
     +- Step 4: (optional) Read skills/gen-infographic/SKILL.md  ->  cover image
+    |
+    +- Step 6: (optional) Read skills/gen-message/SKILL.md  ->  message digest + image
 ```
 
 The Python collector runs 5 sources concurrently (Reddit, HN, GitHub, HuggingFace, arXiv), then scores, deduplicates, and cross-links results. The AI tool also searches X/Twitter via web search for tracked entities, then reads the JSON output and generates a formatted Markdown report.
@@ -151,6 +154,7 @@ Create a config file at `~/.config/morning-ai/.env`:
 
 ```env
 GITHUB_TOKEN=gh_xxx               # GitHub (optional, higher rate limits)
+MESSAGE_ENABLED=true               # Message digest (optional, for messaging platforms)
 ```
 
 Without any API keys, all sources work out of the box: **Reddit**, **Hacker News**, **GitHub**, **HuggingFace**, **arXiv**, and **X/Twitter**.

@@ -1,8 +1,8 @@
 ---
 name: morning-ai
-version: "1.1.8"
+version: "1.2.0"
 description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 5 automated sources + agent X/Twitter search every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
-argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *"'
+argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *", morning-ai --lang zh (with MESSAGE_ENABLED=true for message digest)'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
 repository: https://github.com/octo-patch/MorningAI
@@ -103,14 +103,19 @@ Walk the user through setup interactively, waiting for their response at each st
    - Which platforms? X (Twitter), Xiaohongshu (Little Red Book), or both
    - For advanced multi-account/multi-style setup, create `~/.config/morning-ai/social_channels.json` (see `skills/gen-social/SKILL.md` for schema). For quick single-channel setup, just set `SOCIAL_PLATFORM`, `SOCIAL_STYLE`, and `SOCIAL_LANG` env vars.
 
-6. **Create the config file** — collect the keys the user provides and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`
-7. **Confirm** — show how many sources are now active (N/9)
-8. **Verify** — re-run the gate check to confirm `CONFIG_STATUS=READY`:
+6. **Ask about message digest** (optional):
+   - Enable concise message digest for sharing on messaging platforms (WeChat, Telegram, Slack)?
+   - If yes: set `MESSAGE_ENABLED=true`
+   - Optional settings: `MESSAGE_MIN_SCORE` (default 5), `MESSAGE_MAX_ITEMS` (default 10), `MESSAGE_LINKS` (`bottom` or `inline`)
+
+7. **Create the config file** — collect the keys the user provides and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`
+8. **Confirm** — show how many sources are now active (N/9)
+9. **Verify** — re-run the gate check to confirm `CONFIG_STATUS=READY`:
    ```bash
    if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || [ -f ".env" ]; then echo "CONFIG_STATUS=READY"; else echo "CONFIG_STATUS=MISSING"; fi
    ```
    Only proceed to Step 1 if the output is `READY`.
-9. If the user wants to skip API key setup and use only free sources, create a minimal config file first, then proceed to Step 1:
+10. If the user wants to skip API key setup and use only free sources, create a minimal config file first, then proceed to Step 1:
    ```bash
    mkdir -p ~/.config/morning-ai && echo "# morning-ai config — free sources only" > ~/.config/morning-ai/.env
    ```
@@ -384,6 +389,44 @@ Generate platform-optimized copy and images for social media distribution (X, Xi
 
 ---
 
+## Step 6: Generate Message Digest (Optional)
+
+**Skip this step if `MESSAGE_ENABLED` is not `true`.**
+
+Generate a concise, share-friendly message digest suitable for messaging platforms (WeChat, Telegram, Slack, etc.). The digest provides bold titles with one-line summaries and reference links — optimized for copy-paste sharing.
+
+1. Read the message specification:
+   ```
+   Read {SKILL_DIR}/skills/gen-message/SKILL.md
+   ```
+
+2. Read the digest template:
+   ```
+   Read {SKILL_DIR}/skills/gen-message/templates/digest.md
+   ```
+
+3. Select items from the report data (`data_{YYYY-MM-DD}.json`):
+   - Filter by score >= `MESSAGE_MIN_SCORE` (default: 5)
+   - Sort by importance score descending
+   - Limit to `MESSAGE_MAX_ITEMS` (default: 10)
+   - Use `MESSAGE_LANG` for language (default: from `--lang`)
+
+4. Generate text digest following the template format:
+   - Write to `{CWD}/message_{YYYY-MM-DD}.md`
+   - Each item: emoji marker + **bold title** + one-line summary
+   - Reference links at bottom (or inline if `MESSAGE_LINKS=inline`)
+   - Language-specific header and footer
+
+5. If image generation is available (`IMAGE_GEN_PROVIDER` is configured):
+   - Build a 9:16 portrait image prompt from the specification's image prompt template
+   - Generate `{CWD}/message_{YYYY-MM-DD}.png` using the same image generation method as Step 4 (native tool or Python script)
+
+**Output files:**
+- `message_{YYYY-MM-DD}.md` — copy-paste text for messaging
+- `message_{YYYY-MM-DD}.png` — accompanying image (only if image generation is configured)
+
+---
+
 ## Entity Reference
 
 The `entities/` directory contains detailed entity registries organized by tracking group:
@@ -479,12 +522,23 @@ GITHUB_TOKEN=ghp_xxx
 | arXiv | Public API | Generous |
 | X/Twitter | Agent web search | N/A |
 
+### Message Digest Configuration
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `MESSAGE_ENABLED` | Enable message digest generation | `false` |
+| `MESSAGE_MIN_SCORE` | Minimum importance score to include | `5` |
+| `MESSAGE_MAX_ITEMS` | Maximum number of items in digest | `10` |
+| `MESSAGE_LANG` | Language override (default: from `--lang`) | (from `--lang`) |
+| `MESSAGE_IMAGE_STYLE` | Image style override | (from `IMAGE_STYLE`) |
+| `MESSAGE_LINKS` | Link placement: `bottom` (reference list) or `inline` | `bottom` |
+
 ---
 
 ## Security & Permissions
 
 - **Data access**: Reads public web/platform data only. No private or authenticated content is accessed.
 - **API keys**: Stored locally in `.env` files. Never transmitted except to their respective APIs.
-- **File writes**: Only writes report files (`report_*.md`, `data_*.json`) and cache files to the skill/working directory.
+- **File writes**: Only writes report files (`report_*.md`, `data_*.json`), message digest files (`message_*.md`, `message_*.png`), and cache files to the skill/working directory.
 - **Network**: Outbound HTTP/HTTPS requests to public APIs (Reddit, GitHub, etc.). No inbound connections.
 - **No telemetry**: No usage data is collected or sent anywhere.

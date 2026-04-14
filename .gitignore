@@ -7,6 +7,7 @@ env.local
 *.png
 drafts/draft_*
 /report_*.md
+/message_*.md
 plan_*.md
 /data_*.json
 /social/
