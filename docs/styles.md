@@ -35,7 +35,7 @@ Clean editorial magazine aesthetic.
 │  │ Autonomous multi-file refactoring   │    │
 │  └─────────────────────────────────────┘    │
 │                                             │
-│  8 verified updates · 9 sources · 80+ entities │
+│  8 verified updates · 6 sources · 80+ entities │
 └─────────────────────────────────────────────┘
 ```
 
@@ -69,7 +69,7 @@ Dark mode with electric accents — ideal for developer audiences.
 │  │  Cloud sandbox · 10 concurrent      │   │
 │  └──────────────────────────────────────┘   │
 │                                             │
-│  ▓ 8 verified · 9 sources · 47.3s          │
+│  ▓ 8 verified · 6 sources · 47.3s          │
 └─────────────────────────────────────────────┘
 ```
 
@@ -151,7 +151,7 @@ Terminal aesthetic with monospace — for the hacker crowd.
 ```
 ┌─────────────────────────────────────────────┐
 │  > morning-ai --date 2026-04-08             │
-│  > scanning 9 sources... done (47.3s)       │
+│  > scanning 6 sources... done (47.3s)       │
 │  > 186 raw → 26 deduped → 8 verified        │
 │                                             │
 │  [9.2] anthropic/claude-4.5-sonnet          │

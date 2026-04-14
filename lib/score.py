@@ -21,8 +21,9 @@ SOURCE_RELIABILITY = {
     SOURCE_HACKERNEWS: 0.55,
 }
 
-# Scoring component weights (matching morning-ai's 5-dimension system)
-# Impact 30%, Differentiation 25%, Innovation 20%, Coverage 15%, Timeliness 10%
+# Scoring component weights — Stage 1 automated scoring dimensions.
+# These are computable from collector metadata (not the same as the
+# 5-dimension agent evaluation criteria in tracking-list/SKILL.md).
 WEIGHT_RELEVANCE = 0.35
 WEIGHT_ENGAGEMENT = 0.30
 WEIGHT_SOURCE_RELIABILITY = 0.20

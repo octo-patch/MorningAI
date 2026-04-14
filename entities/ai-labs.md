@@ -22,6 +22,8 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **GitHub** | https://github.com/openai |
 | **arXiv** | https://arxiv.org/search/?query=OpenAI |
 | **Covered Products** | GPT series models, ChatGPT product, DALL-E, Sora, Codex CLI |
+| **Reddit Keywords** | OpenAI, ChatGPT, GPT-5 |
+| **HN Keywords** | OpenAI |
 
 #### 2. Anthropic (Full Line)
 
@@ -37,6 +39,8 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **GitHub** | https://github.com/anthropics |
 | **arXiv** | https://arxiv.org/search/?query=Anthropic |
 | **Covered Products** | Claude series models, Claude Code, Claude Desktop/Web |
+| **Reddit Keywords** | Anthropic, Claude |
+| **HN Keywords** | Anthropic, Claude |
 
 #### 3. Google (Full Line)
 
@@ -56,6 +60,8 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **HuggingFace** | https://huggingface.co/google |
 | **arXiv** | https://arxiv.org/search/?query=DeepMind |
 | **Covered Products** | Gemini series models, Gemini App, AI Studio, Antigravity, Veo |
+| **Reddit Keywords** | Gemini, DeepMind |
+| **HN Keywords** | Gemini, DeepMind |
 
 #### 4. Meta AI (Full Line)
 
@@ -68,6 +74,8 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **HuggingFace** | https://huggingface.co/meta-llama |
 | **arXiv** | https://arxiv.org/search/?query=Meta+AI+FAIR |
 | **Covered Products** | Llama series models, Meta AI Studio |
+| **Reddit Keywords** | Llama, Meta AI |
+| **HN Keywords** | Llama, Meta AI |
 
 #### 5. xAI (Full Line)
 
@@ -79,6 +87,7 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **GitHub** | https://github.com/xai-org |
 | **HuggingFace** | https://huggingface.co/xai-org |
 | **Covered Products** | Grok series models |
+| **Reddit Keywords** | Grok, xAI |
 
 #### 6. Microsoft (Full Line)
 
@@ -90,6 +99,8 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **HuggingFace** | https://huggingface.co/microsoft |
 | **arXiv** | https://arxiv.org/search/?query=Microsoft+AI |
 | **Covered Products** | Copilot, Phi series models, Azure OpenAI, GitHub Copilot |
+| **Reddit Keywords** | Copilot, Phi model |
+| **HN Keywords** | Copilot, Microsoft AI |
 
 ### China AI Labs
 
@@ -102,6 +113,7 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **GitHub** | https://github.com/QwenLM |
 | **HuggingFace** | https://huggingface.co/Qwen |
 | **arXiv** | https://arxiv.org/search/?query=Qwen |
+| **Reddit Keywords** | Qwen |
 
 #### 8. DeepSeek
 
@@ -113,6 +125,8 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **GitHub** | https://github.com/deepseek-ai |
 | **HuggingFace** | https://huggingface.co/deepseek-ai |
 | **arXiv** | https://arxiv.org/search/?query=DeepSeek |
+| **Reddit Keywords** | DeepSeek |
+| **HN Keywords** | DeepSeek |
 
 #### 9. ByteDance (Doubao)
 
@@ -155,6 +169,7 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **HuggingFace** | https://huggingface.co/MiniMaxAI |
 | **Hailuo Product** | https://hailuoai.com |
 | **Covered Products** | MiniMax Models, Hailuo Video |
+| **Reddit Keywords** | MiniMax, Hailuo |
 
 #### 13. Kuaishou (Kling)
 
@@ -215,6 +230,7 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | **HuggingFace** | https://huggingface.co/tencent, https://huggingface.co/Tencent-Hunyuan |
 | **arXiv** | https://arxiv.org/search/?query=Tencent+Hunyuan |
 | **Covered Products** | Hunyuan LLM, HunyuanVideo, HunyuanImage |
+| **Reddit Keywords** | Hunyuan, Tencent AI |
 
 ---
 

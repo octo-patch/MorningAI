@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 CACHE_DIR = Path.home() / ".cache" / "morning-ai"
-DEFAULT_TTL_HOURS = 12  # shorter TTL for daily tracking
+DEFAULT_TTL_HOURS = 1  # short TTL for daily tracking — prevents stale cross-day cache
 
 
 def ensure_cache_dir():

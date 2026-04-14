@@ -57,6 +57,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | **GitHub** | https://github.com/Stability-AI |
 | **HuggingFace** | https://huggingface.co/stabilityai |
 | **Discord** | https://discord.gg/stablediffusion |
+| **Reddit Keywords** | Stable Diffusion, Stability AI |
 
 #### 7. Lightricks
 

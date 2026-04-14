@@ -233,7 +233,21 @@ Timeliness Check:
 
 ## Scoring Criteria
 
-### Scoring Dimensions
+### Two-Stage Scoring
+
+Morning-AI uses a two-stage scoring pipeline:
+
+**Stage 1 — Automated scoring** (`collect.py` → `lib/score.py`):
+Computes a 1-10 initial score from quantifiable metadata using 4 dimensions:
+- Relevance (35%) — keyword/entity match strength from collector
+- Engagement (30%) — platform-specific metrics (likes, stars, upvotes)
+- Source Reliability (20%) — source tier weight (GitHub 0.9 → Reddit 0.5)
+- Recency (15%) — date confidence level
+
+**Stage 2 — Agent evaluation** (report generation):
+The agent reviews each item using the 5 qualitative dimensions below. The agent may adjust the Stage 1 score based on content understanding — e.g., a low-engagement but groundbreaking paper might be scored up, while a viral but trivial post might be scored down.
+
+### Scoring Dimensions (Stage 2 — Agent Evaluation)
 
 | Dimension | Weight | Description |
 |-----------|--------|-------------|

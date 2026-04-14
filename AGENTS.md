@@ -1,6 +1,6 @@
 # MorningAI
 
-Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 5 automated sources + agent-driven X/Twitter search every 24 hours. Generates scored, deduplicated Markdown reports with optional cover infographics.
+Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 6 sources every 24 hours. Generates scored, deduplicated Markdown reports with optional cover infographics.
 
 ## Skills
 
@@ -26,7 +26,7 @@ Optional keys can be configured in `~/.config/morning-ai/.env`:
 GITHUB_TOKEN=...   # GitHub (optional, higher rate limits)
 ```
 
-All sources work out of the box without API keys: Reddit, Hacker News, GitHub, HuggingFace, arXiv, and X/Twitter (via agent web search).
+All sources work out of the box without API keys: Reddit, Hacker News, GitHub, HuggingFace, arXiv, and X/Twitter.
 
 ## Scheduling
 

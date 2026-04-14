@@ -3,17 +3,17 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-3776AB.svg)](https://python.org)
 [![Entities](https://img.shields.io/badge/Tracked_Entities-80%2B-orange.svg)](#tracked-entities-80)
-[![Sources](https://img.shields.io/badge/Data_Sources-5%2BX-green.svg)](#how-it-works)
+[![Sources](https://img.shields.io/badge/Data_Sources-6-green.svg)](#how-it-works)
 [![Platforms](https://img.shields.io/badge/Platforms-6%2B-purple.svg)](#install)
 
-**What happened in AI today?** — An AI news tracking skill that runs inside your coding agent. No Docker, no servers — just invoke `/morning-ai` in Claude Code, Codex, OpenCode, Hermes, Cursor, or any SKILL.md-compatible tool. Monitors 80+ entities across 5 automated sources + agent-driven X/Twitter search, generates scored daily reports with optional infographics.
+**What happened in AI today?** — An AI news tracking skill that runs inside your coding agent. No Docker, no servers — just invoke `/morning-ai` in Claude Code, Codex, OpenCode, Hermes, Cursor, or any SKILL.md-compatible tool. Monitors 80+ entities across 6 sources, generates scored daily reports with optional infographics.
 
 ## Features
 
 - **Skill-Native** — Runs inside your AI coding tool (Claude Code, Codex, OpenCode, Hermes, Cursor). No Docker, no servers, no extra infra — just `/morning-ai`
 - **Entity-Centric Tracking** — 80+ curated entities across AI labs, model infra, coding agents, apps, vision/media, benchmarks, KOLs. Per-entity cross-platform handles (X, GitHub, HF, arXiv), not keyword search
-- **5 Automated Sources + Agent X Search** — Reddit, HN, GitHub, HuggingFace, arXiv run concurrently. X/Twitter updates discovered via agent web search. All sources free — no API keys required
-- **Smart Scoring** — 5-dimension weighted scoring: Impact (30%), Differentiation (25%), Breakthrough (20%), Coverage (15%), Timeliness (10%). Score 7+ items auto-verified across multiple independent sources
+- **6 Sources** — Reddit, HN, GitHub, HuggingFace, arXiv, X/Twitter. All sources free — no API keys required
+- **Smart Scoring** — Two-stage scoring: automated initial scoring from metadata (relevance, engagement, source reliability, recency), then agent evaluation across 5 qualitative dimensions (Impact, Differentiation, Breakthrough, Coverage, Timeliness). Score 7+ items auto-verified across multiple independent sources
 - **Custom Watchlists** — Add your own entities via simple markdown files — no code changes needed
 - **5 Infographic Styles** — `classic`, `dark`, `glassmorphism`, `newspaper`, `tech` — ready for social sharing
 - **Message Digest** — Concise, copy-paste-friendly digest with one-line summaries + links, optimized for WeChat, Telegram, Slack and other messaging platforms

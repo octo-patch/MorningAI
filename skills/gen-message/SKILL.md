@@ -4,6 +4,8 @@ version: "1.2.2"
 description: Generate concise message digest with image for sharing on messaging platforms (WeChat, Telegram, Slack, etc.)
 ---
 
+> **Agent-driven skill** — this specification guides the agent to generate message digests. No Python CLI script required; the agent follows the rules below using its built-in capabilities.
+
 ## Objective
 
 Transform the daily AI news report data into a concise, copy-paste-friendly **message digest** optimized for sharing on messaging platforms. Produces two output files:

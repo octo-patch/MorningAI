@@ -13,6 +13,8 @@ Entity registry for AI coding agents and developer assistant platforms (agents u
 | **X Official Account** | [@cursor_ai](https://x.com/cursor_ai) |
 | **Key People** | [@mntruell](https://x.com/mntruell) - Michael Truell, CEO<br>[@ericzakariasson](https://x.com/ericzakariasson) - Eric Zakariasson |
 | **Changelog** | https://cursor.com/changelog |
+| **Reddit Keywords** | Cursor AI |
+| **HN Keywords** | Cursor |
 
 ### 2. Cline
 
@@ -21,6 +23,7 @@ Entity registry for AI coding agents and developer assistant platforms (agents u
 | **X Official Account** | [@cline](https://x.com/cline) |
 | **Key People** | [@sdrzn](https://x.com/sdrzn) - Saoud Rizwan, CEO<br>[@nickbaumann_](https://x.com/nickbaumann_) - Nick Baumann |
 | **GitHub Releases** | https://github.com/cline/cline/releases |
+| **Reddit Keywords** | Cline AI |
 
 ### 3. OpenCode
 
@@ -48,6 +51,7 @@ Entity registry for AI coding agents and developer assistant platforms (agents u
 | **Changelog** | https://openclawai.io/changelog |
 | **GitHub** | https://github.com/openclaw/openclaw |
 | **GitHub Releases** | https://github.com/openclaw/openclaw/releases |
+| **Reddit Keywords** | OpenClaw |
 
 ### 6. Windsurf (Codeium)
 
@@ -56,6 +60,7 @@ Entity registry for AI coding agents and developer assistant platforms (agents u
 | **X Official Account** | [@windsurf](https://x.com/windsurf) |
 | **Official Blog** | https://windsurf.com/blog |
 | **Changelog** | https://windsurf.com/changelog |
+| **Reddit Keywords** | Windsurf, Codeium |
 
 ### 7. Augment Code
 
@@ -79,6 +84,7 @@ Entity registry for AI coding agents and developer assistant platforms (agents u
 |------|------|
 | **X Official Account** | [@cognition](https://x.com/cognition) |
 | **Official Blog** | https://cognition.ai/blog |
+| **Reddit Keywords** | Devin AI |
 
 ### 10. browser-use
 
