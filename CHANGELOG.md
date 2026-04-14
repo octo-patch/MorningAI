@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.1] - 2026-04-14
+
+### Improvements
+- **Message digest: inline source links by default**: Each item now ends with a `🔗 URL` source link. Changed `MESSAGE_LINKS` default from `bottom` to `inline` so readers can immediately access the original source for every item
+
 ## [1.2.0] - 2026-04-14
 
 ### New Features

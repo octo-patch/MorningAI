@@ -22,7 +22,7 @@ The text is designed for direct copy-paste into any messaging app. The image pro
 |----------|-------|
 | Format | Markdown (renders as plain text in most messaging apps) |
 | Encoding | UTF-8 |
-| Sections | Header → Items → Reference Links → Footer |
+| Sections | Header → Items (with source links) → Footer |
 
 ### Image File: `message_{DATE}.png`
 
@@ -44,7 +44,7 @@ The text is designed for direct copy-paste into any messaging app. The image pro
 | `MESSAGE_MAX_ITEMS` | int | `10` | Maximum number of items in the digest |
 | `MESSAGE_LANG` | string | (from `--lang`) | Language override for the digest |
 | `MESSAGE_IMAGE_STYLE` | string | (from `IMAGE_STYLE`) | Visual style override for the digest image |
-| `MESSAGE_LINKS` | string | `bottom` | Link placement: `bottom` (reference list) or `inline` (after each item) |
+| `MESSAGE_LINKS` | string | `inline` | Link placement: `inline` (after each item) or `bottom` (reference list at end) |
 
 ---
 
@@ -83,6 +83,7 @@ Each item follows this structure:
 ```
 {emoji} **{Entity} {Event description}**
 {One to two sentence summary with key metrics, numbers, or specifics.}
+🔗 {source_url}
 ```
 
 **Rules:**
@@ -90,6 +91,7 @@ Each item follows this structure:
 - Summary is 1-2 sentences max — condense the raw summary to the most essential information
 - Include specific numbers (benchmark scores, parameter counts, pricing, versions) when available
 - No score numbers displayed — the emoji conveys importance level
+- Each item MUST end with a `🔗 {source_url}` line linking to the original source
 - Items separated by a blank line
 
 ### Special Formatting
@@ -99,28 +101,29 @@ For GitHub Trending items or items with notable engagement metrics:
 ```
 🔥 **GitHub 热门项目：{repo-name}（Stars 暴涨！）**
 ⭐ {star_count}(+{delta}) | {one-line description}
+🔗 {source_url}
 ```
 
 ### Link Placement
 
-**`MESSAGE_LINKS=bottom`** (default — recommended for WeChat, Telegram):
+**`MESSAGE_LINKS=inline`** (default):
 
-Links grouped as a numbered reference list at the bottom:
-
-```
----
-[1] {Entity Event} - {URL}
-[2] {Entity Event} - {URL}
-```
-
-**`MESSAGE_LINKS=inline`** (for Slack, Discord, rich-text platforms):
-
-Link appended after each item's summary:
+Each item ends with a source link line:
 
 ```
 🔥 **Anthropic 发布 Claude 4.5 Sonnet**
 新一代中端模型，编程能力提升18%，200K上下文窗口。
 🔗 https://anthropic.com/news/claude-4-5-sonnet
+```
+
+**`MESSAGE_LINKS=bottom`** (alternative — groups links at the end):
+
+Links grouped as a numbered reference list at the bottom, items do NOT include inline links:
+
+```
+---
+[1] {Entity Event} - {URL}
+[2] {Entity Event} - {URL}
 ```
 
 ### Footer
@@ -233,40 +236,38 @@ AI 每日速报 2026-04-08
 
 🔥 **Anthropic 发布 Claude 4.5 Sonnet**
 新一代中端模型，编程能力提升18%（SWE-Bench），200K上下文窗口，输出速度快40%。API 和 claude.ai 即刻可用。
+🔗 https://x.com/AnthropicAI/status/example
 
 ⭐ **Google Gemini 2.5 Flash 进入公测**
 Flash级模型支持原生多模态推理，100万上下文窗口。AI Studio 免费可用。
+🔗 https://x.com/GoogleDeepMind/status/example
 
 ⭐ **Cursor 后台 Agent 正式上线**
 自主后台Agent正式发布，支持多文件重构、测试生成和自动提PR，Pro 最多10个并发。
+🔗 https://x.com/cursor_ai/status/example
 
 ⭐ **DeepSeek 开源 V3-0407 模型**
 更新版V3模型，671B参数MoE架构，MIT协议完全商用。权重已在HuggingFace发布。
+🔗 https://github.com/deepseek-ai/DeepSeek-V3
 
 ⭐ **OpenAI 开源 Codex CLI**
 终端编程Agent开源发布，支持建议、自动编辑和全自动三种模式，MIT协议。
+🔗 https://github.com/openai/codex
 
 ⭐ **LMSYS Chatbot Arena 四月排名更新**
 Claude 4.5 Sonnet 升至总榜第2（ELO 1287），Gemini 2.5 Pro 保持编程类第1。
+🔗 https://lmarena.ai
 
 ⭐ **GitHub Copilot Coding Agent 公测**
 GitHub自主Agent可处理Issue并提交PR，在安全云沙箱中运行，Pro+和Enterprise免费。
+🔗 https://github.blog/changelog/copilot-coding-agent
 
 ⭐ **Windsurf 获得2亿美元C轮融资**
 AI IDE公司获编程工具领域最大单轮融资，估值30亿美元，计划招聘200名工程师。
+🔗 https://techcrunch.com/2026/04/07/windsurf-raises-200m
 
 ---
-[1] Anthropic Claude 4.5 Sonnet - https://x.com/AnthropicAI/status/example
-[2] Google Gemini 2.5 Flash - https://x.com/GoogleDeepMind/status/example
-[3] Cursor Background Agents - https://x.com/cursor_ai/status/example
-[4] DeepSeek V3-0407 - https://github.com/deepseek-ai/DeepSeek-V3
-[5] OpenAI Codex CLI - https://github.com/openai/codex
-[6] LMSYS Chatbot Arena - https://lmarena.ai
-[7] GitHub Copilot Coding Agent - https://github.blog/changelog/copilot-coding-agent
-[8] Windsurf Series C - https://techcrunch.com/2026/04/07/windsurf-raises-200m
-
----
-Powered by MorningAI | Full report: report_2026-04-08.md
+Powered by MorningAI | 完整报告: report_2026-04-08.md
 ```
 
 ### English (`--lang en`)
@@ -278,18 +279,16 @@ AI Daily Digest 2026-04-08
 
 🔥 **Anthropic Releases Claude 4.5 Sonnet**
 New mid-tier model with +18% SWE-Bench, 200K context, 40% faster output. Available via API and claude.ai.
+🔗 https://x.com/AnthropicAI/status/example
 
 ⭐ **Google Gemini 2.5 Flash Enters Public Preview**
 Flash-tier model with native multimodal reasoning, 1M context. Free tier on AI Studio.
+🔗 https://x.com/GoogleDeepMind/status/example
 
 ⭐ **Cursor Background Agents Now Generally Available**
 Autonomous background agents for multi-file refactoring, test generation, and PR creation. Max 10 concurrent on Pro.
+🔗 https://x.com/cursor_ai/status/example
 
-...
-
----
-[1] Anthropic Claude 4.5 Sonnet - https://x.com/AnthropicAI/status/example
-[2] Google Gemini 2.5 Flash - https://x.com/GoogleDeepMind/status/example
 ...
 
 ---
@@ -304,4 +303,4 @@ Powered by MorningAI | Full report: report_2026-04-08.md
 - All summaries must be condensed to 1-2 sentences — extract the most important facts, numbers, and metrics from the full summary
 - Entity names are always preserved as proper nouns regardless of language setting
 - The image is optional — if no image generation provider is configured, only the text file is produced
-- When `MESSAGE_LINKS=bottom`, the reference numbers are implicit (ordered by item appearance) — do NOT add `[1]` markers in the item body
+- When `MESSAGE_LINKS=bottom`, the reference numbers are implicit (ordered by item appearance) — do NOT add `[1]` markers in the item body, and do NOT include `🔗` lines after each item

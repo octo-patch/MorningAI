@@ -1,6 +1,6 @@
 ---
 name: morning-ai
-version: "1.2.0"
+version: "1.2.1"
 description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 5 automated sources + agent X/Twitter search every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
 argument-hint: 'morning-ai, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *", morning-ai --lang zh (with MESSAGE_ENABLED=true for message digest)'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
@@ -413,8 +413,8 @@ Generate a concise, share-friendly message digest suitable for messaging platfor
 
 4. Generate text digest following the template format:
    - Write to `{CWD}/message_{YYYY-MM-DD}.md`
-   - Each item: emoji marker + **bold title** + one-line summary
-   - Reference links at bottom (or inline if `MESSAGE_LINKS=inline`)
+   - Each item: emoji marker + **bold title** + one-line summary + source link
+   - Source link (`🔗 URL`) after each item by default (or grouped at bottom if `MESSAGE_LINKS=bottom`)
    - Language-specific header and footer
 
 5. If image generation is available (`IMAGE_GEN_PROVIDER` is configured):
@@ -531,7 +531,7 @@ GITHUB_TOKEN=ghp_xxx
 | `MESSAGE_MAX_ITEMS` | Maximum number of items in digest | `10` |
 | `MESSAGE_LANG` | Language override (default: from `--lang`) | (from `--lang`) |
 | `MESSAGE_IMAGE_STYLE` | Image style override | (from `IMAGE_STYLE`) |
-| `MESSAGE_LINKS` | Link placement: `bottom` (reference list) or `inline` | `bottom` |
+| `MESSAGE_LINKS` | Link placement: `inline` (after each item) or `bottom` (reference list) | `inline` |
 
 ---
 
