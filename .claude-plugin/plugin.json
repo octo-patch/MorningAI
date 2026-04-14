@@ -1,6 +1,6 @@
 {
   "name": "morning-ai",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "AI news tracking system. Tracks 80+ AI entities across 5 automated sources + agent X/Twitter search and generates daily structured reports.",
   "author": {
     "name": "octo-patch",
@@ -10,6 +10,6 @@
   "repository": "https://github.com/octo-patch/MorningAI",
   "license": "MIT",
   "keywords": ["ai", "news", "tracking", "daily-report", "model", "product", "benchmark", "funding", "scheduled", "cron", "automated"],
-  "skills": "SKILL.md",
+  "skills": ["./"],
   "hooks": {}
 }

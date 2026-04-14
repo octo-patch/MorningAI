@@ -1,10 +1,10 @@
 # Changelog
 
-## [1.1.6] - 2026-04-14
+## [1.1.7] - 2026-04-14
 
 ### Fixes
-- **Fix skills field schema**: Use string `"SKILL.md"` instead of array `["SKILL.md"]` in `.claude-plugin/plugin.json` to match validator schema
-- **Fix skills path escaping plugin directory**: Changed `skills` field from `"./"` to `"SKILL.md"` in `.claude-plugin` and `.codex-plugin` plugin.json
+- **Fix skills field format**: Revert to `["./"]` (array) for `.claude-plugin/plugin.json` — matches working plugins (e.g. last30days). Previous changes to `"SKILL.md"` caused "skills: Invalid input" validation error
+- **Remove redundant `.agents/plugins/`**: Deleted `marketplace.json` that used `../../` path escaping; OpenCode/Hermes discover skills via `AGENTS.md` at repo root
 
 ## [1.1.4] - 2026-04-13
 
