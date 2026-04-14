@@ -1,12 +1,32 @@
+# Generated output
 drafts/
+report_*.md
+message_*.md
+plan_*.md
+data_*.json
+social/
+
+# Images
 *.png
 *.jpg
 *.jpeg
 *.gif
-report_*.md
-plan_*.md
-data_*.json
+
+# Runtime / env
 .claude/
 __pycache__/
 .env
 .env.local
+env.local
+
+# Platform-specific plugin configs (not needed by ClawHub)
+.codex-plugin/
+.claude-plugin/
+
+# User-specific data
+data/leaderboard.db
+entities/custom/*.md
+docs/competitive-analysis.md
+
+# Sample data (not part of the skill)
+samples/
