@@ -1,6 +1,6 @@
 ---
 name: gen-infographic
-version: "1.2.5"
+version: "1.2.6"
 description: Generate cover and per-type infographics for AI News Daily
 ---
 
@@ -17,17 +17,21 @@ Generate multiple infographics for the daily report:
 
 | Image | Filename | When to generate | Aspect |
 |-------|----------|-----------------|--------|
-| Cover | `news_infographic_YYYY-MM-DD.png` | Always (if image gen is enabled) | 9:16 |
+| Cover | `news_infographic_YYYY-MM-DD.png` | **Always** (if image gen is enabled) | 9:16 |
 | Model | `news_infographic_YYYY-MM-DD_model.png` | Type has 7+ score items | 9:16 |
 | Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 9:16 |
 | Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 9:16 |
 | Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 9:16 |
+| Combined | `news_infographic_YYYY-MM-DD_combined.png` | Always (for report embed) | long |
 
-- **All images use 9:16 portrait format** — each image is a standalone card, ready for multi-image posting
-- **No combined/stitched image** — individual images are the final output
+- **Cover is always generated first as a standalone image** — even if no per-type sections qualify. Do NOT skip or merge the cover into a combined-only flow
+- **Per-type sections use 9:16 portrait format**
+- **Combined image**: Cover + sections stitched vertically — used for embedding in the Markdown report
 - **Format**: PNG
 
-### Platform Posting Limits
+### Social Posting (multi-image, no combined)
+
+When posting to social platforms, use the **individual images** (not the combined long image):
 
 | Platform | Max Images | Strategy |
 |----------|-----------|----------|
@@ -216,20 +220,21 @@ CRITICAL RULES:
 
 ### Combined Prompt Template — not used
 
-> **Removed.** All reports now use Cover (9:16) + Per-Type Sections (9:16) as individual images for multi-image posting.
+> **Removed.** All reports now use Cover (9:16) + Per-Type Sections (9:16) + stitch for the combined report image. Social platforms use the individual images directly.
 
 ---
 
 ## Image Strategy
 
-Image generation produces **individual standalone images** — no stitching:
+Image generation produces **individual images + a combined long image**:
 
-1. **Cover** (9:16 portrait): Top 4-5 items across all types — Cover Prompt Template
-2. **Per-type sections** (9:16 portrait): One for each type with 7+ score items — Per-Type Prompt Template
+1. **Cover** (9:16 portrait): Top 4-5 items across all types — **always generated first as a standalone file**
+2. **Per-type sections** (9:16 portrait): One for each type with 7+ score items
+3. **Combined** (long vertical): Cover + sections stitched vertically — for Markdown report embedding
 
-When posting to social platforms, select images based on platform limits:
-- **X**: Cover + top 3 sections (4 images max per tweet)
-- **Xiaohongshu**: Cover + all sections (up to 9 images as carousel)
+> **Important**: The cover image must always exist as a separate file (`news_infographic_YYYY-MM-DD.png`). Do NOT skip cover generation even when producing a combined image.
+
+**Social posting** uses the individual images directly (cover + sections), NOT the combined long image. See Output Specs > Social Posting for platform limits.
 
 > If only 1-2 qualifying items exist, the cover still generates with extra whitespace. Per-type sections are skipped for types with no 7+ items.
 
@@ -246,18 +251,18 @@ Manifest example:
 
 ### 3. Generate Images
 
-Follow the **Image Strategy** section above — generate cover + per-type sections as individual images.
+Follow the **Image Strategy** section above — generate cover + per-type sections + stitch combined.
 
 **Option A** — Native tool (if supported):
-Generate each image using your tool's built-in capability.
+Generate each image using your tool's built-in capability, then stitch.
 
 **Option B** — Python script (default, recommended):
-Build a manifest JSON and run:
+Build a manifest JSON and run with `--stitch`:
 
 ```bash
-cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json
+cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --batch {CWD}/manifest.json --stitch
 ```
-> All images are 9:16 portrait. Requires `pip install Pillow` only if using `--stitch` (optional, not recommended for social posting).
+> All images are 9:16 portrait. Requires `pip install Pillow`. Produces individual images + `news_infographic_YYYY-MM-DD_combined.png`.
 
 ### 4. Post-generation Verification (required)
 

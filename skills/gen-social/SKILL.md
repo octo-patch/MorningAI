@@ -1,6 +1,6 @@
 ---
 name: gen-social
-version: "1.2.5"
+version: "1.2.6"
 description: Generate platform-specific social media copy and images for content distribution
 ---
 
@@ -249,15 +249,14 @@ The recommended style is a default — channels can override via `image_style` f
 ### Platform-Specific Image Adaptation
 
 **X images**:
-- Aspect ratio: 16:9 (landscape) or 1:1 (square) for custom social images
-- **Reuse daily infographic images**: When available, attach the 9:16 infographic images directly (cover + top 3 section images, up to 4 per tweet) instead of generating separate social images
+- Aspect ratio: 16:9 (landscape) or 1:1 (square)
 - **All text in English** — titles, bullets, headers, everything
 - Header: "AI News Daily"
 - Apply the persona's recommended image style (see mapping above)
+- Single image per tweet (or up to 4 for threads)
 
 **Xiaohongshu images**:
-- Aspect ratio: 3:4 (portrait) or 1:1 (square) for custom social images
-- **Reuse daily infographic images**: When available, attach the 9:16 infographic images directly (cover + all section images, up to 9 as carousel) instead of generating separate social images
+- Aspect ratio: 3:4 (portrait) or 1:1 (square)
 - **All text in Chinese** — titles, bullets, headers, everything
 - Header: "AI 每日速报"
 - Apply the style's recommended image style (see mapping above), plus Xiaohongshu-specific adaptations:
