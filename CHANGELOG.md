@@ -10,6 +10,7 @@
 - **HuggingFace model descriptions**: Fetch README.md from repo instead of API cardData for richer, more accurate model descriptions
 - **Reddit concurrent requests**: Parallel subreddit fetching for faster collection; collector timeout increased to 600s
 - **Infographic generation**: Cover image always generated; combined long image preserved as default output
+- **GitHub trending discovery via OSS Insight**: Integrated OSS Insight API (`/v1/trends/repos/`) to discover trending repos by 24h activity (stars, forks, PRs, pushes). Matched repos cross-verify with entity releases; unmatched repos surface as "GitHub Trending" discovery items. Replaces unused `search_trending()` dead code
 - **Example dates updated**: All sample data and references updated from 2026-04-08 to 2026-04-14
 
 ### Fixes

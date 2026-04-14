@@ -7,7 +7,7 @@ New collector — no last30days equivalent.
 import math
 import sys
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlencode, quote
+from urllib.parse import urlencode
 
 from . import http
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_GITHUB
@@ -137,32 +137,27 @@ def get_repo_releases(
     return releases
 
 
-def search_trending(
-    query: str,
-    from_date: str,
-    to_date: str,
-    token: Optional[str] = None,
-    depth: str = "default",
-) -> List[Dict[str, Any]]:
-    """Search for trending repos related to a query."""
-    per_page = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
-    headers = _gh_headers(token)
+OSSINSIGHT_API = "https://api.ossinsight.io/v1/trends/repos/"
+OSSINSIGHT_DEPTH = {"quick": 20, "default": 50, "deep": 100}
 
-    params = urlencode({
-        "q": f"{query} created:>{from_date}",
-        "sort": "stars",
-        "order": "desc",
-        "per_page": str(per_page),
-    })
-    url = f"{GITHUB_API}/search/repositories?{params}"
+
+def fetch_ossinsight_trending(depth: str = "default") -> List[Dict[str, Any]]:
+    """Fetch trending repos from OSS Insight API (past 24 hours).
+
+    Returns rows sorted by composite score (stars + forks + PRs + pushes).
+    Free API, no auth required.
+    """
+    limit = OSSINSIGHT_DEPTH.get(depth, 50)
+    url = f"{OSSINSIGHT_API}?period=past_24_hours&language=All"
 
     try:
-        response = http.get(url, headers=headers, timeout=30)
+        response = http.get(url, timeout=15, retries=2)
     except Exception as e:
-        _log(f"Trending search '{query}' failed: {e}")
+        _log(f"OSS Insight API failed: {e}")
         return []
 
-    return response.get("items", [])
+    rows = response.get("data", {}).get("rows", [])
+    return rows[:limit]
 
 
 def collect(
@@ -254,4 +249,72 @@ def collect(
 
     result.items = all_items
     _log(f"Collected {len(all_items)} GitHub releases from {result.entities_checked} entities")
+
+    # --- OSS Insight trending: cross-verify + discover ---
+    _log("Fetching OSS Insight trending repos...")
+    trending_rows = fetch_ossinsight_trending(depth)
+
+    if trending_rows:
+        # Build org -> entity lookup for matching
+        org_to_entity: Dict[str, str] = {}
+        repo_to_entity: Dict[str, str] = {}
+        for entity_name, sources in entities.items():
+            for org in sources.get("orgs", []):
+                org_to_entity[org.lower()] = entity_name
+            for repo in sources.get("repos", []):
+                repo_to_entity[repo.lower()] = entity_name
+
+        # Score threshold: skip bottom 20% by total_score
+        scores = sorted(float(r.get("total_score", 0)) for r in trending_rows)
+        min_score = scores[len(scores) // 5] if len(scores) >= 5 else 0
+        max_score = scores[-1] if scores else 1
+
+        trending_count = 0
+        for row in trending_rows:
+            repo_name = row.get("repo_name", "")
+            total_score = float(row.get("total_score", 0))
+
+            if not repo_name or total_score < min_score:
+                continue
+
+            owner = repo_name.split("/")[0].lower() if "/" in repo_name else ""
+            description = row.get("description") or ""
+            stars = int(row.get("stars") or 0)
+            forks = int(row.get("forks") or 0)
+
+            # Match against tracked entities
+            matched_entity = (
+                org_to_entity.get(owner)
+                or repo_to_entity.get(repo_name.lower())
+            )
+
+            if matched_entity:
+                entity_label = matched_entity
+                relevance = 0.8
+            else:
+                entity_label = "GitHub Trending"
+                relevance = 0.6
+
+            # Normalize OSS Insight score to 0-1 for relevance boost
+            norm_score = total_score / max_score if max_score > 0 else 0
+            relevance = min(1.0, relevance + norm_score * 0.15)
+
+            all_items.append(TrackerItem(
+                id=f"GH-TREND-{repo_name}",
+                title=repo_name,
+                summary=description[:300] if description else f"Trending repo with {stars} stars",
+                entity=entity_label,
+                source=SOURCE_GITHUB,
+                source_url=f"https://github.com/{repo_name}",
+                source_label=f"GitHub Trending (OSS Insight)",
+                date=to_date,
+                date_confidence="high",
+                engagement=Engagement(stars=stars, forks=forks),
+                relevance=relevance,
+            ))
+            trending_count += 1
+
+        result.items = all_items
+        _log(f"Added {trending_count} trending repos from OSS Insight")
+
     return result

@@ -6,13 +6,15 @@ Entity registry for trending platform scanning — discovers emerging AI tools, 
 
 ## Scan Sources
 
-### 1. GitHub Trending (AI/ML)
+### 1. GitHub Trending (OSS Insight API)
 
 | Attribute | Info |
 |------|------|
+| **API** | https://api.ossinsight.io/v1/trends/repos/?period=past_24_hours&language=All |
 | **Trending Page** | https://github.com/trending?since=daily |
 | **Focus Area** | AI/ML related trending repos |
-| **Filter Criteria** | AI/ML related, significant star growth today |
+| **Filter Criteria** | Composite score (stars + forks + PRs + pushes velocity), bottom 20% filtered |
+| **Auth** | None required (free public API) |
 
 ### 2. Product Hunt
 
