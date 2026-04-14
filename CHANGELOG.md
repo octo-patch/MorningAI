@@ -1,9 +1,10 @@
 # Changelog
 
-## [1.1.5] - 2026-04-14
+## [1.1.6] - 2026-04-14
 
 ### Fixes
-- **Fix skills path escaping plugin directory**: Changed `skills` field from `"./"` to `"SKILL.md"` in `.claude-plugin` and `.codex-plugin` plugin.json to resolve validator error
+- **Fix skills field schema**: Use string `"SKILL.md"` instead of array `["SKILL.md"]` in `.claude-plugin/plugin.json` to match validator schema
+- **Fix skills path escaping plugin directory**: Changed `skills` field from `"./"` to `"SKILL.md"` in `.claude-plugin` and `.codex-plugin` plugin.json
 
 ## [1.1.4] - 2026-04-13
 

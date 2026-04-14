@@ -10,7 +10,7 @@
     {
       "name": "morning-ai",
       "description": "Track 80+ AI entities across Reddit, HN, GitHub, HuggingFace, arXiv, and agent X/Twitter search. Daily-scheduled with scored, deduplicated Markdown reports. Supports unattended cron execution.",
-      "version": "1.1.5",
+      "version": "1.1.6",
       "author": {
         "name": "octo-patch",
         "url": "https://github.com/octo-patch"
