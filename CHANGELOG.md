@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.4] - 2026-04-13
+
+### New Features
+- **OpenCode & Hermes Agent support**: Added installation guides for OpenCode (native + compatible paths) and Hermes Agent (`hermes skills install`); updated sync.sh deploy targets
+
+### Improvements
+- **Factual detail verification rules**: All specific numbers (parameter counts, benchmark scores, pricing, context lengths, etc.) must now be verified from authoritative primary sources before inclusion — omit rather than guess
+- **Date display restricted to cover image**: Per-type section infographic images (Model/Product/Benchmark/Funding) no longer show the date in the header; only the cover image displays the date
+
 ## [1.1.3] - 2026-04-13
 
 ### Breaking Changes
