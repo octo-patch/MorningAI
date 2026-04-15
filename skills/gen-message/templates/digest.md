@@ -73,8 +73,15 @@ This template defines the exact output format for `message_{DATE}.md`.
 - End with a period
 
 **Link rules:**
-- Each item MUST end with a `🔗 {source_url}` line
+- **EVERY item MUST end with a `🔗 {source_url}` line — NO EXCEPTIONS**
+- An item without a source link is a critical formatting error and must not appear in the output
 - The URL comes from the item's `source_url` field
+- If `source_url` is empty, construct the URL from known patterns:
+  - HuggingFace models → `https://huggingface.co/{model_id}`
+  - GitHub repos → `https://github.com/{owner}/{repo}`
+  - arXiv papers → `https://arxiv.org/abs/{paper_id}`
+  - Otherwise → search for the official announcement URL
+- If no URL can be found → **drop the item entirely** rather than including it without a link
 - Always use the full URL, do NOT shorten or omit
 
 ### GitHub Trending Item (Special)

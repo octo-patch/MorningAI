@@ -4,6 +4,7 @@ Monitors model/space/dataset updates via HuggingFace API.
 New collector — no last30days equivalent.
 """
 
+import re
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
@@ -15,6 +16,73 @@ from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_HUGGINGFAC
 HF_API = "https://huggingface.co/api"
 
 DEPTH_CONFIG = {"quick": 5, "default": 10, "deep": 20}
+
+
+def _format_params(total: int) -> str:
+    """Format parameter count to human-readable string (e.g. 31B, 600M)."""
+    if total >= 1_000_000_000:
+        val = total / 1_000_000_000
+        return f"{val:.0f}B" if val == int(val) else f"{val:.1f}B"
+    if total >= 1_000_000:
+        val = total / 1_000_000
+        return f"{val:.0f}M" if val == int(val) else f"{val:.1f}M"
+    if total >= 1_000:
+        val = total / 1_000
+        return f"{val:.0f}K" if val == int(val) else f"{val:.1f}K"
+    return str(total)
+
+
+def _fetch_model_meta(model_id: str) -> Dict[str, str]:
+    """Fetch rich metadata from HuggingFace model API.
+
+    Returns dict with keys: params, arch, license, base_model (all optional).
+    """
+    url = f"{HF_API}/models/{quote(model_id, safe='/')}"
+    try:
+        data = http.get(url, timeout=15, retries=1)
+    except Exception:
+        return {}
+
+    if not isinstance(data, dict):
+        return {}
+
+    result: Dict[str, str] = {}
+
+    # Parameter count from safetensors
+    safetensors = data.get("safetensors")
+    if isinstance(safetensors, dict):
+        total = safetensors.get("total")
+        if isinstance(total, (int, float)) and total > 0:
+            result["params"] = _format_params(int(total))
+
+    # Architecture from config
+    config = data.get("config")
+    if isinstance(config, dict):
+        archs = config.get("architectures")
+        if isinstance(archs, list) and archs:
+            # "Gemma3ForConditionalGeneration" -> "Gemma3"
+            arch = archs[0]
+            arch = re.sub(r'(For\w+|LMHead\w*|Model)$', '', arch)
+            if arch:
+                result["arch"] = arch
+        if "arch" not in result:
+            model_type = config.get("model_type")
+            if model_type:
+                result["arch"] = model_type
+
+    # License and base_model from cardData
+    card = data.get("cardData")
+    if isinstance(card, dict):
+        lic = card.get("license")
+        if isinstance(lic, str) and lic:
+            result["license"] = lic
+        base = card.get("base_model")
+        if isinstance(base, str) and base:
+            result["base_model"] = base
+        elif isinstance(base, list) and base:
+            result["base_model"] = base[0] if isinstance(base[0], str) else ""
+
+    return result
 
 
 def _fetch_model_description(model_id: str) -> str:
@@ -37,8 +105,6 @@ def _fetch_model_description(model_id: str) -> str:
         end = text.find("---", 3)
         if end > 0:
             text = text[end + 3:]
-
-    import re
 
     # Find first substantial paragraph (skip blanks, headers, links, badges, emoji lines)
     for line in text.split("\n"):
@@ -279,29 +345,73 @@ def collect(
         if entity_found:
             result.entities_with_updates += 1
 
-    # Enrich summaries with model card descriptions (concurrent)
+    # Enrich summaries with model card descriptions + technical metadata (concurrent)
     if all_items:
-        _log(f"Fetching model card descriptions for {len(all_items)} models...")
+        _log(f"Fetching model details for {len(all_items)} models...")
         with ThreadPoolExecutor(max_workers=5) as executor:
-            futures = {
-                executor.submit(_fetch_model_description, item.title): item
+            desc_futures = {
+                executor.submit(_fetch_model_description, item.title): ("desc", item)
                 for item in all_items
             }
-            for future in as_completed(futures):
-                item = futures[future]
-                try:
-                    desc = future.result(timeout=20)
-                    if desc:
-                        # Build enriched summary: description + key metadata
-                        meta = []
-                        if item.engagement.views:
-                            meta.append(f"{item.engagement.views:,} downloads")
-                        if item.engagement.likes:
-                            meta.append(f"{item.engagement.likes} likes")
-                        meta_str = " | ".join(meta)
-                        item.summary = f"{desc[:200]}. {meta_str}" if meta_str else desc[:300]
-                except Exception:
-                    pass
+            meta_futures = {
+                executor.submit(_fetch_model_meta, item.title): ("meta", item)
+                for item in all_items
+            }
+
+            # Collect results keyed by item id
+            descriptions: Dict[str, str] = {}
+            metas: Dict[str, Dict[str, str]] = {}
+
+            for future in as_completed({**desc_futures, **meta_futures}):
+                if future in desc_futures:
+                    _, item = desc_futures[future]
+                    try:
+                        descriptions[item.id] = future.result(timeout=20)
+                    except Exception:
+                        pass
+                else:
+                    _, item = meta_futures[future]
+                    try:
+                        metas[item.id] = future.result(timeout=20)
+                    except Exception:
+                        pass
+
+            # Build enriched summaries
+            for item in all_items:
+                desc = descriptions.get(item.id, "")
+                model_meta = metas.get(item.id, {})
+
+                # Technical specs
+                specs = []
+                if model_meta.get("params"):
+                    specs.append(f"{model_meta['params']} params")
+                if model_meta.get("arch"):
+                    specs.append(f"{model_meta['arch']} architecture")
+                if model_meta.get("base_model"):
+                    specs.append(f"based on {model_meta['base_model']}")
+                if model_meta.get("license"):
+                    specs.append(model_meta["license"])
+                spec_str = ", ".join(specs)
+
+                # Engagement metrics
+                metrics = []
+                if item.engagement.views:
+                    metrics.append(f"{item.engagement.views:,} downloads")
+                if item.engagement.likes:
+                    metrics.append(f"{item.engagement.likes} likes")
+                metric_str = " | ".join(metrics)
+
+                # Assemble: description + specs + metrics
+                parts = []
+                if desc:
+                    parts.append(desc[:200])
+                if spec_str:
+                    parts.append(spec_str)
+                if metric_str:
+                    parts.append(metric_str)
+
+                if parts:
+                    item.summary = ". ".join(parts)
 
     result.items = all_items
     _log(f"Collected {len(all_items)} HF models from {result.entities_checked} entities")

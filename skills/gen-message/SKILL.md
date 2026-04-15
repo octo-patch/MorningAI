@@ -56,7 +56,13 @@ The message digest shares the **same data pipeline** as the full report — all 
 
 1. **Read data**: Load `data_{DATE}.json` from the working directory (this data has already been scored, deduplicated, and cross-source verified by the collection pipeline)
 2. **Filter by score**: Only items with `importance >= MESSAGE_MIN_SCORE`
-3. **Verify**: Every item included in the digest must have a valid `source_url` pointing to an authoritative primary source. For items with score 7+, additionally confirm `verified == true` (2+ independent sources). **No item — regardless of score — should be included if its factual claims cannot be traced back to a concrete source.** If an item lacks a credible `source_url`, skip it.
+3. **Verify & ensure source link**: Every item included in the digest **MUST** have a valid `source_url`. This is a hard requirement — **no item may appear in the digest without an accompanying source link.**
+   - If an item has a `source_url` in the data → use it directly
+   - If an item has no `source_url` but has `verify_sources` or `cross_refs` → use the best available URL from those fields
+   - If an item has no URL at all → **search for an authoritative source URL** (official blog, GitHub repo, announcement post, HuggingFace page) before including it. Construct the URL from known patterns when possible (e.g., `https://huggingface.co/{model_id}` for HF models, `https://github.com/{owner}/{repo}` for GitHub projects)
+   - If no credible URL can be found after the above steps → **drop the item entirely** — do NOT include it without a link
+   - For items with score 7+, additionally confirm `verified == true` (2+ independent sources)
+   - **Zero-link items are a critical formatting error** — every item in the final output must end with a source link line
 4. **Balance by category** (when `MESSAGE_CATEGORY_BALANCE` is `true`, default):
    a. Group qualifying items by `content_type`
    b. Apply per-type slot caps: `product` max **4**, `model` max **3**, `benchmark` max **2**, `financing` max **2**
@@ -106,7 +112,7 @@ Each item follows this structure:
 - **Prioritize technical substance** over popularity metrics: benchmark scores, parameter counts, context window, architecture innovations, licensing, pricing, speed improvements
 - **Do NOT lead with vanity metrics** like download counts, likes, stars, or follower counts — these say nothing about what the thing does. Only mention them if the surge itself IS the news (e.g., "hit 100K stars in 48 hours")
 - No score numbers displayed — the emoji conveys importance level
-- Each item MUST end with a `🔗 {source_url}` line linking to the original source
+- **Each item MUST end with a `🔗 {source_url}` line** — this is non-negotiable. An item without a source link is a formatting error. If the data lacks a `source_url`, construct one from known URL patterns (HuggingFace model page, GitHub repo, official blog) or search for an authoritative link. If no URL can be found, **drop the item** rather than publishing it without a link.
 - Items separated by a blank line
 
 ### Special Formatting
