@@ -152,7 +152,7 @@ Walk the user through setup interactively, waiting for their response at each st
 6. **Ask about message digest** (optional):
    - Enable concise message digest for sharing on messaging platforms (WeChat, Telegram, Slack)?
    - If yes: set `MESSAGE_ENABLED=true`
-   - Optional settings: `MESSAGE_MIN_SCORE` (default 5), `MESSAGE_MAX_ITEMS` (default 10), `MESSAGE_LINKS` (`bottom` or `inline`)
+   - Optional settings: `MESSAGE_MIN_SCORE` (default 5), `MESSAGE_MAX_ITEMS` (default 10), `MESSAGE_LINKS` (`bottom` or `inline`), `MESSAGE_CATEGORY_BALANCE` (default true, distributes slots across content types)
 
 7. **Create the config file** — collect the keys the user provides and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`
 8. **Confirm** — show how many sources are now active (N/9)
@@ -412,6 +412,7 @@ Generate a concise, share-friendly message digest suitable for messaging platfor
 
 3. Select items from the report data (`data_{YYYY-MM-DD}.json`):
    - Filter by score >= `MESSAGE_MIN_SCORE` (default: 5)
+   - Apply category balance if `MESSAGE_CATEGORY_BALANCE=true` (default): per-type slot caps (product max 4, model max 3, benchmark max 2, financing max 2), fill remaining with top-scoring items
    - Sort by importance score descending
    - Limit to `MESSAGE_MAX_ITEMS` (default: 10)
    - Use `MESSAGE_LANG` for language (default: from `--lang`)
@@ -529,7 +530,7 @@ GITHUB_TOKEN=ghp_xxx
 
 ### Message Digest Configuration
 
-See `skills/gen-message/SKILL.md` for message digest configuration variables (`MESSAGE_ENABLED`, `MESSAGE_MIN_SCORE`, `MESSAGE_MAX_ITEMS`, etc.).
+See `skills/gen-message/SKILL.md` for message digest configuration variables (`MESSAGE_ENABLED`, `MESSAGE_MIN_SCORE`, `MESSAGE_MAX_ITEMS`, `MESSAGE_CATEGORY_BALANCE`, etc.).
 
 ---
 

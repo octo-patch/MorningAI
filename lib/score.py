@@ -59,11 +59,18 @@ def _compute_engagement_score(item: TrackerItem) -> float:
         return min(1.0, raw / 6.0)
 
     elif item.source == SOURCE_GITHUB:
-        raw = (
-            0.60 * math.log1p(eng.stars)
-            + 0.40 * math.log1p(eng.forks)
-        )
-        return min(1.0, raw / 7.0)
+        if "Trending" in (item.source_label or ""):
+            # Trending repos: star surge IS the story
+            raw = (
+                0.60 * math.log1p(eng.stars)
+                + 0.40 * math.log1p(eng.forks)
+            )
+            return min(1.0, raw / 7.0)
+        else:
+            # Tracked-entity releases: repo lifetime stars ≠ release
+            # significance.  Use flat moderate engagement so relevance
+            # and source reliability drive the score instead.
+            return 0.35
 
     elif item.source == SOURCE_HUGGINGFACE:
         raw = (

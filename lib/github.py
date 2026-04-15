@@ -94,8 +94,6 @@ def get_org_releases(
                     "url": rel.get("html_url", ""),
                     "date": pub_date,
                     "prerelease": rel.get("prerelease", False),
-                    "stars": repo.get("stargazers_count", 0),
-                    "forks": repo.get("forks_count", 0),
                 })
 
     return releases
@@ -208,10 +206,7 @@ def collect(
                     date=rel.get("date"),
                     date_confidence="high",
                     raw_text=body,
-                    engagement=Engagement(
-                        stars=rel.get("stars", 0),
-                        forks=rel.get("forks", 0),
-                    ),
+                    engagement=Engagement(),  # no repo-level stars for releases
                     relevance=0.8 if not rel.get("prerelease") else 0.5,
                 ))
                 entity_found = True
@@ -236,10 +231,7 @@ def collect(
                     date=rel.get("date"),
                     date_confidence="high",
                     raw_text=body,
-                    engagement=Engagement(
-                        stars=rel.get("stars", 0),
-                        forks=rel.get("forks", 0),
-                    ),
+                    engagement=Engagement(),  # no repo-level stars for releases
                     relevance=0.8 if not rel.get("prerelease") else 0.5,
                 ))
                 entity_found = True

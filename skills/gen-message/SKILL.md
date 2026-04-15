@@ -48,6 +48,7 @@ The message digest shares the **same data pipeline** as the full report — all 
 | `MESSAGE_LANG` | string | (from `--lang`) | Language override for the digest |
 | `MESSAGE_IMAGE_STYLE` | string | (from `IMAGE_STYLE`) | Visual style override for the digest image |
 | `MESSAGE_LINKS` | string | `inline` | Link placement: `inline` (after each item) or `bottom` (reference list at end) |
+| `MESSAGE_CATEGORY_BALANCE` | bool | `true` | Distribute slots across content types to prevent single-type domination |
 
 ---
 
@@ -56,9 +57,16 @@ The message digest shares the **same data pipeline** as the full report — all 
 1. **Read data**: Load `data_{DATE}.json` from the working directory (this data has already been scored, deduplicated, and cross-source verified by the collection pipeline)
 2. **Filter by score**: Only items with `importance >= MESSAGE_MIN_SCORE`
 3. **Verify**: Every item included in the digest must have a valid `source_url` pointing to an authoritative primary source. For items with score 7+, additionally confirm `verified == true` (2+ independent sources). **No item — regardless of score — should be included if its factual claims cannot be traced back to a concrete source.** If an item lacks a credible `source_url`, skip it.
-4. **Sort**: By importance score descending (highest first)
-5. **Limit**: Take top N items (from `MESSAGE_MAX_ITEMS`)
-6. **Translate**: If data language differs from `MESSAGE_LANG`, translate summaries. Entity names (proper nouns) stay unchanged.
+4. **Balance by category** (when `MESSAGE_CATEGORY_BALANCE` is `true`, default):
+   a. Group qualifying items by `content_type`
+   b. Apply per-type slot caps: `product` max **4**, `model` max **3**, `benchmark` max **2**, `financing` max **2**
+   c. From each type, select the highest-scoring items up to the type's cap
+   d. If a type has fewer qualifying items than its cap, its unused slots become available as overflow
+   e. Fill remaining slots (up to `MESSAGE_MAX_ITEMS` total) with the next highest-scoring items from any type, regardless of whether that type has already hit its cap
+   f. If `MESSAGE_CATEGORY_BALANCE` is `false`, skip this step and use pure top-N by score
+5. **Sort**: Final selected items by importance score descending (highest first)
+6. **Limit**: Ensure total does not exceed `MESSAGE_MAX_ITEMS`
+7. **Translate**: If data language differs from `MESSAGE_LANG`, translate summaries. Entity names (proper nouns) stay unchanged.
 
 ---
 
@@ -228,7 +236,7 @@ cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --pr
 1. Check `MESSAGE_ENABLED=true` — skip if not enabled
 2. Read `data_{DATE}.json` from the working directory
 3. Read this specification and the digest template (`templates/digest.md`)
-4. Select items: filter by score >= `MESSAGE_MIN_SCORE`, sort desc, limit to `MESSAGE_MAX_ITEMS`
+4. Select items: filter by score >= `MESSAGE_MIN_SCORE`, apply category balance (if enabled), sort desc, limit to `MESSAGE_MAX_ITEMS`
 5. Generate text digest → write to `{CWD}/message_{DATE}.md`
 6. If image generation available → build prompt from template, generate → `{CWD}/message_{DATE}.png`
 
