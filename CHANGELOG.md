@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.7] - 2026-04-15
+
+### Improvements
+- **GitHub release scoring fix**: Release items no longer inherit the repo's lifetime star count as engagement — a patch bump on a 100K-star repo no longer outscores major industry news. Trending repos (OSS Insight) still use star-delta scoring since the surge IS the story
+- **MESSAGE category balance**: Add `MESSAGE_CATEGORY_BALANCE` (default `true`) with per-type slot caps (product max 4, model max 3, benchmark max 2, financing max 2) to ensure content diversity in message digests instead of pure top-N by score
+
 ## [1.2.6] - 2026-04-14
 
 ### New Features

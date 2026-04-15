@@ -1,6 +1,6 @@
 ---
 name: leaderboard
-version: "1.2.6"
+version: "1.2.7"
 description: Track AI model leaderboard rankings over time and detect rank/score changes between snapshots
 ---
 

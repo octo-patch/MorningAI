@@ -1,6 +1,6 @@
 ---
 name: gen-social
-version: "1.2.6"
+version: "1.2.7"
 description: Generate platform-specific social media copy and images for content distribution
 ---
 
