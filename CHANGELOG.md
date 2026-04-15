@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.8] - 2026-04-15
+
+### Improvements
+- **HuggingFace model metadata enrichment**: Fetch technical specs (parameter count, architecture, license, base model) from HuggingFace model API alongside README descriptions. Summaries now include structured specs like "31B params, Gemma3 architecture, apache-2.0"
+- **Mandatory source links in MESSAGE digest**: Every digest item must now have a source link — items without `source_url` trigger URL construction from known patterns (HuggingFace model page, GitHub repo, arXiv abstract). Items with no findable URL are dropped entirely. Zero-link items are treated as critical formatting errors
+
 ## [1.2.7] - 2026-04-15
 
 ### Improvements
