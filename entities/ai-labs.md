@@ -49,7 +49,7 @@ Entity registry for major AI labs worldwide, including model releases, product u
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@GoogleDeepMind](https://x.com/GoogleDeepMind), [@GoogleAI](https://x.com/GoogleAI), [@GoogleAIStudio](https://x.com/GoogleAIStudio), [@googleaidevs](https://x.com/googleaidevs), [@GeminiApp](https://x.com/GeminiApp) |
-| **Key People** | [@JeffDean](https://x.com/JeffDean) - Jeff Dean, Chief Scientist<br>[@OfficialLoganK](https://x.com/OfficialLoganK) - Logan Kilpatrick, Product Lead |
+| **Key People** | [@JeffDean](https://x.com/JeffDean) - Jeff Dean, Chief Scientist<br>[@demishassabis](https://x.com/demishassabis) - Demis Hassabis, DeepMind CEO<br>[@OfficialLoganK](https://x.com/OfficialLoganK) - Logan Kilpatrick, Product Lead |
 | **DeepMind Blog** | https://deepmind.google/discover/blog |
 | **Research Blog** | https://research.google/blog |
 | **Publications** | https://deepmind.google/research/publications |

@@ -19,6 +19,10 @@ Entity registry for AI industry key opinion leaders and influential voices.
 | Elie Bakouch | [@eliebakouch](https://x.com/eliebakouch) | AI news blogger |
 | Swyx | [@swyx](https://x.com/swyx) | Latent Space Host, AI engineering advocate |
 | Simon Willison | [@simonw](https://x.com/simonw) | Django Co-creator, in-depth AI tool reviews |
+| François Chollet | [@fchollet](https://x.com/fchollet) | Keras creator, ARC-AGI initiator, intelligence & benchmark research |
+| DAIR.AI | [@dair_ai](https://x.com/dair_ai) | Weekly ML/AI paper threads and accessible research explainers |
+| Lilian Weng | [@lilianweng](https://x.com/lilianweng) | Ex-OpenAI, Lil'Log in-depth LLM research breakdowns |
+| Riley Goodside | [@goodside](https://x.com/goodside) | LLM evaluation, prompting research, real capabilities testing |
 
 > **Note**: KOL information must be traced back to official channels for confirmation, cannot be used directly as a primary source
 
