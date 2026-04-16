@@ -1,6 +1,6 @@
 ---
 name: tracking-list
-version: "1.2.8"
+version: "1.2.9"
 description: Unified AI News Tracking Specification - covers Product/Model/Benchmark/Funding types with tracking scope, source standards, timeliness checks, scoring criteria, and record format
 ---
 

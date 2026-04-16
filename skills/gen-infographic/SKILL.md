@@ -1,6 +1,6 @@
 ---
 name: gen-infographic
-version: "1.2.8"
+version: "1.2.9"
 description: Generate cover and per-type infographics for MorningAI
 ---
 

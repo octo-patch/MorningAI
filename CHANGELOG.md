@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.9] - 2026-04-16
+
+### Improvements
+- **Social media template cleanup**: Ship only one default template per platform — X `briefing` and Xiaohongshu `news-briefing`. All other persona templates are local-only examples
+- **Xiaohongshu news-briefing template**: Add priority indicators (🔴🟠🟡 by importance score), "今日数字" data highlights section, and ultra-compact telegraph format
+- **SKILL.md simplification**: Streamline style tables to show only shipped templates, with guidance to copy-and-customize for custom personas
+
 ## [1.2.8] - 2026-04-15
 
 ### Improvements
