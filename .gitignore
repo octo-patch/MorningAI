@@ -15,7 +15,7 @@ data/leaderboard.db
 entities/custom/*.md
 !entities/custom-example.md
 skills/gen-social/templates/x/*.md
-!skills/gen-social/templates/x/insider.md
+!skills/gen-social/templates/x/briefing.md
 skills/gen-social/templates/xiaohongshu/*.md
 !skills/gen-social/templates/xiaohongshu/news-briefing.md
 docs/competitive-analysis.md

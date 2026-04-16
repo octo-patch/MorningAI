@@ -65,15 +65,9 @@ Each X style has a distinct **persona** — a consistent voice and perspective t
 
 | Style | Persona | Template | Tone | Default Items | Min Score |
 |-------|---------|----------|------|---------------|-----------|
-| `insider` | Tech Insider | `templates/x/insider.md` | Industry insider, dry humor, connects dots | 3 | 7 |
+| `briefing` | Daily Briefing | `templates/x/briefing.md` | Clean scannable index + infographic image | 5 | 6 |
 
-**Create your own** — some persona directions to consider:
-
-| Persona Direction | Tone | Reference |
-|-------------------|------|-----------|
-| Hype-Free Analyst | Data-driven, measured, pattern recognition | @Benedict Evans |
-| Builder | Practical, opinionated, "I tried it" | @levelsio |
-| Witty Commentator | Sharp, meme-aware, short punchy takes | Tech Twitter culture |
+To create your own persona, copy the example template and edit the copy. Custom templates in this directory are gitignored.
 
 ### Xiaohongshu Styles
 
@@ -81,14 +75,9 @@ Each X style has a distinct **persona** — a consistent voice and perspective t
 
 | Style | Template | Tone | Default Items | Min Score |
 |-------|----------|------|---------------|-----------|
-| `educational` | `templates/xiaohongshu/educational.md` | Structured explainer, numbered | 3-5 | 6 |
+| `news-briefing` | `templates/xiaohongshu/news-briefing.md` | Telegraph speed-scan, priority indicators | 5-8 | 5 |
 
-**Create your own** — some style directions to consider:
-
-| Style Direction | Tone | Key Traits |
-|-----------------|------|------------|
-| 种草体 (Recommendation) | Enthusiastic discovery, "must see!" | Heavy emoji, excitement, personal voice |
-| 资讯体 (News Briefing) | Concise bullet list, high info density | Compact, neutral, professional |
+To create your own style, copy the example template and edit the copy. Custom templates in this directory are gitignored.
 
 ---
 
