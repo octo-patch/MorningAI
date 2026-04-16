@@ -17,6 +17,7 @@ entities/custom/*.md
 skills/gen-social/templates/x/*.md
 !skills/gen-social/templates/x/insider.md
 skills/gen-social/templates/xiaohongshu/*.md
-!skills/gen-social/templates/xiaohongshu/educational.md
+!skills/gen-social/templates/xiaohongshu/news-briefing.md
 docs/competitive-analysis.md
-.claude/
+.claude/*
+!.claude/settings.json
