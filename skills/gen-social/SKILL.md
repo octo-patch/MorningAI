@@ -43,7 +43,7 @@ Transform the daily AI news report into platform-optimized social media content.
 Templates define the voice, tone, and format for each channel. This repo ships with **one example template per platform** as a starting point:
 
 - **X**: `templates/x/insider.md` (Tech Insider persona)
-- **Xiaohongshu**: `templates/xiaohongshu/educational.md` (科普体)
+- **Xiaohongshu**: `templates/xiaohongshu/educational.md`
 
 To create your own persona or style:
 
@@ -61,23 +61,24 @@ Edit the copy, then set your channel config `style` field to match the filename 
 
 Each X style has a distinct **persona** — a consistent voice and perspective that makes the account feel like a real person, not a news feed.
 
-**Included example:**
+**Available styles:**
 
 | Style | Persona | Template | Tone | Default Items | Min Score |
 |-------|---------|----------|------|---------------|-----------|
-| `briefing` | Daily Briefing | `templates/x/briefing.md` | Clean scannable index + infographic image | 5 | 6 |
-
-To create your own persona, copy the example template and edit the copy. Custom templates in this directory are gitignored.
+| `briefing` | Daily Briefing | `templates/x/briefing.md` | Clean scannable index + infographic image, neutral | 5 | 6 |
+| `insider` | Razor | `templates/x/insider.md` | Devastating one-liners, deadpan, says the quiet part loud | 3 | 7 |
+| `commentary` | Builder | `templates/x/commentary.md` | First-person practical, opinionated hot takes, @levelsio meets @karpathy | 3 | 8 |
+| `thread` | Hype-Free Analyst | `templates/x/thread.md` | Data-driven thread, contrarian, pattern recognition, @Benedict Evans | 5 | 6 |
 
 ### Xiaohongshu Styles
 
-**Included example:**
+**Available styles:**
 
 | Style | Template | Tone | Default Items | Min Score |
 |-------|----------|------|---------------|-----------|
 | `news-briefing` | `templates/xiaohongshu/news-briefing.md` | Telegraph speed-scan, priority indicators | 5-8 | 5 |
-
-To create your own style, copy the example template and edit the copy. Custom templates in this directory are gitignored.
+| `educational` | `templates/xiaohongshu/educational.md` | Structured explainer, numbered, "one article to understand it all" | 3-5 | 6 |
+| `recommendation` | `templates/xiaohongshu/recommendation.md` | Enthusiastic discovery, heavy emoji, "must see!" | 3 | 7 |
 
 ---
 
@@ -149,8 +150,10 @@ Located at `~/.config/morning-ai/social_channels.json` (or path set via `SOCIAL_
 | `image` | boolean | No | Generate images for this channel (default: `false`) |
 | `image_aspect` | string | No | Image aspect ratio: `16:9`, `1:1`, `3:4` (default: platform default) |
 | `image_count` | number | No | Number of carousel images for xiaohongshu (default: 1) |
-| `image_style` | string | No | Override image style: `classic`, `dark`, `glassmorphism`, `newspaper`, `tech` (default: persona's recommended style) |
+| `image_style` | string | No | Override image style: `classic`, `dark`, `glassmorphism`, `newspaper`, `tech`, `cover-hook` (default: persona's recommended style). Note: `cover-hook` is special — it is intended only for the FIRST image of a Xiaohongshu carousel (the thumbnail in the discovery feed). Subsequent images should use the channel's regular style. |
 | `include_types` | array | No | Filter by content types, e.g. `["model", "product"]` (default: all) |
+| `kol_voice_only` | boolean | No | If `true`, only items with `is_kol_voice: true` are eligible for selection. Used by the dedicated KOL channel so that KOL original commentary becomes the post's main topic, not embedded inside an unrelated post. (default: `false`) |
+| `conditional` | string | No | Conditional run gate. Currently supported: `viral_only` (max score ≥ `min_score`) and `kol_voice_available` (at least one item with `is_kol_voice: true` and `score ≥ min_score`). If the gate fails, the channel produces an empty manifest entry (no copy file, no images) and downstream consumers (e.g. foreman publish adapter) should skip the run gracefully. |
 
 ### Quick Setup (Single Channel via Env Vars)
 
@@ -172,9 +175,38 @@ For each channel, select items from the daily report data:
 
 1. **Filter by score**: only items with `importance >= min_score`
 2. **Filter by type**: if `include_types` is set, only those content types
-3. **Sort by score**: highest first
-4. **Limit**: take top N items (from channel `items` setting or template default)
-5. **Translate**: if source data language differs from channel `lang`, translate content. Entity names (proper nouns) stay unchanged.
+3. **Filter by KOL voice flag**: if `kol_voice_only: true` is set, only items where `is_kol_voice: true`
+4. **Sort by score**: highest first
+5. **Limit**: take top N items (from channel `items` setting or template default)
+6. **Translate**: if source data language differs from channel `lang`, translate content. Entity names (proper nouns) stay unchanged.
+
+### Conditional Channels (Pre-Selection Gate)
+
+**This check runs BEFORE the 5 steps above.** Some channels only make sense on certain days (e.g. a viral-only channel that should only post when there's a genuinely big story). These channels declare a `conditional` field — the value tells the pipeline what gate to apply:
+
+| `conditional` value | Gate logic |
+|---|---|
+| (omitted) | Always run (default) |
+| `viral_only` | Channel runs ONLY if `max(item.importance for item in today's data) >= channel.min_score`. If no item clears the threshold, the channel is skipped. |
+| `kol_voice_available` | Channel runs ONLY if at least one item has `is_kol_voice: true` AND `score >= channel.min_score`. If no qualifying KOL voice exists today, the channel is skipped. Used by the dedicated KOL channel so that on quiet KOL days the post is not forced. |
+
+**When a conditional channel is gated off:**
+
+1. Do NOT generate a copy file or images for this channel
+2. Still emit a manifest entry, but with a `skipped: true` field and a `skip_reason` explaining why (e.g. `"max score 7.8 < required 8.5"`)
+3. Required manifest entry shape for skipped conditional channels:
+   ```json
+   {
+     "id": "xhs_zhongcao_viral_zh",
+     "platform": "xiaohongshu",
+     "style": "single-topic",
+     "skipped": true,
+     "skip_reason": "max score 7.8 < required 8.5"
+   }
+   ```
+4. Downstream publish adapters (e.g. foreman `daily-publish-xhs-2-viral`) detect `skipped: true` and mark their run as SKIPPED rather than FAILED.
+
+**Why this matters**: it lets us schedule a 12:00 viral-only post on the cron without generating empty/low-quality posts on slow news days. The viral channel only fires content when there's something worth firing about.
 
 ---
 
@@ -219,19 +251,40 @@ Each persona/style has a **recommended image style** that matches its voice. Thi
 
 #### X Styles
 
-| Persona | Recommended Image Style | Why |
-|---------|------------------------|-----|
-| **insider** (Tech Insider) | `tech` | Terminal aesthetic matches the insider/hacker vibe — monospace, cyan/green, dark background |
-| **thread** (Hype-Free Analyst) | `classic` | Clean editorial magazine — serious, data-focused, no visual noise |
-| **commentary** (Builder) | `dark` | Bold dark mode with electric blue — confident, modern, stands out in timeline |
+| Persona | Recommended Image Style | Images | Why |
+|---------|------------------------|--------|-----|
+| **briefing** (Daily Briefing) | `classic` | 1 cover + per-category (model/product/benchmark/funding) | Clean editorial, professional — cover indexes the day, per-category images go deeper |
+| **insider** (Tech Insider) | `tech` | 0 | Razor is pure text — images dilute the punchline |
+| **commentary** (Builder) | `dark` | 0 | Builder takes stand alone — bold text, no visual crutch |
+| **thread** (Hype-Free Analyst) | `classic` | 1 cover | Clean editorial magazine — serious, data-focused, no visual noise |
 
 #### Xiaohongshu Styles
 
-| Style | Recommended Image Style | Why |
-|-------|------------------------|-----|
-| **recommendation** (种草体) | `glassmorphism` | Frosted glass, warm tones — matches the lifestyle/discovery aesthetic of 种草 content |
-| **educational** (科普体) | `classic` | Clean editorial — matches structured, authoritative educational content |
-| **news-briefing** (资讯体) | `newspaper` | Classic newsprint — information-dense, professional, matches compact news format |
+| Style | Default Image Style | Images | Why |
+|-------|---------------------|--------|-----|
+| **recommendation** | `glassmorphism` | 3 carousel | Frosted glass, warm tones — lifestyle/discovery aesthetic |
+| **educational** | `classic` | 4 carousel | Clean editorial — structured, authoritative content |
+| **news-briefing** | `newspaper` | 1 | Classic newsprint — information-dense, professional |
+
+> **IMPORTANT**: If the channel config has an explicit `image_style` field, that takes absolute priority over the defaults above. Do NOT include style labels or content-type annotations in image prompts.
+
+#### Briefing Per-Category Images
+
+The **briefing** channel generates additional per-category images beyond the cover, mirroring how `gen-infographic` handles per-type infographics:
+
+| Image | Filename | Generated When |
+|-------|----------|----------------|
+| Cover | `social_{DATE}_x_briefing_en_cover.png` | Always |
+| Model | `social_{DATE}_x_briefing_en_model.png` | ≥1 Model item with score ≥ min_score |
+| Product | `social_{DATE}_x_briefing_en_product.png` | ≥1 Product item with score ≥ min_score |
+| Benchmark | `social_{DATE}_x_briefing_en_benchmark.png` | ≥1 Benchmark item with score ≥ min_score |
+| Funding | `social_{DATE}_x_briefing_en_funding.png` | ≥1 Funding item with score ≥ min_score |
+
+Per-category images:
+- Same classic style as cover, 16:9 landscape
+- Header: "MorningAI — {Type} Updates" (no date — consistent with infographic per-type images)
+- Include ALL qualifying items of that type (not limited to the channel `items` cap)
+- Each card: entity + event + 2-3 bullet points
 
 The recommended style is a default — channels can override via `image_style` field in the channel config. If not set, the persona's recommended style is used. If no persona mapping exists, falls back to the global `IMAGE_STYLE` setting.
 
@@ -294,15 +347,61 @@ CRITICAL RULES:
 - `{LANG}` → "English" for X, "Chinese" for Xiaohongshu
 - `{STYLE_BLOCK}` → from the persona's recommended image style (see `skills/gen-infographic/SKILL.md` Style Presets)
 
-**`{PLATFORM_STYLE_ADDON}`** for Xiaohongshu (append to any base style):
+**`{PLATFORM_STYLE_ADDON}`** for Xiaohongshu — **use the matching style variant based on the channel's `image_style` field**:
+
+**When `image_style` = `glassmorphism`:**
 ```
-Additional Xiaohongshu adaptation:
+Additional Xiaohongshu adaptation (glassmorphism):
 - ALL text must be in Chinese (except entity proper nouns)
+- Soft gradient background (lavender to pale rose)
+- Semi-transparent frosted white cards with backdrop blur
 - Use rounded corners (16px) on all cards
 - Larger title font (22pt bold) for mobile readability
 - Warm accent colors: coral (#FF6B6B), soft pink (#FFB4B4), lavender (#E8EAF6)
 - Emoji bullet markers (colored dots or sparkle symbols)
 - Clean, fresh, lifestyle-magazine aesthetic
+- Generous padding and line spacing for mobile screens
+```
+
+**When `image_style` = `newspaper`:**
+```
+Additional Xiaohongshu adaptation (newspaper):
+- ALL text must be in Chinese (except entity proper nouns)
+- Warm cream background (#FFF8E7) with subtle paper texture
+- Bold serif typography for headers (Georgia/Times feel)
+- Thin black hairline rules (1px) between content sections
+- NO card backgrounds, NO rounded corners, NO shadows — pure typographic layout
+- Color palette: cream, deep black, crimson (#DC143C) accent only
+- Classic broadsheet newspaper aesthetic — professional and information-dense
+- DO NOT use warm accent colors (coral, pink, lavender), frosted glass, or gradient backgrounds
+- Larger font for mobile readability, generous line spacing
+```
+
+**When `image_style` = `cover-hook`:** (FIRST image of XHS carousel ONLY — this is the discovery-feed thumbnail)
+```
+Additional Xiaohongshu adaptation (cover-hook):
+- THUMBNAIL-OPTIMIZED COVER — single bold statement, scroll-stopping contrast
+- ALL text must be in Chinese (except entity proper nouns)
+- 3:4 single card, super-large title text occupying ≥ 50% of canvas
+- Title text = the post title or its strongest 1-line variant (e.g., "Cursor 估值飙到 500 亿")
+- ONE single subtitle line below with the most striking concrete data point (e.g., "3 年达 20 亿 ARR · 史上最快 B2B")
+- High-contrast color block: solid dark background (#1A1A1A) with bright accent text, OR solid bright background (#FFD700 / #FF6B35) with dark text
+- Sans-serif bold typography, weight ≥ 700, large enough to be readable in feed thumbnail
+- NO bullet points, NO logos, NO small annotations, NO multiple data points — single message only
+- NO body text, NO list of items, NO date stamps, NO MorningAI header — only the title statement + one subtitle line
+- DO NOT use newspaper aesthetic, frosted glass, or magazine layout — this is a poster, not a card
+```
+
+**When `image_style` = `classic`:**
+```
+Additional Xiaohongshu adaptation (classic):
+- ALL text must be in Chinese (except entity proper nouns)
+- Off-white background (#F5F5F0), clean editorial magazine layout
+- Card-based layout with subtle shadows
+- Navy (#1B2A4A), coral (#E8634A), teal (#2A9D8F) accent palette
+- Use rounded corners (8px) on cards
+- Larger title font for mobile readability
+- Structured, authoritative visual hierarchy
 - Generous padding and line spacing for mobile screens
 ```
 
@@ -329,6 +428,15 @@ cd {SKILL_DIR} && python3 skills/gen-infographic/scripts/gen_infographic.py --ba
 
 Manifest entries support `"aspect_ratio": "3:4"` for Xiaohongshu images.
 
+#### Cover-Hook for Xiaohongshu Carousels
+
+For Xiaohongshu channels with `image_count >= 2` AND style `recommendation` or `single-topic`, the **first image** of the carousel is the discovery-feed thumbnail and MUST use the `cover-hook` style addon (regardless of the channel's regular `image_style`):
+
+- Image 1 → use `{PLATFORM_STYLE_ADDON}` for `cover-hook`. Content = post title + ONE strongest data point. No bullet points, no list of items.
+- Image 2..N → use the channel's regular `image_style` (e.g., `newspaper`). Content = the per-item news cards as before.
+
+This applies because the first image is what stops the scroll in the discovery feed; an information-dense newspaper card is unreadable as a thumbnail. Channels that already declare `image_style: cover-hook` explicitly should apply it to ALL images (rare — typically reserved for single-image posts).
+
 ---
 
 ## Output Files
@@ -346,6 +454,39 @@ social/
 ```
 
 ### Manifest Format
+
+> **MANDATORY SCHEMA — DO NOT IMPROVISE FIELD NAMES OR PATHS**
+>
+> The manifest is consumed by downstream tools that match on exact field
+> names and assume flat filenames. Past LLM-generated output has drifted
+> in ways that silently break consumers (`channel_id` instead of `id`,
+> `copy` instead of `copy_file`, paths prefixed with `social/`). This
+> section is the contract — produce it byte-for-byte as specified.
+
+**Required top-level shape:**
+- `channels` MUST be a JSON **array** (list). Never a dict keyed by id.
+
+**Required per-channel fields** — use these exact names, no aliases:
+
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+| `id` | string | Yes | Channel identifier. **Field name is `id`, NOT `channel_id`.** |
+| `platform` | string | Yes | `x` or `xiaohongshu` |
+| `style` | string | Yes | Style name |
+| `lang` | string | Yes | `en`, `zh`, `ja`, etc. |
+| `copy_file` | string | Conditional | **Filename only** (no directory prefix). Field name is `copy_file`, NOT `copy`. **Omit this field if `skipped: true`.** |
+| `images` | array<string> | Conditional | **Filenames only** (no directory prefix). Empty list `[]` if no images. **Omit this field if `skipped: true`.** |
+| `items_used` | number | No | Count of source items included |
+| `skipped` | boolean | No | Set to `true` for conditional channels that did not meet their gate (e.g. viral_only with no item ≥ min_score). When `true`, omit `copy_file` and `images`. |
+| `skip_reason` | string | Conditional | Required when `skipped: true`. Short explanation, e.g. `"max score 7.8 < required 8.5"`. |
+
+**Path rules — applies to `copy_file` and every entry in `images`:**
+- Write the **bare filename** as it appears under `social/` (e.g. `social_2026-04-18_xhs_zixun_zh.md`).
+- Do **NOT** include any directory component — no `social/`, no `./`, no absolute path.
+- Wrong: `"copy_file": "social/social_2026-04-18_xhs_zixun_zh.md"` ❌
+- Right: `"copy_file": "social_2026-04-18_xhs_zixun_zh.md"` ✅
+
+**Canonical example** (copy this shape exactly):
 
 ```json
 {
@@ -373,10 +514,40 @@ social/
         "social_2026-04-14_xhs_kepu_zh_4.png"
       ],
       "items_used": 5
+    },
+    {
+      "id": "xhs_zhongcao_viral_zh",
+      "platform": "xiaohongshu",
+      "style": "single-topic",
+      "lang": "zh",
+      "skipped": true,
+      "skip_reason": "max score 7.8 < required 8.5"
     }
   ]
 }
 ```
+
+**Forbidden variants** (all of these have been observed in real output and
+break downstream consumers — do not produce them):
+
+```json
+// ❌ WRONG — "channel_id" is not a recognized field
+{ "channel_id": "xhs_zixun_zh", ... }
+
+// ❌ WRONG — "copy" is not a recognized field
+{ "id": "xhs_zixun_zh", "copy": "...", ... }
+
+// ❌ WRONG — paths must be bare filenames
+{ "copy_file": "social/social_2026-04-18_xhs_zixun_zh.md",
+  "images": ["social/social_2026-04-18_xhs_zixun_zh_1.png"] }
+
+// ❌ WRONG — channels must be a list, not a dict keyed by id
+{ "channels": { "xhs_zixun_zh": { ... } } }
+```
+
+Before writing the manifest file, mentally diff your output against the
+canonical example above. If any field name, structure, or path shape
+differs, fix it before writing.
 
 ---
 
@@ -385,12 +556,13 @@ social/
 1. Check if social content is enabled (`SOCIAL_ENABLED=true`)
 2. Load channel configuration (JSON file or env vars)
 3. For each channel:
-   a. Read the channel's template file
-   b. Select top items from report data (score filter + item limit)
-   c. Generate copy following template rules and character limits
-   d. Write copy to `social/{DATE}_{channel_id}.md`
-   e. If `image: true` — build image prompts and generate platform-adapted images
-   f. Write images to `social/{DATE}_{channel_id}_{N}.png`
+   a. **Conditional gate**: if the channel has a `conditional` field, evaluate the gate. If it fails, write a manifest entry with `skipped: true` + `skip_reason` and continue to the next channel — do NOT generate copy or images.
+   b. Read the channel's template file
+   c. Select top items from report data (score filter + item limit)
+   d. Generate copy following template rules and character limits
+   e. Write copy to `social/{DATE}_{channel_id}.md`
+   f. If `image: true` — build image prompts and generate platform-adapted images. For XHS carousels with style `recommendation` or `single-topic`, the FIRST image uses the `cover-hook` style addon; subsequent images use the channel's regular `image_style`.
+   g. Write images to `social/{DATE}_{channel_id}_{N}.png`
 4. Write manifest to `social/{DATE}_manifest.json`
 
 ---

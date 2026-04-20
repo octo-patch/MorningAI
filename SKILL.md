@@ -348,8 +348,9 @@ This specification defines:
 
 3. **Cover image**: Sort by score and select the **top 4-5** updates (across all types). Build prompt using the Cover Prompt Template (9:16 portrait).
 
-4. **Per-type section images**: For each type (Model/Product/Benchmark/Funding) with 7+ score items, build a prompt using the Per-Type Prompt Template (9:16 portrait).
-   - Default (`IMAGE_GEN_TYPES=auto`): only types with 7+ score items
+4. **Per-type section images**: For each type (Model/Product/Benchmark/Funding/KOL) with qualifying items, build a prompt using the Per-Type Prompt Template (9:16 portrait).
+   - Default (`IMAGE_GEN_TYPES=auto`): only types with 7+ score items. **Exception**: the KOL section image is generated whenever ≥1 item has `is_kol_voice: true` (regardless of score), since KOL voices are scored conservatively (4-7) by design — applying the 7+ gate would suppress the section image even when the report has a populated KOL Voices block.
+   - KOL section image filename: `news_infographic_{YYYY-MM-DD}_kol.png`. Insert at the top of the report's `## KOL Voices` section (the template already has a stub: `![KOL Voices](news_infographic_{DATE}_kol.png)`).
    - Set `IMAGE_GEN_TYPES=all` for all types, `none` for cover only
 
 5. Generate images and stitch:

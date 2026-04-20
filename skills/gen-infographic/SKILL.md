@@ -22,6 +22,7 @@ Generate multiple infographics for the daily report:
 | Product | `news_infographic_YYYY-MM-DD_product.png` | Type has 7+ score items | 9:16 |
 | Benchmark | `news_infographic_YYYY-MM-DD_benchmark.png` | Type has 7+ score items | 9:16 |
 | Funding | `news_infographic_YYYY-MM-DD_funding.png` | Type has 7+ score items | 9:16 |
+| KOL | `news_infographic_YYYY-MM-DD_kol.png` | ≥1 item with `is_kol_voice: true` (NO 7+ score gate — KOL voices are scored 4-7 by design) | 9:16 |
 | Combined | `news_infographic_YYYY-MM-DD_combined.png` | Always (for report embed) | long |
 
 - **Cover is always generated first as a standalone image** — even if no per-type sections qualify. Do NOT skip or merge the cover into a combined-only flow
@@ -174,6 +175,7 @@ CRITICAL RULES:
 From the report, identify:
 - **Cover**: Top 4-5 items across all types by score
 - **Per-type**: For each type (Model/Product/Benchmark/Funding), check if it has 7+ score items. If yes, generate a per-type image.
+- **KOL**: If ≥1 item has `is_kol_voice: true`, generate a KOL section image (`_kol.png`). NO 7+ score gate — KOL voices are scored conservatively (4-7) by design, so applying the standard gate would suppress the section image even when the report's `## KOL Voices` block is populated.
 
 ### 2. Build Prompts
 
