@@ -15,7 +15,7 @@ Edit `lib/email_template.py` directly:
 - `LANG_TEXT` — language-specific labels (header count, footer, unsubscribe text)
 - `_accent_for_score` — left-border color by importance
 
-The HTML uses table-based layout and inline CSS for compatibility with Gmail, Outlook, QQ Mail, 163, Apple Mail, and major mobile clients.
+The HTML uses table-based layout and inline CSS for compatibility with Gmail, Outlook, QQ Mail, Apple Mail, and major mobile clients.
 
 ## Why no separate `.html` template file?
 

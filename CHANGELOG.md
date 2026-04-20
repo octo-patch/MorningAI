@@ -8,7 +8,7 @@
 - **Send manifest**: Each run writes `email_{date}_manifest.json` with per-recipient status (`sent` / `failed`) and error text — enables retry logic and visible failure tracking without log scraping.
 
 ### Documentation
-- New `docs/email-setup.md` with SMTP quick-start for Gmail (App Password), QQ Mail, 163 Mail, Outlook, and 阿里云企业邮.
+- New `docs/email-setup.md` with SMTP quick-start for Gmail (App Password), QQ Mail, Outlook, and Alibaba Cloud Enterprise Mail.
 - `skills/gen-email/SKILL.md` documents all 17 `EMAIL_*` env vars and the recipients JSON schema.
 
 ### Bug Fixes

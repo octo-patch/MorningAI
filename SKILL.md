@@ -91,7 +91,7 @@ If the user passes `--intro`, display the following introduction and **stop** (d
 - Infographic images: set `IMAGE_GEN_PROVIDER` + provider API key
 - Social media copy: set `SOCIAL_ENABLED=true`
 - Message digest: set `MESSAGE_ENABLED=true`
-- Email subscription: set `EMAIL_ENABLED=true` + SMTP credentials (Gmail/QQ/163/Outlook/etc.)
+- Email subscription: set `EMAIL_ENABLED=true` + SMTP credentials (Gmail/QQ/Outlook/etc.)
 
 **Config file:** `~/.config/morning-ai/.env` — run `/morning-ai` without config to trigger guided setup.
 
@@ -475,7 +475,7 @@ Deliver the daily digest as multipart HTML email via SMTP to a configured recipi
 - `email_{YYYY-MM-DD}.html` / `email_{YYYY-MM-DD}.txt` — local previews of what was sent
 - `email_{YYYY-MM-DD}_manifest.json` — send status per recipient (for retry / monitoring)
 
-See `skills/gen-email/SKILL.md` for full configuration and `docs/email-setup.md` for SMTP provider quick-start (Gmail / QQ / 163 / Outlook / 阿里云).
+See `skills/gen-email/SKILL.md` for full configuration and `docs/email-setup.md` for SMTP provider quick-start (Gmail / QQ / Outlook / Alibaba Cloud Enterprise Mail).
 
 ---
 

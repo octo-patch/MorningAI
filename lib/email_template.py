@@ -2,7 +2,7 @@
 
 Zero external dependencies — uses stdlib `string.Template` and `html.escape`.
 HTML uses inline CSS and table-based layout for maximum email-client compatibility
-(Gmail, Outlook, QQ Mail, 163, Apple Mail, etc.).
+(Gmail, Outlook, QQ Mail, Apple Mail, etc.).
 """
 
 import html

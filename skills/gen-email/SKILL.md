@@ -25,7 +25,7 @@ This is the **first true automated push channel** in the pipeline — gen-messag
 | `EMAIL_ENABLED` | — | `false` | Master switch — when unset/false, the step is silently skipped |
 | `EMAIL_RECIPIENTS` | ✓ | — | Comma-separated list, e.g. `alice@x.com,bob@y.com` |
 | `EMAIL_RECIPIENTS_FILE` | — | `.claude/recipients.json` | Optional JSON file — overrides env list when present |
-| `EMAIL_SMTP_HOST` | ✓ | — | SMTP server, e.g. `smtp.gmail.com`, `smtp.qq.com`, `smtp.163.com` |
+| `EMAIL_SMTP_HOST` | ✓ | — | SMTP server, e.g. `smtp.gmail.com`, `smtp.qq.com` |
 | `EMAIL_SMTP_PORT` | — | `587` | Port (587=STARTTLS, 465=SSL, 25=plain) |
 | `EMAIL_SMTP_TLS` | — | `starttls` | `starttls` / `ssl` / `none` |
 | `EMAIL_SMTP_USER` | ✓ | — | SMTP auth username |
@@ -114,9 +114,8 @@ See `docs/email-setup.md` for full details. Quick reference:
 |----------|------|------|-----|-------|
 | Gmail | `smtp.gmail.com` | 587 | STARTTLS | Requires **App Password** (turn on 2FA → generate App Password) |
 | QQ Mail | `smtp.qq.com` | 465 | SSL | Use authorization code, not login password |
-| 163 Mail | `smtp.163.com` | 465 | SSL | Use authorization code |
 | Outlook | `smtp.office365.com` | 587 | STARTTLS | Account password or App Password |
-| 阿里云企业邮 | `smtp.qiye.aliyun.com` | 465 | SSL | Account password |
+| Alibaba Cloud Enterprise Mail | `smtp.qiye.aliyun.com` | 465 | SSL | Account password |
 
 ---
 

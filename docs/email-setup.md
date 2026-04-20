@@ -34,15 +34,15 @@ EMAIL_RECIPIENTS=you@gmail.com,team@example.com
 
 ---
 
-## QQ Mail (QQ 邮箱)
+## QQ Mail
 
-QQ Mail requires an **authorization code** (授权码) — not the QQ login password.
+QQ Mail requires an **authorization code** — not the QQ login password.
 
 ### 1. Enable SMTP service
-登录 QQ 邮箱网页版 → 设置 → 账户 → 找到 "POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV 服务" → 开启 "IMAP/SMTP 服务"。
+Sign in to QQ Mail web UI → Settings → Account → find "POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV Service" → enable "IMAP/SMTP Service".
 
 ### 2. Generate authorization code
-按系统提示发送验证短信 → 获取 16 位授权码（如 `xxxxxxxxxxxxxxxx`）。
+Follow the verification SMS prompt → obtain the 16-character authorization code (e.g. `xxxxxxxxxxxxxxxx`).
 
 ### 3. Configure
 ```env
@@ -56,31 +56,7 @@ EMAIL_FROM=MorningAI <you@qq.com>
 EMAIL_RECIPIENTS=you@qq.com
 ```
 
-> Tip: 端口 465（SSL）比 587（STARTTLS）在 QQ 邮箱上更稳定。
-
----
-
-## 163 Mail (网易 163 邮箱)
-
-163 同样需要 **授权码**。
-
-### 1. Enable SMTP service
-登录 mail.163.com → 设置 → POP3/SMTP/IMAP → 开启 "IMAP/SMTP 服务"。
-
-### 2. 获取授权码
-按提示发送短信 → 获取授权码。
-
-### 3. Configure
-```env
-EMAIL_ENABLED=true
-EMAIL_SMTP_HOST=smtp.163.com
-EMAIL_SMTP_PORT=465
-EMAIL_SMTP_TLS=ssl
-EMAIL_SMTP_USER=you@163.com
-EMAIL_SMTP_PASSWORD=xxxxxxxxxxxxxxxx
-EMAIL_FROM=MorningAI <you@163.com>
-EMAIL_RECIPIENTS=you@163.com
-```
+> Tip: port 465 (SSL) is more reliable than 587 (STARTTLS) for QQ Mail.
 
 ---
 
@@ -100,7 +76,7 @@ EMAIL_FROM=MorningAI <you@outlook.com>
 
 ---
 
-## 阿里云企业邮 (Alibaba Cloud Enterprise Mail)
+## Alibaba Cloud Enterprise Mail
 
 ```env
 EMAIL_ENABLED=true
@@ -141,7 +117,7 @@ When `EMAIL_RECIPIENTS_FILE` exists, it **overrides** the env list. The default 
 
 ```env
 # Custom subject template — placeholders: {date}, {n}, {lang}
-EMAIL_SUBJECT_TEMPLATE=MorningAI 早报 {date}（{n} 条）
+EMAIL_SUBJECT_TEMPLATE=MorningAI Daily {date} · {n} updates
 
 # Unsubscribe target — appears in footer + List-Unsubscribe header.
 # Mainstream clients (Gmail, Outlook) show a one-click unsubscribe button.
@@ -158,10 +134,10 @@ When a recipient asks to unsubscribe, manually remove them from `EMAIL_RECIPIENT
 |---------|--------------|
 | `connection error: [Errno 111] Connection refused` | Port blocked by your network/firewall — try 465 with `EMAIL_SMTP_TLS=ssl` |
 | `connection error: [Errno 101] Network is unreachable` | DNS returned only an AAAA record but the host has no working IPv6 route. The sender now retries IPv4 automatically; if you still see this, the host has no working IPv4 either — check `ping smtp.gmail.com` and your firewall. |
-| `smtp error: 535 5.7.8 Authentication failed` | Wrong password — Gmail/QQ/163 require app password, not account password |
+| `smtp error: 535 5.7.8 Authentication failed` | Wrong password — Gmail/QQ require app password, not account password |
 | `smtp error: 530 5.7.0 Must issue a STARTTLS command first` | Set `EMAIL_SMTP_TLS=starttls` |
 | `smtp error: 550 5.7.1 ... Daily user sending quota exceeded` | Hit Gmail/Outlook rate limit — increase `EMAIL_RATE_LIMIT_DELAY` and reduce recipient count, or wait 24h |
-| Email lands in spam folder | Add `EMAIL_LIST_UNSUBSCRIBE`, configure SPF/DKIM on your sending domain (Workspace / 企业邮 only), and avoid spam-trigger words in subject |
+| Email lands in spam folder | Add `EMAIL_LIST_UNSUBSCRIBE`, configure SPF/DKIM on your sending domain (Workspace / Enterprise Mail only), and avoid spam-trigger words in subject |
 | `[gen-email] no active recipients` | `EMAIL_RECIPIENTS` not set, or all entries in `recipients.json` have `active: false` |
 
 Run with `EMAIL_DRY_RUN=true` to debug content/template issues without involving SMTP at all.

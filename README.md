@@ -17,7 +17,7 @@
 - **Custom Watchlists** — Add your own entities via simple markdown files — no code changes needed
 - **5 Infographic Styles** — `classic`, `dark`, `glassmorphism`, `newspaper`, `tech` — ready for social sharing
 - **Message Digest** — Concise, copy-paste-friendly digest with one-line summaries + links, optimized for WeChat, Telegram, Slack and other messaging platforms
-- **Email Subscription** — Push the daily digest to a recipient list via SMTP (Gmail/QQ/163/Outlook/etc.). Multipart HTML + plain-text, optional infographic attachment, per-recipient language overrides, dry-run preview mode, RFC 8058 one-click unsubscribe headers
+- **Email Subscription** — Push the daily digest to a recipient list via SMTP (Gmail/QQ/Outlook/etc.). Multipart HTML + plain-text, optional infographic attachment, per-recipient language overrides, dry-run preview mode, RFC 8058 one-click unsubscribe headers
 - **Scheduled & Unattended** — Idempotent daily runs, no interactive prompts, partial success support
 
 ## Sample Output
@@ -168,7 +168,7 @@ EMAIL_SMTP_PASSWORD=xxxx-xxxx-xxxx-xxxx   # Gmail App Password (NOT account pass
 EMAIL_FROM=MorningAI <you@gmail.com>
 ```
 
-See [docs/email-setup.md](docs/email-setup.md) for SMTP walkthroughs (Gmail / QQ / 163 / Outlook / 阿里云).
+See [docs/email-setup.md](docs/email-setup.md) for SMTP walkthroughs (Gmail / QQ / Outlook / Alibaba Cloud Enterprise Mail).
 
 Without any API keys, all sources work out of the box: **Reddit**, **Hacker News**, **GitHub**, **HuggingFace**, **arXiv**, and **X/Twitter**.
 
