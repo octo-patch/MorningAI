@@ -8,6 +8,9 @@ env.local
 drafts/draft_*
 /report_*.md
 /message_*.md
+/email_*.html
+/email_*.txt
+/email_*_manifest.json
 plan_*.md
 /data_*.json
 /social/

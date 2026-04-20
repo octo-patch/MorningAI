@@ -1,8 +1,8 @@
 ---
 name: morning-ai
-version: "1.2.9"
+version: "1.3.0"
 description: "Daily-scheduled AI news tracker. Collects updates from 80+ AI entities across 6 sources every 24 hours (default 08:00 UTC+8). Generates scored, deduplicated Markdown reports. Supports unattended cron/scheduled execution with date-stamped idempotent output."
-argument-hint: 'morning-ai, morning-ai --intro, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *", morning-ai --lang zh (with MESSAGE_ENABLED=true for message digest)'
+argument-hint: 'morning-ai, morning-ai --intro, morning-ai --exclude Funding, morning-ai --depth deep, morning-ai --lang zh, morning-ai --schedule "0 9 * * *", morning-ai --lang zh (with MESSAGE_ENABLED=true for message digest, EMAIL_ENABLED=true for email subscription)'
 allowed-tools: Bash, Read, Write, Edit, WebSearch
 homepage: https://github.com/octo-patch/MorningAI
 repository: https://github.com/octo-patch/MorningAI
@@ -91,10 +91,11 @@ If the user passes `--intro`, display the following introduction and **stop** (d
 - Infographic images: set `IMAGE_GEN_PROVIDER` + provider API key
 - Social media copy: set `SOCIAL_ENABLED=true`
 - Message digest: set `MESSAGE_ENABLED=true`
+- Email subscription: set `EMAIL_ENABLED=true` + SMTP credentials (Gmail/QQ/163/Outlook/etc.)
 
 **Config file:** `~/.config/morning-ai/.env` — run `/morning-ai` without config to trigger guided setup.
 
-**Version:** 1.2.9 | [GitHub](https://github.com/octo-patch/MorningAI) | [ClawHub](https://clawhub.ai/skills/morning-ai)
+**Version:** 1.3.0 | [GitHub](https://github.com/octo-patch/MorningAI) | [ClawHub](https://clawhub.ai/skills/morning-ai)
 
 ---
 
@@ -433,6 +434,41 @@ Generate a concise, share-friendly message digest suitable for messaging platfor
 
 ---
 
+## Step 7: Send Email Subscription (Optional)
+
+**Skip this step if `EMAIL_ENABLED` is not `true`.**
+
+Deliver the daily digest as multipart HTML email via SMTP to a configured recipient list. This is the only step that performs network egress to subscribers — gen-message / gen-social only generate local files.
+
+1. Read the email specification:
+   ```
+   Read {SKILL_DIR}/skills/gen-email/SKILL.md
+   ```
+
+2. Run the sender script:
+   ```bash
+   python3 {SKILL_DIR}/skills/gen-email/scripts/send_email.py --date {YYYY-MM-DD}
+   ```
+   The script:
+   - Reads `data_{YYYY-MM-DD}.json` and applies the same selection rules as gen-message (filter by `EMAIL_MIN_SCORE`, category balance, sort by importance, cap at `EMAIL_MAX_ITEMS`)
+   - Loads recipients from `EMAIL_RECIPIENTS` (env, comma-separated) or `EMAIL_RECIPIENTS_FILE` (default `.claude/recipients.json`)
+   - Renders HTML + plain text bodies, writes local previews `email_{YYYY-MM-DD}.html` and `email_{YYYY-MM-DD}.txt`
+   - If `EMAIL_DRY_RUN=true`: stops after writing previews (no SMTP traffic)
+   - Otherwise sends to each recipient via SMTP, attaches `message_{YYYY-MM-DD}.png` when present, sleeps `EMAIL_RATE_LIMIT_DELAY` seconds between sends
+   - Writes `email_{YYYY-MM-DD}_manifest.json` with per-recipient `status` (`sent` / `failed`) and error text
+
+3. **Required env vars** (the script exits with a clear error if missing):
+   - `EMAIL_SMTP_HOST`, `EMAIL_SMTP_USER`, `EMAIL_SMTP_PASSWORD`
+   - At least one recipient via `EMAIL_RECIPIENTS` or `EMAIL_RECIPIENTS_FILE`
+
+**Output files:**
+- `email_{YYYY-MM-DD}.html` / `email_{YYYY-MM-DD}.txt` — local previews of what was sent
+- `email_{YYYY-MM-DD}_manifest.json` — send status per recipient (for retry / monitoring)
+
+See `skills/gen-email/SKILL.md` for full configuration and `docs/email-setup.md` for SMTP provider quick-start (Gmail / QQ / 163 / Outlook / 阿里云).
+
+---
+
 ## Entity Reference
 
 The `entities/` directory contains detailed entity registries organized by tracking group:
@@ -531,6 +567,10 @@ GITHUB_TOKEN=ghp_xxx
 ### Message Digest Configuration
 
 See `skills/gen-message/SKILL.md` for message digest configuration variables (`MESSAGE_ENABLED`, `MESSAGE_MIN_SCORE`, `MESSAGE_MAX_ITEMS`, `MESSAGE_CATEGORY_BALANCE`, etc.).
+
+### Email Subscription Configuration
+
+See `skills/gen-email/SKILL.md` for the full list of email variables (`EMAIL_ENABLED`, `EMAIL_RECIPIENTS`, `EMAIL_SMTP_HOST/PORT/USER/PASSWORD/TLS`, `EMAIL_FROM`, `EMAIL_LANG`, `EMAIL_MIN_SCORE`, `EMAIL_DRY_RUN`, etc.) and `docs/email-setup.md` for SMTP provider walkthroughs.
 
 ---
 

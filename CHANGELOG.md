@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.0] - 2026-04-20
+
+### New Features
+- **Email subscription (`gen-email`)**: New skill that delivers the daily digest as multipart HTML email via SMTP — the first true automated push channel in the pipeline. Set `EMAIL_ENABLED=true` plus SMTP credentials (`EMAIL_SMTP_HOST/PORT/USER/PASSWORD`) and a recipient list (`EMAIL_RECIPIENTS` env or `EMAIL_RECIPIENTS_FILE` JSON). Per-recipient overrides for language and minimum score, automatic plain-text fallback, optional attachment of `message_{date}.png`, and `EMAIL_DRY_RUN` for local-only preview rendering. Adds RFC 8058 `List-Unsubscribe` headers when `EMAIL_LIST_UNSUBSCRIBE` is set so mainstream clients show one-click unsubscribe.
+- **Recipient management**: `lib/recipients.py` loads recipients from env list or JSON file. JSON entries support `lang`, `min_score`, and `active` fields for per-recipient customization without touching env vars.
+- **Send manifest**: Each run writes `email_{date}_manifest.json` with per-recipient status (`sent` / `failed`) and error text — enables retry logic and visible failure tracking without log scraping.
+
+### Documentation
+- New `docs/email-setup.md` with SMTP quick-start for Gmail (App Password), QQ Mail, 163 Mail, Outlook, and 阿里云企业邮.
+- `skills/gen-email/SKILL.md` documents all 17 `EMAIL_*` env vars and the recipients JSON schema.
+
 ## [1.2.9] - 2026-04-16
 
 ### Improvements
