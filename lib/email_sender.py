@@ -7,6 +7,7 @@ List-Unsubscribe headers when configured.
 
 import mimetypes
 import smtplib
+import socket
 import ssl
 from dataclasses import dataclass, field
 from email.message import EmailMessage
@@ -87,15 +88,35 @@ def _open_smtp(cfg: SmtpConfig) -> smtplib.SMTP:
     tls = (cfg.tls or "starttls").lower()
     context = ssl.create_default_context()
 
-    if tls == "ssl":
-        client = smtplib.SMTP_SSL(cfg.host, cfg.port, timeout=cfg.timeout, context=context)
-    else:
-        client = smtplib.SMTP(cfg.host, cfg.port, timeout=cfg.timeout)
-        client.ehlo()
+    def _connect() -> smtplib.SMTP:
+        if tls == "ssl":
+            return smtplib.SMTP_SSL(cfg.host, cfg.port, timeout=cfg.timeout, context=context)
+        c = smtplib.SMTP(cfg.host, cfg.port, timeout=cfg.timeout)
+        c.ehlo()
         if tls == "starttls":
-            client.starttls(context=context)
-            client.ehlo()
+            c.starttls(context=context)
+            c.ehlo()
         # tls == "none": no encryption negotiated
+        return c
+
+    try:
+        client = _connect()
+    except OSError as e:
+        # ENETUNREACH (errno 101): typically the resolver returned an AAAA record
+        # but the host has no working IPv6 route. Retry IPv4-only — keep the
+        # original hostname so TLS SNI / cert validation still match.
+        if getattr(e, "errno", None) != 101:
+            raise
+        original_getaddrinfo = socket.getaddrinfo
+
+        def _v4_only(host, port, family=0, *args, **kwargs):
+            return original_getaddrinfo(host, port, socket.AF_INET, *args, **kwargs)
+
+        socket.getaddrinfo = _v4_only
+        try:
+            client = _connect()
+        finally:
+            socket.getaddrinfo = original_getaddrinfo
 
     if cfg.user and cfg.password:
         client.login(cfg.user, cfg.password)

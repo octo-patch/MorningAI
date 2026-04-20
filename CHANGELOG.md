@@ -11,6 +11,9 @@
 - New `docs/email-setup.md` with SMTP quick-start for Gmail (App Password), QQ Mail, 163 Mail, Outlook, and 阿里云企业邮.
 - `skills/gen-email/SKILL.md` documents all 17 `EMAIL_*` env vars and the recipients JSON schema.
 
+### Bug Fixes
+- **IPv6 fallback in SMTP connect**: `lib/email_sender.py` now retries IPv4-only when the first connect attempt fails with `ENETUNREACH` (errno 101). Some hosts — common in containers, cloud VMs, and offices with broken IPv6 egress — get an AAAA record from DNS but cannot route it, causing `smtplib` to fail before reaching auth. The retry preserves the original hostname so TLS SNI / cert validation still match `smtp.gmail.com`.
+
 ## [1.2.9] - 2026-04-16
 
 ### Improvements

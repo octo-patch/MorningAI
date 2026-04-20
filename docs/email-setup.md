@@ -157,6 +157,7 @@ When a recipient asks to unsubscribe, manually remove them from `EMAIL_RECIPIENT
 | Symptom | Likely cause |
 |---------|--------------|
 | `connection error: [Errno 111] Connection refused` | Port blocked by your network/firewall — try 465 with `EMAIL_SMTP_TLS=ssl` |
+| `connection error: [Errno 101] Network is unreachable` | DNS returned only an AAAA record but the host has no working IPv6 route. The sender now retries IPv4 automatically; if you still see this, the host has no working IPv4 either — check `ping smtp.gmail.com` and your firewall. |
 | `smtp error: 535 5.7.8 Authentication failed` | Wrong password — Gmail/QQ/163 require app password, not account password |
 | `smtp error: 530 5.7.0 Must issue a STARTTLS command first` | Set `EMAIL_SMTP_TLS=starttls` |
 | `smtp error: 550 5.7.1 ... Daily user sending quota exceeded` | Hit Gmail/Outlook rate limit — increase `EMAIL_RATE_LIMIT_DELAY` and reduce recipient count, or wait 24h |
