@@ -280,6 +280,10 @@ For each verified X/Twitter update:
 1. Create a TrackerItem with `source: "x"`, `source_url` pointing to the original tweet, and `source_label` as `"@{handle} on X"`
 2. If the same event was already found by an automated collector (Reddit, HN, GitHub, etc.), merge it as a `cross_ref` rather than creating a duplicate — this strengthens the verification score
 3. If it's a genuinely new finding not in the automated data, add it as a new item with appropriate scoring
+4. **KOL voice detection** (Layer 3 items only): classify the post and tag accordingly:
+   - **KOL original commentary** — independent analysis, paper review, hot-take, prediction, technical review, framework critique. Set `is_kol_voice: true` on the item. **Do NOT dedup-merge into official-source items** even if discussing the same topic — the KOL's *take* is the value, not the underlying news. Score conservatively (4-7 typically) but keep as a standalone item.
+   - **KOL restating an official announcement** — direct paraphrase / quote of vendor news with no added angle. Treat as `cross_ref` to the official item (existing behavior). Do NOT set `is_kol_voice`.
+   - When in doubt: if the post adds an opinion, comparison, or analysis the official source doesn't have → it's a voice. If it's just "X just shipped Y, link" → it's a cross_ref.
 
 ---
 
@@ -320,6 +324,12 @@ This specification defines:
 - **Type sections**: Group by score range (9-10 / 7-8 / 5-6 / 3-4)
 - For items with score 7+, include multi-source verification if available
 - **Item format**: Follow the record format defined in the tracking specification (read in Step 2), including detail level requirements, "Why It Matters", and "Key Data" sections. For mid-score (5-6) and lower-score (3-4) items, use the compact formats defined there.
+- **KOL Voices section** (NEW): From items where `is_kol_voice: true` (set during Step 1 KOL voice detection), select the top 3-5 by score, capped to **max 1 item per KOL handle** (no double-dipping). For each item write:
+  - KOL display name + linked X handle + score
+  - One-line takeaway in the report's language (`--lang`) explaining why this view matters or what's the unique angle
+  - A short excerpt (≤80 chars) from the original post as a blockquote, **kept in the post's original language** (don't translate the quote — preserve voice)
+  - A source link `[[Original]({source_url})]`
+  If fewer than 3 items qualify, list what's available + append `_(Today's KOL channels were quiet — only N items qualified.)_`. If 0 qualify, write `_Today's KOL channels were quiet._`
 - Fill in the statistics summary table
 
 ---

@@ -140,6 +140,30 @@ Every TLDR item MUST include at least one source link so readers can click throu
 
 ---
 
+## KOL Voices
+
+<!-- Insert type image if generated: ![KOL Voices](news_infographic_{DATE}_kol.png) -->
+
+> Today's notable independent commentary from tracked KOLs (top 3-5)
+
+<!-- Item format (one per KOL, repeat 3-5 times):
+- **{KOL Name} ([@handle]({X profile URL}))** ({score}) — 一句中文/英文 takeaway about why this matters.
+  > "{≤80-char excerpt from the original post, kept in the post's original language}"
+  [[Original]({source_url})]
+
+Selection rules:
+- Only include items where `is_kol_voice: true` (KOL original analysis / independent
+  commentary / paper review / opinion). NEVER include posts where a KOL is just
+  restating an official announcement — those belong as cross_ref under the official item.
+- Sort by score descending. Cap at max 1 item per KOL handle (no double-dipping).
+- Target 3-5 items.
+- If fewer than 3 items qualify, list what's available and append:
+  `_(Today's KOL channels were quiet — only N items qualified.)_`
+- If 0 items qualify, write a single line: `_Today's KOL channels were quiet._`
+-->
+
+---
+
 ## Entities with No Updates
 
 <!-- List entities with no updates today -->
