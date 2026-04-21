@@ -58,9 +58,9 @@ Rules:
 - If space allows, add a one-line closer: an observation, a question, or "Full breakdown ↓"
 - Total must fit 280 characters — cut items before cutting clarity
 
-### Attached Image (16:9 infographic)
+### Cover Image (16:9 infographic)
 
-The image is the primary content delivery vehicle. It should contain:
+The cover image is the primary content delivery vehicle attached to the tweet. It should contain:
 - Header: "MorningAI · {YYYY-MM-DD}" with clean branding
 - 4-6 news cards, each with:
   - Entity name + event title (bold)
@@ -73,6 +73,18 @@ Use the same image generation infrastructure as gen-infographic. The image promp
 - High contrast text, minimum 14pt for body text
 - Each card should be visually distinct (subtle separators or card borders)
 
+### Per-Category Images (16:9 infographic, optional)
+
+In addition to the cover, generate a **separate image per content category** (Model, Product, Benchmark, Funding) when that category has at least 1 item with score ≥ min_score.
+
+Per-category images:
+- Same classic style as cover
+- Header: "MorningAI — {Type} Updates" (no date in header — keeps the image reusable)
+- 16:9 landscape
+- Include ALL items of that type with score ≥ min_score (not limited to N)
+- Each card: entity + event + 2-3 bullets
+- Only generate for categories that have qualifying items — skip empty categories
+
 ## Output Format
 
 ```
@@ -80,7 +92,21 @@ Use the same image generation infrastructure as gen-infographic. The image promp
 {single tweet text, ≤280 chars}
 
 ---media---
-{image_filename}
+cover: {cover_image_filename}
+model: {model_image_filename} (if applicable)
+product: {product_image_filename} (if applicable)
+benchmark: {benchmark_image_filename} (if applicable)
+funding: {funding_image_filename} (if applicable)
+```
+
+### Naming Convention
+
+```
+social_{DATE}_x_briefing_en_cover.png       # Cover (always)
+social_{DATE}_x_briefing_en_model.png       # Model Updates (if items exist)
+social_{DATE}_x_briefing_en_product.png     # Product Updates (if items exist)
+social_{DATE}_x_briefing_en_benchmark.png   # Benchmark Updates (if items exist)
+social_{DATE}_x_briefing_en_funding.png     # Funding Updates (if items exist)
 ```
 
 ## Examples
@@ -96,7 +122,10 @@ Use the same image generation infrastructure as gen-infographic. The image promp
 → Mistral Connectors — enterprise MCP management
 
 ---media---
-social_2026-04-16_x_briefing_en_cover.png
+cover: social_2026-04-16_x_briefing_en_cover.png
+model: social_2026-04-16_x_briefing_en_model.png
+product: social_2026-04-16_x_briefing_en_product.png
+funding: social_2026-04-16_x_briefing_en_funding.png
 ```
 
 ```
@@ -112,7 +141,10 @@ social_2026-04-16_x_briefing_en_cover.png
 Full breakdown ↓
 
 ---media---
-social_2026-04-15_x_briefing_en_cover.png
+cover: social_2026-04-15_x_briefing_en_cover.png
+model: social_2026-04-15_x_briefing_en_model.png
+product: social_2026-04-15_x_briefing_en_product.png
+funding: social_2026-04-15_x_briefing_en_funding.png
 ```
 
 ```
@@ -128,5 +160,8 @@ social_2026-04-15_x_briefing_en_cover.png
 Open vs closed is no longer a debate. It's a pricing problem.
 
 ---media---
-social_2026-04-08_x_briefing_en_cover.png
+cover: social_2026-04-08_x_briefing_en_cover.png
+model: social_2026-04-08_x_briefing_en_model.png
+product: social_2026-04-08_x_briefing_en_product.png
+funding: social_2026-04-08_x_briefing_en_funding.png
 ```
