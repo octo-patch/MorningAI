@@ -10,8 +10,10 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from contextlib import nullcontext
 from typing import Any, Dict, List, Optional
 
+from .net import force_ipv4_only, is_ipv6_unreachable
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_REDDIT
 
 USER_AGENT = "morning-ai/1.0 (AI Industry Tracker)"
@@ -39,9 +41,11 @@ def _fetch_json(url: str, timeout: int = 15) -> Optional[Dict[str, Any]]:
     headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
     req = urllib.request.Request(url, headers=headers)
 
+    ipv4_fallback = False
     for attempt in range(MAX_RETRIES):
+        ctx = force_ipv4_only() if ipv4_fallback else nullcontext()
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
+            with ctx, urllib.request.urlopen(req, timeout=timeout) as resp:
                 content_type = resp.headers.get("Content-Type", "")
                 if "json" not in content_type and "text/html" in content_type:
                     return None
@@ -53,8 +57,18 @@ def _fetch_json(url: str, timeout: int = 15) -> Optional[Dict[str, Any]]:
                 _log(f"429 rate limited, retry after {delay:.1f}s")
                 time.sleep(delay)
                 continue
+            _log(f"HTTP {e.code} on {url}")
             return None
-        except (urllib.error.URLError, OSError, json.JSONDecodeError):
+        except (urllib.error.URLError, OSError) as e:
+            # Broken IPv6 routing: retry once IPv4-only without burning the backoff.
+            if not ipv4_fallback and is_ipv6_unreachable(e):
+                _log(f"IPv6 unreachable on {url}, switching to IPv4-only DNS")
+                ipv4_fallback = True
+                continue
+            _log(f"network error on {url}: {type(e).__name__}: {e}")
+            return None
+        except json.JSONDecodeError as e:
+            _log(f"invalid JSON from {url}: {e}")
             return None
     return None
 

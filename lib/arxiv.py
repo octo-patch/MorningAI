@@ -4,9 +4,11 @@ Searches arXiv papers via the Atom/XML API (free, no auth).
 New collector — no last30days equivalent.
 """
 
+import os
 import re
 import sys
 import xml.etree.ElementTree as ET
+from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlencode, quote
 
@@ -21,6 +23,12 @@ DEPTH_CONFIG = {"quick": 10, "default": 25, "deep": 50}
 AI_CATEGORIES = ["cs.AI", "cs.LG", "cs.CL", "cs.CV", "cs.MA"]
 
 ATOM_NS = "{http://www.w3.org/2005/Atom}"
+
+# arXiv papers don't drop daily in every category — most days the cs.AI feed has
+# nothing newer than 2-3 days back. Caller passes a 1-day window which would
+# leave the digest empty most mornings; widen it here. Override via
+# ARXIV_LOOKBACK_DAYS=1 to restore the strict 1-day filter.
+LOOKBACK_DAYS = max(1, int(os.environ.get("ARXIV_LOOKBACK_DAYS", "3")))
 
 
 def _log(msg: str):
@@ -188,13 +196,20 @@ def collect(
     all_items = []
     max_results = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
 
+    # Widen the date window backwards so days with no fresh papers in the strict
+    # 24h band still surface recent submissions. to_date is left as-is.
+    fd = datetime.strptime(from_date, "%Y-%m-%d")
+    effective_from = (fd - timedelta(days=LOOKBACK_DAYS - 1)).strftime("%Y-%m-%d")
+    if effective_from != from_date:
+        _log(f"window widened: {from_date}→{effective_from} (ARXIV_LOOKBACK_DAYS={LOOKBACK_DAYS})")
+
     for entity_name, queries in entities.items():
         result.entities_checked += 1
         entity_found = False
 
         for query in queries:
             papers = search_papers(
-                query, from_date, to_date,
+                query, effective_from, to_date,
                 categories=AI_CATEGORIES,
                 max_results=max_results,
             )

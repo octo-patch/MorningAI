@@ -7,13 +7,14 @@ List-Unsubscribe headers when configured.
 
 import mimetypes
 import smtplib
-import socket
 import ssl
 from dataclasses import dataclass, field
 from email.message import EmailMessage
 from email.utils import formatdate, make_msgid
 from pathlib import Path
 from typing import Dict, List, Optional
+
+from .net import force_ipv4_only, is_ipv6_unreachable
 
 
 @dataclass
@@ -105,18 +106,10 @@ def _open_smtp(cfg: SmtpConfig) -> smtplib.SMTP:
         # ENETUNREACH (errno 101): typically the resolver returned an AAAA record
         # but the host has no working IPv6 route. Retry IPv4-only — keep the
         # original hostname so TLS SNI / cert validation still match.
-        if getattr(e, "errno", None) != 101:
+        if not is_ipv6_unreachable(e):
             raise
-        original_getaddrinfo = socket.getaddrinfo
-
-        def _v4_only(host, port, family=0, *args, **kwargs):
-            return original_getaddrinfo(host, port, socket.AF_INET, *args, **kwargs)
-
-        socket.getaddrinfo = _v4_only
-        try:
+        with force_ipv4_only():
             client = _connect()
-        finally:
-            socket.getaddrinfo = original_getaddrinfo
 
     if cfg.user and cfg.password:
         client.login(cfg.user, cfg.password)
