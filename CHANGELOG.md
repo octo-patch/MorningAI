@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1] - 2026-04-21
+
+### Bug Fixes
+- **arXiv silently dropped from daily runs**: Diagnosed via cache-key reverse-lookup — `~/.cache/morning-ai/c3201fd7243a7fcc.json` (today's run) decodes to `--sources github hackernews huggingface reddit x`, deliberately omitting arxiv. Same pattern on 04-17, 04-19, 04-20, 04-21 (4 of last 5 days, 0 arxiv items each). Standalone `arxiv.collect()` works fine — 120 papers in 103s. The omission was the foreman daily-report sub-agent reading SKILL.md L200 (`--sources reddit hackernews github` example), getting the imitation cue, and enumerating sources without arxiv.
+- **Replaced `--sources` allow-list with `--skip` deny-list in `skills/tracking-list/scripts/collect.py`**: Default behavior now runs all 6 collectors. To opt out, callers must explicitly name what they're dropping (`--skip arxiv reddit`). Allow-list semantics let agents silently omit collectors by forgetting to list them — deny-list forces the omission to be visible. Cache key now uses sorted `--skip` value instead of `--sources` (so the cache key changes — old caches will be re-built once on next run, no migration needed). Validation added: unknown source names in `--skip` raise `ValueError` with the valid list, and `--skip` covering every collector is rejected.
+- **SKILL.md updated**: Step 1 example now shows `--skip` semantics; "5 collectors" → "6 collectors" (X/Twitter is now an in-process collector via `lib/x_agent.py`, not a separate web-search step). Disambiguated from the Step 3 `--exclude` content-type filter.
+
 ## [1.4.0] - 2026-04-21
 
 ### New Features
@@ -18,6 +25,10 @@
 
 ### Bug Fixes
 - **IPv6 fallback in SMTP connect**: `lib/email_sender.py` now retries IPv4-only when the first connect attempt fails with `ENETUNREACH` (errno 101). Some hosts — common in containers, cloud VMs, and offices with broken IPv6 egress — get an AAAA record from DNS but cannot route it, causing `smtplib` to fail before reaching auth. The retry preserves the original hostname so TLS SNI / cert validation still match `smtp.gmail.com`.
+- **IPv6 fallback for collectors**: The same IPv6 → IPv4 retry now applies to `lib/http.py` (used by arxiv / Hacker News / GitHub / HuggingFace) and `lib/reddit.py`. Extracted into `lib/net.py` as `force_ipv4_only()` / `is_ipv6_unreachable()` helpers and reused from `lib/email_sender.py`. On hosts with broken IPv6 routing the collectors used to silently return zero items; they now switch to IPv4 after one failed attempt and continue normally.
+- **Reddit collector now logs network errors**: `lib/reddit.py:_fetch_json` previously swallowed every `URLError` / `OSError` / `JSONDecodeError` and returned `None`, so the operator saw "24 entities checked, 0 items, 0 errors" with no clue why. It now logs the failing URL and exception class via `_log()` (visible when running in a TTY, matching the rest of the collectors).
+- **arXiv 3-day default window**: arXiv papers don't drop daily in every category — most days the cs.AI feed has nothing newer than 2-3 days back. `lib/arxiv.py` now widens the caller's 1-day window to 3 days by default. Override via `ARXIV_LOOKBACK_DAYS=N` (set to `1` to restore strict 24h behavior).
+- **Cache key includes `--sources`**: `skills/tracking-list/scripts/collect.py` previously hashed only `(date, depth)`, so a partial-source run (e.g. `--sources reddit github`) would write a 2-source report into the cache that a subsequent full run would happily read back as complete. The cache key now includes the sorted sources list.
 
 ## [1.2.9] - 2026-04-16
 
