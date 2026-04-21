@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.4.2] - 2026-04-21
+
+### New Features
+- **Per-category social images for the X channel**: `skills/gen-social/templates/x/briefing.md` now emits a separate 16:9 infographic for each content category (Model, Product, Benchmark, Funding) alongside the cover, when that category has ≥1 qualifying item. Per-category images include all qualifying items (not the cover's top-N cap) and use a date-less header so they're reusable. The `---media---` block keys filenames by role (`cover:`, `model:`, `product:`, …) so downstream uploaders can attach them in order or skip empty roles.
+- **Pluggable image generation provider**: `lib/image_gen.py` adds `IMAGE_GEN_PROVIDER_PATH` — point it at any Python file that exports `generate(prompt, output_path, config, **kwargs)` and the dispatcher will load and invoke it instead of (or in addition to) the built-in providers. Lets users plug in proprietary or experimental backends without forking the repo.
+- **X handle tier registry**: `lib/entities.py` now exposes `X_HANDLES_OFFICIAL` and `X_HANDLES_KEY_PEOPLE` alongside the flat `X_HANDLES`, populated by the entity loader from the `Key People` sections vs. the official `X Account` columns. `lib/x_agent.py` (the in-process X collector introduced in 1.4.1) consumes these so each tier-agent runs the right verification policy. KOL tabular files default to the official tier; custom-entity X handles default to the official tier.
+- **X collector switched to Anthropic SDK + `web_search` server tool** (`lib/x_agent.py`): replaces the previous `claude -p` subprocess so the URL-guard system prompt no longer blocks ingestion. Custom system prompt frames URL emission as the legitimate ingestion contract; loops on `pause_turn` until done; forwards `ANTHROPIC_CUSTOM_HEADERS` for corporate gateways. End-to-end depth=quick over 12 handles: 33.7s wall clock, 0 errors (previous: 600s timeout on 4/4 chunks).
+
+### Improvements
+- **Xiaohongshu news-briefing tone overhaul**: `skills/gen-social/templates/xiaohongshu/news-briefing.md` rewritten end-to-end. `default_items` 8 → 5, `image_style` newspaper → classic, hashtags 3-5 → 5-10, title format from `⚡AI速报｜M.D` to news-desk style `📰AI快讯｜N条要闻速览`. Body shifts from telegraph-style `｜`-separated lines to proper news-briefing paragraphs.
+- **Glassmorphism palette retuned to warm tones** (`skills/gen-infographic/scripts/styles.py`): cool lavender→rose gradient replaced with apricot→cream + brown/taupe accents. Higher contrast against typical XHS feed colors and less Material Design-ish.
+- **Reddit collector now logs network errors**: `lib/reddit.py:_fetch_json` previously swallowed every URLError / OSError / JSONDecodeError and returned None — daily runs showed "0 items, 0 errors" with no diagnostic clue. It now logs the failing URL and exception class.
+
+### Bug Fixes
+- **MiniMax image API parameter rename** (`lib/image_gen.py`): `response_format` value `b64_json` → `base64`. The API renamed the value silently; old runs were getting empty responses.
+- **Cache key collision between full and partial source runs** (`lib/cache.py`): `get_cache_key()` now accepts an optional `extra` discriminator. Used by `collect.py`'s `--skip` change so a `--skip reddit` run doesn't read a previous full-source cache slot for the same date.
+- **Daily-run manifest artifacts polluting `git status`**: added `/manifest_*.json` to `.gitignore` so `manifest_2026-MM-DD.json` and `manifest_single_*.json` no longer show as untracked.
+
+### Internal
+- **Extracted IPv4 fallback into `lib/net.py`**: `force_ipv4_only()` context manager + `is_ipv6_unreachable()` predicate. Reused from `lib/email_sender.py` (was the original implementation, now refactored to call the shared helpers) and applied to `lib/http.py` (arxiv / Hacker News / GitHub / HuggingFace) and `lib/reddit.py`. Completes the collector-side IPv4 fallback originally promised in 1.3.0.
+- **arXiv 3-day default lookback** (`lib/arxiv.py`): `ARXIV_LOOKBACK_DAYS=3` widens the strict 1-day window. Override to `1` to restore the previous behavior. Documented in `README.md`.
+
 ## [1.4.1] - 2026-04-21
 
 ### Bug Fixes
