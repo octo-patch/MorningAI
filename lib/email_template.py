@@ -18,6 +18,8 @@ LANG_TEXT = {
         "unsubscribe_label": "退订",
         "unsubscribe_hint": "如需退订，请回复此邮件或联系",
         "no_items": "今日暂无符合条件的更新。",
+        "kol_section_title": "KOL 观点",
+        "kol_no_items": "今日 KOL 安静，暂无独立观点。",
     },
     "en": {
         "header_count": "{n} notable updates today",
@@ -25,6 +27,8 @@ LANG_TEXT = {
         "unsubscribe_label": "Unsubscribe",
         "unsubscribe_hint": "To unsubscribe, reply to this email or contact",
         "no_items": "No qualifying updates today.",
+        "kol_section_title": "KOL Voices",
+        "kol_no_items": "Today's KOL voices were quiet — no independent commentary.",
     },
     "ja": {
         "header_count": "本日の注目 {n} 件",
@@ -32,6 +36,8 @@ LANG_TEXT = {
         "unsubscribe_label": "配信停止",
         "unsubscribe_hint": "配信を停止するには、このメールに返信するか以下にご連絡ください",
         "no_items": "本日該当する更新はありません。",
+        "kol_section_title": "KOL の声",
+        "kol_no_items": "本日 KOL は静かでした — 独自の見解はありません。",
     },
 }
 
@@ -82,10 +88,16 @@ _TEXT_ITEM = """{emoji} {entity_event}
 
 
 def render_text(items: List[Dict[str, Any]], date: str, lang: str = "en",
-                unsubscribe: str = "") -> str:
+                unsubscribe: str = "",
+                kol_items: Optional[List[Dict[str, Any]]] = None,
+                show_kol_section: bool = False) -> str:
     """Render plain-text email body. Mirrors gen-message digest format.
 
     `items` is a list of dicts with keys: entity, title, summary, importance, source_url.
+    `kol_items` is an optional list of items where `is_kol_voice == true`. When
+    `show_kol_section` is true, a `KOL Voices` block is appended after the main
+    items — populated with `kol_items` if any, otherwise an empty-state line so
+    subscribers know the section is alive on quiet KOL days.
     """
     lang = _safe_lang(lang)
     t = LANG_TEXT[lang]
@@ -110,6 +122,29 @@ def render_text(items: List[Dict[str, Any]], date: str, lang: str = "en",
                 url=item.get("source_url", "").strip(),
             )
             lines.append(block)
+
+    if show_kol_section:
+        lines.append("")
+        lines.append(f"── {t['kol_section_title']} ──")
+        lines.append("")
+        if kol_items:
+            for item in kol_items:
+                entity = item.get("entity", "").strip()
+                title = item.get("title", "").strip()
+                if entity and not title.lower().startswith(entity.lower()):
+                    head = f"{entity} {title}".strip()
+                else:
+                    head = title or entity
+                block = _TEXT_ITEM.format(
+                    emoji="🎙️",
+                    entity_event=head,
+                    summary=item.get("summary", "").strip(),
+                    url=item.get("source_url", "").strip(),
+                )
+                lines.append(block)
+        else:
+            lines.append(t["kol_no_items"])
+            lines.append("")
 
     lines.append("---")
     lines.append(t["footer"].format(date=date))
@@ -174,8 +209,15 @@ def _accent_for_score(score: float) -> str:
 
 
 def render_html(items: List[Dict[str, Any]], date: str, lang: str = "en",
-                subject: str = "", unsubscribe: str = "") -> str:
-    """Render HTML email body. All user data is HTML-escaped."""
+                subject: str = "", unsubscribe: str = "",
+                kol_items: Optional[List[Dict[str, Any]]] = None,
+                show_kol_section: bool = False) -> str:
+    """Render HTML email body. All user data is HTML-escaped.
+
+    `kol_items` and `show_kol_section` mirror `render_text` — when
+    `show_kol_section` is true, a KOL Voices block is appended after the main
+    items, populated with `kol_items` if any, otherwise an empty-state line.
+    """
     lang = _safe_lang(lang)
     t = LANG_TEXT[lang]
 
@@ -204,6 +246,9 @@ def render_html(items: List[Dict[str, Any]], date: str, lang: str = "en",
             f'<p style="color:#6b7280;font-size:14px;">{html.escape(t["no_items"])}</p>'
         )
 
+    if show_kol_section:
+        items_html += _render_kol_html(kol_items or [], t)
+
     if unsubscribe:
         addr = _strip_mailto(unsubscribe)
         unsubscribe_html = (
@@ -224,3 +269,50 @@ def render_html(items: List[Dict[str, Any]], date: str, lang: str = "en",
         footer=html.escape(t["footer"].format(date=date)),
         unsubscribe_html=unsubscribe_html,
     )
+
+
+# KOL section uses a teal accent (#0d9488) to visually distinguish independent
+# commentary from the main news items. The 🎙️ marker mirrors gen-infographic
+# / gen-social conventions where KOL voices are rendered as a separate class
+# rather than mixed in with vendor announcements.
+_HTML_KOL_HEADER = Template("""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 12px;border-top:1px solid #e5e7eb;">
+<tr><td style="padding-top:16px;">
+<div style="font-size:13px;font-weight:600;letter-spacing:0.04em;color:#0d9488;text-transform:uppercase;">🎙️ $title</div>
+</td></tr>
+</table>""")
+
+
+_HTML_KOL_ITEM = Template("""<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:14px;border-left:3px solid #0d9488;padding-left:14px;">
+<tr><td>
+<div style="font-size:14px;font-weight:600;line-height:1.4;color:#111827;">🎙️ $head</div>
+<div style="font-size:13px;line-height:1.6;color:#374151;margin-top:4px;">$summary</div>
+<div style="margin-top:4px;"><a href="$url" style="color:#0d9488;text-decoration:none;font-size:12px;word-break:break-all;">🔗 $url_display</a></div>
+</td></tr>
+</table>""")
+
+
+def _render_kol_html(kol_items: List[Dict[str, Any]], t: Dict[str, str]) -> str:
+    """Render the KOL section block (header + items or empty-state)."""
+    parts = [_HTML_KOL_HEADER.substitute(title=html.escape(t["kol_section_title"]))]
+    if not kol_items:
+        parts.append(
+            f'<p style="color:#6b7280;font-size:13px;font-style:italic;">'
+            f'{html.escape(t["kol_no_items"])}</p>'
+        )
+        return "\n".join(parts)
+    for item in kol_items:
+        entity = item.get("entity", "").strip()
+        title = item.get("title", "").strip()
+        if entity and not title.lower().startswith(entity.lower()):
+            head = f"{entity} {title}".strip()
+        else:
+            head = title or entity
+        url = item.get("source_url", "").strip()
+        url_display = url if len(url) <= 60 else url[:57] + "…"
+        parts.append(_HTML_KOL_ITEM.substitute(
+            head=html.escape(head),
+            summary=html.escape(item.get("summary", "").strip()),
+            url=html.escape(url, quote=True),
+            url_display=html.escape(url_display),
+        ))
+    return "\n".join(parts)

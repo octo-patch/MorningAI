@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.0] - 2026-04-21
+
+### New Features
+- **KOL Voices section in `gen-email`**: Daily digest emails now render an independent "KOL Voices" block after the main items, mirroring the `## KOL Voices` block in `report_{date}.md` and the dedicated KOL channel in `gen-social`. Without it, KOL takes either get suppressed by the 7+ verification gate (KOL voices score 4-7 by design — they're commentary, not vendor announcements that need cross-source verification) or get mixed into the main feed where they read as off-topic. Three new env vars: `EMAIL_KOL_ENABLED` (default `true`), `EMAIL_KOL_MIN_SCORE` (default `4`, deliberately lower than `EMAIL_MIN_SCORE`), and `EMAIL_KOL_MAX_ITEMS` (default `5`). On quiet KOL days the section still renders with a "today's KOL voices were quiet" line so subscribers see the section is alive — set `EMAIL_KOL_SHOW_EMPTY=false` to omit it entirely on quiet days, or `EMAIL_KOL_ENABLED=false` to suppress permanently. The send manifest now reports `kol_items_count` and `kol_section_shown` for visibility.
+
 ## [1.3.0] - 2026-04-20
 
 ### New Features

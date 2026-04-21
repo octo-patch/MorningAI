@@ -1,6 +1,6 @@
 ---
 name: gen-email
-version: "1.3.0"
+version: "1.4.0"
 description: Send the daily MorningAI digest as HTML email via SMTP to a configured recipient list.
 ---
 
@@ -40,6 +40,10 @@ This is the **first true automated push channel** in the pipeline — gen-messag
 | `EMAIL_RATE_LIMIT_DELAY` | — | `1` | Seconds to sleep between recipients (anti-throttling) |
 | `EMAIL_LIST_UNSUBSCRIBE` | — | — | Unsubscribe target, e.g. `mailto:admin@x.com?subject=Unsubscribe` |
 | `EMAIL_DRY_RUN` | — | `false` | If `true`, generate `email_*.html`/`email_*.txt` locally and **do not send** |
+| `EMAIL_KOL_ENABLED` | — | `true` | Render a separate "KOL Voices" section after the main items. Set `false` to suppress entirely |
+| `EMAIL_KOL_MIN_SCORE` | — | `4` | Min `importance` for KOL items (independent of `EMAIL_MIN_SCORE` because KOL voices are scored 4-7 by design) |
+| `EMAIL_KOL_MAX_ITEMS` | — | `5` | Max KOL items to include in the section |
+| `EMAIL_KOL_SHOW_EMPTY` | — | `true` | When no KOL items qualify, still render the section header with a "today was quiet" empty-state line. Set `false` to omit the section on quiet days |
 
 ### Recipients JSON format (`EMAIL_RECIPIENTS_FILE`)
 
@@ -61,8 +65,22 @@ Same as `gen-message` (see `skills/gen-message/SKILL.md` for full spec):
 
 1. Load `data_{DATE}.json` from CWD.
 2. Filter: `importance >= min_score` (per-recipient or global), `source_url` present, `verified == true` for score ≥ 7.
-3. Apply category balance: `product` ≤ 4, `model` ≤ 3, `benchmark` ≤ 2, `financing` ≤ 2; overflow filled by score.
-4. Sort by `importance` desc, cap at `EMAIL_MAX_ITEMS`.
+3. **Skip items with `is_kol_voice == true`** — they render in the dedicated KOL section, not mixed into the main feed.
+4. Apply category balance: `product` ≤ 4, `model` ≤ 3, `benchmark` ≤ 2, `financing` ≤ 2; overflow filled by score.
+5. Sort by `importance` desc, cap at `EMAIL_MAX_ITEMS`.
+
+### KOL Voices Section
+
+A separate block rendered after the main items, mirroring the `## KOL Voices` section in `report_{DATE}.md` and the dedicated KOL channel in `gen-social`. Independent commentary deserves its own visual lane — without it, KOL takes either get suppressed by the 7+ verification gate (KOL voices are scored 4-7 by design) or appear interleaved with vendor announcements.
+
+KOL filter rules:
+1. Only items with `is_kol_voice == true`.
+2. `importance >= EMAIL_KOL_MIN_SCORE` (default `4`, lower than the main `EMAIL_MIN_SCORE`).
+3. Must have `source_url`.
+4. **No 7+ verification gate** — matches `gen-infographic`'s KOL handling: KOL voices are commentary, not vendor announcements that need cross-source verification.
+5. Sorted by `importance` desc, capped at `EMAIL_KOL_MAX_ITEMS`.
+
+When zero KOL items qualify, the section is still rendered with a "today's KOL voices were quiet" line if `EMAIL_KOL_SHOW_EMPTY=true` (the default), so subscribers see the section is alive even on quiet days. Set `EMAIL_KOL_SHOW_EMPTY=false` to omit the section entirely on quiet days, or `EMAIL_KOL_ENABLED=false` to suppress it permanently.
 
 ---
 
