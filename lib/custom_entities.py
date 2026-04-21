@@ -18,7 +18,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any, Optional, Tuple
 from urllib.parse import unquote_plus
 
 
@@ -48,6 +48,18 @@ _WEB_KEYWORDS = [
 
 # Files to skip when loading built-in entities
 _SKIP_FILES = {"custom-example.md", "trending-discovery.md"}
+
+# Tier-aware X handle dict keys (populated alongside x_handles for collectors
+# that need to distinguish official accounts from Key People).
+_TIER_KEYS = ("x_handles_official", "x_handles_key_people")
+
+
+def _empty_registry() -> Dict[str, Dict[str, Any]]:
+    """Initialize a registry dict with all platform + tier keys."""
+    result = {key: {} for key in PLATFORM_KEYS.values()}
+    for tier_key in _TIER_KEYS:
+        result[tier_key] = {}
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -191,7 +203,7 @@ def parse_builtin_file(path: Path) -> Dict[str, Dict[str, Any]]:
 
     Also handles tabular sections (``| Name | X Account | ... |``).
     """
-    result = {key: {} for key in PLATFORM_KEYS.values()}
+    result = _empty_registry()
     text = path.read_text(encoding="utf-8")
     lines = text.split("\n")
 
@@ -284,11 +296,13 @@ def _store_attr(result: dict, entity: str, attr_name: str, value: str):
         handles = _extract_x_handles(value)
         if handles:
             result["x_handles"].setdefault(entity, []).extend(handles)
+            result["x_handles_official"].setdefault(entity, []).extend(handles)
     elif platform == "key_people":
         # Extract X handles from Key People field
         handles = _extract_x_handles(value)
         if handles:
             result["x_handles"].setdefault(entity, []).extend(handles)
+            result["x_handles_key_people"].setdefault(entity, []).extend(handles)
     elif platform == "github":
         gh = _extract_github(value)
         existing = result["github_sources"].get(entity, {"orgs": [], "repos": []})
@@ -336,6 +350,8 @@ def _store_tabular_row(result: dict, name: str, col_headers: List[str], parts: L
             handles = _extract_x_handles(value)
             if handles:
                 result["x_handles"].setdefault(name, []).extend(handles)
+                # Tabular X Account columns (e.g. KOL files) default to official tier
+                result["x_handles_official"].setdefault(name, []).extend(handles)
         elif header == "github":
             gh = _extract_github(value)
             existing = result["github_sources"].get(name, {"orgs": [], "repos": []})
@@ -358,7 +374,7 @@ def load_builtin_entities() -> Dict[str, Dict[str, Any]]:
     Returns:
         Merged dictionary with keys matching PLATFORM_KEYS values.
     """
-    merged = {key: {} for key in PLATFORM_KEYS.values()}
+    merged = _empty_registry()
     entities_dir = Path(__file__).resolve().parent.parent / "entities"
 
     if not entities_dir.is_dir():
@@ -371,7 +387,7 @@ def load_builtin_entities() -> Dict[str, Dict[str, Any]]:
             continue
         try:
             parsed = parse_builtin_file(md_file)
-            for dict_key in PLATFORM_KEYS.values():
+            for dict_key in merged.keys():
                 for entity, values in parsed[dict_key].items():
                     if dict_key in ("github_sources",):
                         existing = merged[dict_key].get(entity, {"orgs": [], "repos": []})
@@ -401,7 +417,7 @@ def parse_custom_file(path: Path) -> Dict[str, Dict[str, Any]]:
         Dict with keys matching PLATFORM_KEYS values, each mapping
         entity names to their platform-specific values.
     """
-    result = {key: {} for key in PLATFORM_KEYS.values()}
+    result = _empty_registry()
 
     text = path.read_text(encoding="utf-8")
     sections = re.split(r"^## +", text, flags=re.MULTILINE)
@@ -425,7 +441,10 @@ def parse_custom_file(path: Path) -> Dict[str, Dict[str, Any]]:
             value = parts[1]
 
             if platform == "x":
-                result["x_handles"][entity_name] = _parse_x_handles_custom(value)
+                handles = _parse_x_handles_custom(value)
+                result["x_handles"][entity_name] = handles
+                # Custom entity X handles default to official tier
+                result["x_handles_official"][entity_name] = handles
             elif platform == "github":
                 result["github_sources"][entity_name] = _parse_github_custom(value)
             elif platform == "huggingface":
@@ -464,7 +483,7 @@ def load_custom_entities() -> Dict[str, Dict[str, Any]]:
     Returns:
         Merged dictionary of all custom entities across all files and directories.
     """
-    merged = {key: {} for key in PLATFORM_KEYS.values()}
+    merged = _empty_registry()
 
     for search_dir in _get_search_dirs():
         if not search_dir.is_dir():
@@ -474,7 +493,7 @@ def load_custom_entities() -> Dict[str, Dict[str, Any]]:
                 continue
             try:
                 parsed = parse_custom_file(md_file)
-                for dict_key in PLATFORM_KEYS.values():
+                for dict_key in merged.keys():
                     merged[dict_key].update(parsed[dict_key])
             except Exception as e:
                 print(f"[morning-ai] Warning: failed to parse {md_file}: {e}", file=sys.stderr)
@@ -491,6 +510,8 @@ def merge_into_registries(
     reddit_keywords: dict,
     reddit_subreddits: dict,
     hn_keywords: dict,
+    x_handles_official: Optional[dict] = None,
+    x_handles_key_people: Optional[dict] = None,
 ) -> None:
     """Load custom entities and merge into the provided registry dicts."""
     custom = load_custom_entities()
@@ -503,3 +524,7 @@ def merge_into_registries(
     reddit_keywords.update(custom["reddit_keywords"])
     reddit_subreddits.update(custom["reddit_subreddits"])
     hn_keywords.update(custom["hn_keywords"])
+    if x_handles_official is not None:
+        x_handles_official.update(custom["x_handles_official"])
+    if x_handles_key_people is not None:
+        x_handles_key_people.update(custom["x_handles_key_people"])
