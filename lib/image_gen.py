@@ -2,9 +2,13 @@
 
 Dispatches to external APIs (Gemini, MiniMax) or skips (none).
 Provider is selected via IMAGE_GEN_PROVIDER env var.
+
+External providers can be loaded via IMAGE_GEN_PROVIDER_PATH, pointing to
+a Python file that exports a `generate()` function with the same signature.
 """
 
 import base64
+import importlib.util
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -95,7 +99,7 @@ def _generate_minimax(prompt: str, output_path: str, config: Dict[str, Any], *, 
         "model": model,
         "prompt": prompt,
         "aspect_ratio": aspect_ratio or "9:16",
-        "response_format": "b64_json",
+        "response_format": "base64",
         "n": 1,
     }
 
@@ -131,6 +135,49 @@ PROVIDERS = {
 
 
 # ---------------------------------------------------------------------------
+# External provider loading
+# ---------------------------------------------------------------------------
+
+_external_cache: Dict[str, Any] = {}
+
+
+def _load_external_provider(provider_name: str, config: Dict[str, Any]):
+    """Load a provider from IMAGE_GEN_PROVIDER_PATH.
+
+    The file at the path must export a `generate()` function with the same
+    signature as built-in providers. Cached after first load.
+    """
+    if provider_name in _external_cache:
+        return _external_cache[provider_name]
+
+    provider_path = get_key(config, "IMAGE_GEN_PROVIDER_PATH")
+    if not provider_path:
+        return None
+
+    path = Path(provider_path)
+    if not path.exists():
+        _log(f"External provider path not found: {provider_path}")
+        return None
+
+    try:
+        spec = importlib.util.spec_from_file_location(f"provider_{provider_name}", str(path))
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+    except Exception as e:
+        _log(f"Failed to load external provider from {provider_path}: {e}")
+        return None
+
+    fn = getattr(mod, "generate", None)
+    if fn is None:
+        _log(f"External provider {provider_path} has no generate() function")
+        return None
+
+    _log(f"Loaded external provider '{provider_name}' from {provider_path}")
+    _external_cache[provider_name] = fn
+    return fn
+
+
+# ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
 
@@ -152,12 +199,18 @@ def generate(prompt: str, output_path: str, config: Dict[str, Any], *, aspect_ra
     """
     provider_name = get_key(config, "IMAGE_GEN_PROVIDER") or "none"
 
-    if provider_name not in PROVIDERS:
-        available = ", ".join(sorted(PROVIDERS.keys()))
-        raise ImageGenError(f"Unknown provider '{provider_name}'. Available: {available}")
+    if provider_name in PROVIDERS:
+        provider_fn = PROVIDERS[provider_name]
+        return provider_fn(prompt, output_path, config, aspect_ratio=aspect_ratio)
 
-    provider_fn = PROVIDERS[provider_name]
-    return provider_fn(prompt, output_path, config, aspect_ratio=aspect_ratio)
+    # Try loading external provider from IMAGE_GEN_PROVIDER_PATH
+    ext_fn = _load_external_provider(provider_name, config)
+    if ext_fn:
+        return ext_fn(prompt, output_path, config, aspect_ratio=aspect_ratio)
+
+    available = ", ".join(sorted(PROVIDERS.keys()))
+    raise ImageGenError(f"Unknown provider '{provider_name}'. Built-in: {available}. "
+                        f"Set IMAGE_GEN_PROVIDER_PATH for external providers.")
 
 
 def list_providers() -> list:

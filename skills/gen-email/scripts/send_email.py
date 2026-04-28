@@ -78,6 +78,7 @@ def _select_items(
         if i.get("importance", 0) >= min_score
         and _has_credible_source(i)
         and (i.get("importance", 0) < 7 or i.get("verified", False))
+        and not i.get("is_kol_voice", False)  # KOL voices render in their own section
     ]
 
     by_type: Dict[str, List[Dict[str, Any]]] = {}
@@ -107,6 +108,28 @@ def _select_items(
 
     selected.sort(key=lambda x: x.get("importance", 0), reverse=True)
     return selected[:max_items]
+
+
+def _select_kol_items(
+    items: List[Dict[str, Any]],
+    min_score: float,
+    max_items: int,
+) -> List[Dict[str, Any]]:
+    """Filter KOL voice items.
+
+    Mirrors gen-infographic's KOL handling: NO 7+ verification gate because
+    KOL voices are scored 4-7 by design (independent commentary, not vendor
+    announcements that need cross-source verification). Just requires a
+    credible source URL and meets `min_score`. Sorted by importance desc.
+    """
+    qualifying = [
+        i for i in items
+        if i.get("is_kol_voice", False)
+        and i.get("importance", 0) >= min_score
+        and _has_credible_source(i)
+    ]
+    qualifying.sort(key=lambda x: x.get("importance", 0), reverse=True)
+    return qualifying[:max_items]
 
 
 def _load_data(path: Path) -> List[Dict[str, Any]]:
@@ -159,6 +182,22 @@ def main() -> int:
     max_items = _int(config.get("EMAIL_MAX_ITEMS", 10), 10)
     selected = _select_items(items_raw, min_score=min_score, max_items=max_items)
 
+    # KOL section: independent commentary rendered separately. Defaults to enabled
+    # so subscribers see the section exists even on quiet KOL days (empty-state
+    # message). Set EMAIL_KOL_ENABLED=false to suppress the section entirely.
+    kol_enabled = _bool(config.get("EMAIL_KOL_ENABLED", "true"))
+    kol_min_score = _float(config.get("EMAIL_KOL_MIN_SCORE", 4), 4.0)
+    kol_max_items = _int(config.get("EMAIL_KOL_MAX_ITEMS", 5), 5)
+    kol_show_empty = _bool(config.get("EMAIL_KOL_SHOW_EMPTY", "true"))
+    kol_selected = (
+        _select_kol_items(items_raw, min_score=kol_min_score, max_items=kol_max_items)
+        if kol_enabled else []
+    )
+    # Render the KOL section block whenever enabled AND (we have items OR
+    # operator opted into empty-state). When kol_enabled=false the section
+    # is fully suppressed.
+    show_kol_section = kol_enabled and (bool(kol_selected) or kol_show_empty)
+
     default_lang = args.lang or config.get("EMAIL_LANG") or "en"
     subject_tpl = config.get("EMAIL_SUBJECT_TEMPLATE", "MorningAI {date} · {n} updates")
     unsubscribe = config.get("EMAIL_LIST_UNSUBSCRIBE", "")
@@ -167,9 +206,11 @@ def main() -> int:
     preview_subject = email_template.render_subject(subject_tpl, date, len(selected), default_lang)
     preview_html = email_template.render_html(
         selected, date, lang=default_lang, subject=preview_subject, unsubscribe=unsubscribe,
+        kol_items=kol_selected, show_kol_section=show_kol_section,
     )
     preview_text = email_template.render_text(
         selected, date, lang=default_lang, unsubscribe=unsubscribe,
+        kol_items=kol_selected, show_kol_section=show_kol_section,
     )
     Path(f"email_{date}.html").write_text(preview_html, encoding="utf-8")
     Path(f"email_{date}.txt").write_text(preview_text, encoding="utf-8")
@@ -178,7 +219,8 @@ def main() -> int:
     if dry_run:
         sys.stdout.write(
             f"[gen-email] dry-run: wrote email_{date}.html and email_{date}.txt "
-            f"({len(selected)} items, lang={default_lang}). No SMTP traffic.\n"
+            f"({len(selected)} items, {len(kol_selected)} KOL items, "
+            f"lang={default_lang}). No SMTP traffic.\n"
         )
         return 0
 
@@ -226,13 +268,18 @@ def main() -> int:
             selected if rcpt_min_score == min_score
             else _select_items(items_raw, min_score=rcpt_min_score, max_items=max_items)
         )
+        # KOL items use a separate threshold (kol_min_score) — not influenced by
+        # the recipient's main-feed min_score override, so KOL voices remain
+        # visible to subscribers who set a high score floor for the main feed.
 
         subject = email_template.render_subject(subject_tpl, date, len(rcpt_items), rcpt_lang)
         html_body = email_template.render_html(
             rcpt_items, date, lang=rcpt_lang, subject=subject, unsubscribe=unsubscribe,
+            kol_items=kol_selected, show_kol_section=show_kol_section,
         )
         text_body = email_template.render_text(
             rcpt_items, date, lang=rcpt_lang, unsubscribe=unsubscribe,
+            kol_items=kol_selected, show_kol_section=show_kol_section,
         )
 
         try:
@@ -273,6 +320,8 @@ def main() -> int:
         "failed": failed,
         "lang_default": default_lang,
         "items_count": len(selected),
+        "kol_items_count": len(kol_selected),
+        "kol_section_shown": show_kol_section,
         "results": results,
     }
     Path(f"email_{date}_manifest.json").write_text(

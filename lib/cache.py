@@ -24,8 +24,17 @@ def ensure_cache_dir():
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def get_cache_key(source: str, entity: str, date: str) -> str:
-    key_data = f"{source}|{entity}|{date}"
+def get_cache_key(source: str, entity: str, date: str, extra: Optional[str] = None) -> str:
+    """Compute a stable 16-char cache key.
+
+    `extra` is an optional discriminator — pass it when two callers would
+    otherwise collide on (source, entity, date) but want separate cache slots
+    (e.g. partial vs full source list in a daily run).
+    """
+    parts = [source, entity, date]
+    if extra:
+        parts.append(extra)
+    key_data = "|".join(parts)
     return hashlib.sha256(key_data.encode()).hexdigest()[:16]
 
 

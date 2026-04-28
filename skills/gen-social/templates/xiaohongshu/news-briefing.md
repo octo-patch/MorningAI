@@ -2,85 +2,72 @@
 platform: xiaohongshu
 style: news-briefing
 default_lang: zh
-default_items: 8
+default_items: 5
 min_score: 5
-image_style: newspaper
+image_style: classic
 image_lang: zh
 ---
 
 ## Constraints
 
-- **Title**: ≤ 20 characters, news-oriented and concise
+- **Title**: ≤ 20 characters, compact and news-like
 - **Body**: ≤ 1000 characters
-- **Tags**: 3-5 hashtags at end of body
-- **Images**: 3:4 portrait or 1:1 square, single image or carousel (2-4 images)
-- **Emoji**: Minimal — only priority indicators (🔴🟠🟡) and section markers
+- **Tags**: 5-10 hashtags at end of body, format: `#标签`
+- **Images**: 3:4 portrait, carousel supported (3-6 images)
+- **Emoji**: Minimal — only as section markers, keep professional tone
 
 ## Tone & Voice
 
-- Ultra-compact telegraph style — one item one line, zero filler
-- Neutral and factual — no personal opinions, no exclamation marks
-- The reader should finish scanning in 10 seconds
-- Every character delivers information — if a word can be cut, cut it
-- Use "｜" as field separator within each line
+- Concise, neutral, high information density — like a news briefing
+- Objective and professional, NOT enthusiastic or personal
+- Use framing like "今日速报" "快讯" "要点速览"
+- Focus on facts and key numbers, not personal opinions
+- Compact sentence structure, avoid filler words
 
 ## Content Structure
 
 ### Title
-- Format: `⚡AI速报｜{month}.{day}` (≤ 20 chars)
-- Direct, consistent, scannable
-- Examples: "⚡AI速报｜4月16日", "⚡AI速报｜4.16"
+- Format: `{emoji} {compact phrase}` (≤ 20 chars)
+- Emphasis on speed and authority
+- Examples: "📰AI快讯｜5条要闻速览", "⚡今日AI要点速报", "🗞️AI日报｜重要更新"
 
 ### Body
+1. **Date line** (1 short sentence) — "4月8日 AI 行业要闻速览👇"
+2. **Bullet items** — compact, information-dense:
+   - `{number}. {Entity}：{Event core}` (1 line)
+   - `▸ {Key detail or number}` (1-2 sub-points max)
+3. **Tags** — 5-10 relevant hashtags
 
-**1. Header** (1 line):
-```
-【{M}.{DD} AI 10秒速览】
-```
-
-**2. Item lines** — one line per news item, sorted by importance:
-```
-{priority} {Entity}｜{event headline}｜{key metric or detail}
-```
-
-Priority indicators by importance score:
-- 🔴 = score 8+ (must-know)
-- 🟠 = score 7-7.9 (significant)
-- 🟡 = score 5-6.9 (worth noting)
-
-Rules:
-- Each line is self-contained — no continuation, no sub-points
-- Keep each line to ~40-70 chars
-- Include one key number/metric per line when available
-- Entity names are proper nouns — never translate
-
-**3. "今日数字" section** — 3 standout data points from today's news:
-```
-📊 今日数字
-• {number} — {one-sentence context}
-• {number} — {one-sentence context}
-• {number} — {one-sentence context}
-```
-
-Pick numbers that are surprising, record-breaking, or reveal a trend. Prioritize: dollar amounts, user counts, performance deltas, growth rates.
-
-**4. Tags** — 3-5 hashtags:
-```
-#AI速报 #人工智能 #AI日报 #科技圈
-```
+### Body Format Rules
+- Simple numbered list (1. 2. 3.)，NOT emoji numbers
+- Each item ONE LINE for the headline, 1-2 lines for sub-points
+- Use ▸ for sub-points
+- NO excessive formatting, NO bold brackets【】
+- Compact line spacing — density over readability
+- Professional, factual — avoid "意味着" "值得关注" etc.
 
 ## Character Limit Rules
 
 | Component | Budget |
 |-----------|--------|
 | Title | ≤ 20 chars |
-| Header line | ~20 chars |
-| Per item line | ~40-70 chars |
-| 今日数字 section | ~120-150 chars |
-| Tags | ~60-80 chars |
+| Date line | ~20-30 chars |
+| Per item block | ~80-120 chars |
+| Tags | ~100-150 chars |
 | **Total body** | **≤ 1000 chars** |
 
-With 8 items at ~60 chars = ~480 chars, plus header + 今日数字 + tags ≈ ~750 chars total.
+## Image Style Rules
+
+**Default: `classic` image style (can be overridden by channel config `image_style` field).**
+
+Image prompt MUST include these classic-specific directives:
+- Off-white background (#F5F5F0), clean editorial magazine layout
+- Sans-serif typography, white card panels with subtle drop shadows
+- Card-based layout with rounded corners (8px)
+- Color palette: navy (#1B2A4A) titles, teal (#2A9D8F) bullet icons, slate gray (#4A5568) body text
+- Structured, authoritative visual hierarchy
+- Maximize content area with generous line spacing for mobile readability
+- DO NOT include style labels or content-type annotations on the image
 
 ## Output Format
 
@@ -88,15 +75,18 @@ With 8 items at ~60 chars = ~480 chars, plus header + 今日数字 + tags ≈ ~7
 ---xiaohongshu---
 
 ---title---
-⚡AI速报｜{date}
+{emoji} {title text}
 
 ---body---
-{body content}
+{compact news body}
 
-#tag1 #tag2 #tag3
+#tag1 #tag2 #tag3 #tag4 #tag5
 
 ---images---
 1: {image_filename}
+2: {image_filename}
+3: {image_filename}
+4: {image_filename}
 ```
 
 ## Example Output
@@ -105,24 +95,31 @@ With 8 items at ~60 chars = ~480 chars, plus header + 今日数字 + tags ≈ ~7
 ---xiaohongshu---
 
 ---title---
-⚡AI速报｜4月16日
+📰AI快讯｜5条要闻速览
 
 ---body---
-【4.16 AI 10秒速览】
+4月8日 AI 行业要闻速览👇
 
-🔴 Anthropic｜估值报价>$800B｜较2月$350B翻倍，年营收$300亿
-🔴 Claude Code｜v2.1.110发布｜全屏TUI+手机推送通知
-🔴 Mistral AI｜MCP Connectors上线｜企业级Agent管理，免OAuth
-🟠 Google｜Gemini Robotics-ER 1.6｜机器人AI开放API，Spot已部署
-🟡 NVIDIA｜Audio Flamingo Next 8.3B｜语音/声音/音乐开源模型
+1. Anthropic：Claude 4.5 Sonnet 发布
+▸ 编程能力+18%，上下文200K，速度+40%
 
-📊 今日数字
-• $800B+ — Anthropic最新投资方报价
-• $30B — Anthropic年化营收，两年增长30倍
-• 8.3B — NVIDIA开源音频模型参数量
+2. Google：Gemini 2.5 Flash 公测
+▸ 100万上下文，AI Studio免费开放
 
-#AI速报 #人工智能 #AI日报 #科技圈
+3. DeepSeek：V3-0407 开源发布
+▸ 671B MoE，MIT协议，性能接近GPT-4o
+
+4. Cursor：后台Agent正式上线
+▸ 无需盯屏，后台自动重构+提PR，Pro版10并发
+
+5. Windsurf：C轮2亿美元
+▸ 估值30亿，Insight Partners领投
+
+#AI快讯 #人工智能 #Claude #Gemini #DeepSeek #Cursor #科技新闻 #AI日报 #大模型
 
 ---images---
-1: social_2026-04-16_xhs_zixun_zh_1.png
+1: social_2026-04-14_xhs_zixun_zh_1.png
+2: social_2026-04-14_xhs_zixun_zh_2.png
+3: social_2026-04-14_xhs_zixun_zh_3.png
+4: social_2026-04-14_xhs_zixun_zh_4.png
 ```

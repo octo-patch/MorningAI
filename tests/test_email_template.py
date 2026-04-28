@@ -40,6 +40,26 @@ SAMPLE_ITEMS = [
 ]
 
 
+SAMPLE_KOL_ITEMS = [
+    {
+        "entity": "@karpathy",
+        "title": "On the future of agents",
+        "summary": "Long-form take on tool-use vs RL: agents will plateau without grounded environments.",
+        "importance": 6.5,
+        "source_url": "https://x.com/karpathy/status/123",
+        "is_kol_voice": True,
+    },
+    {
+        "entity": "@simonw",
+        "title": "Why I stopped self-hosting LLMs",
+        "summary": "Cost analysis: API pricing has dropped enough that self-hosting only makes sense at scale.",
+        "importance": 5.0,
+        "source_url": "https://simonwillison.net/2026/apr/20/self-hosting/",
+        "is_kol_voice": True,
+    },
+]
+
+
 class TestRenderSubject(unittest.TestCase):
     def test_default_template(self):
         s = render_subject("MorningAI {date} · {n} updates", "2026-04-20", 8, "en")
@@ -135,6 +155,110 @@ class TestRenderHtml(unittest.TestCase):
         )
         self.assertIn("admin@example.com", out)
         self.assertIn("href=\"mailto:admin@example.com\"", out)
+
+
+class TestKolSection(unittest.TestCase):
+    """KOL Voices section: rendered separately from main items, no 7+ verification gate."""
+
+    def test_text_no_section_when_disabled(self):
+        out = render_text(SAMPLE_ITEMS, "2026-04-20", "en", show_kol_section=False)
+        self.assertNotIn("KOL Voices", out)
+        self.assertNotIn("KOL", out)
+
+    def test_text_section_with_items(self):
+        out = render_text(
+            SAMPLE_ITEMS, "2026-04-20", "en",
+            kol_items=SAMPLE_KOL_ITEMS, show_kol_section=True,
+        )
+        self.assertIn("KOL Voices", out)
+        self.assertIn("@karpathy On the future of agents", out)
+        self.assertIn("Why I stopped self-hosting LLMs", out)
+        self.assertIn("🎙️", out)
+        # Empty-state should NOT appear when items are present
+        self.assertNotIn("KOL voices were quiet", out)
+
+    def test_text_empty_state_when_no_items(self):
+        out = render_text(
+            SAMPLE_ITEMS, "2026-04-20", "en",
+            kol_items=[], show_kol_section=True,
+        )
+        self.assertIn("KOL Voices", out)
+        self.assertIn("KOL voices were quiet", out)
+
+    def test_text_empty_state_zh(self):
+        out = render_text(
+            SAMPLE_ITEMS, "2026-04-20", "zh",
+            kol_items=[], show_kol_section=True,
+        )
+        self.assertIn("KOL 观点", out)
+        self.assertIn("今日 KOL 安静", out)
+
+    def test_text_empty_state_ja(self):
+        out = render_text(
+            SAMPLE_ITEMS, "2026-04-20", "ja",
+            kol_items=[], show_kol_section=True,
+        )
+        self.assertIn("KOL の声", out)
+        self.assertIn("KOL は静か", out)
+
+    def test_text_kol_section_renders_even_when_main_items_empty(self):
+        out = render_text(
+            [], "2026-04-20", "en",
+            kol_items=SAMPLE_KOL_ITEMS, show_kol_section=True,
+        )
+        self.assertIn("No qualifying updates today", out)
+        self.assertIn("KOL Voices", out)
+        self.assertIn("@karpathy", out)
+
+    def test_html_no_section_when_disabled(self):
+        out = render_html(SAMPLE_ITEMS, "2026-04-20", "en", show_kol_section=False)
+        self.assertNotIn("KOL Voices", out)
+
+    def test_html_section_with_items(self):
+        out = render_html(
+            SAMPLE_ITEMS, "2026-04-20", "en",
+            kol_items=SAMPLE_KOL_ITEMS, show_kol_section=True,
+        )
+        self.assertIn("KOL Voices", out)
+        self.assertIn("@karpathy On the future of agents", out)
+        # KOL accent color (teal) used
+        self.assertIn("#0d9488", out)
+        # Microphone marker
+        self.assertIn("🎙️", out)
+
+    def test_html_empty_state(self):
+        out = render_html(
+            SAMPLE_ITEMS, "2026-04-20", "en",
+            kol_items=[], show_kol_section=True,
+        )
+        self.assertIn("KOL Voices", out)
+        self.assertIn("KOL voices were quiet", out)
+
+    def test_html_empty_state_zh(self):
+        out = render_html(
+            SAMPLE_ITEMS, "2026-04-20", "zh",
+            kol_items=[], show_kol_section=True,
+        )
+        self.assertIn("KOL 观点", out)
+        self.assertIn("今日 KOL 安静", out)
+
+    def test_html_kol_escaping(self):
+        bad_kol = [{
+            "entity": "<script>alert('xss')</script>",
+            "title": "Bad & ugly",
+            "summary": "Has <b>html</b> & symbols",
+            "importance": 5.0,
+            "source_url": "https://x.com/path?a=1&b=2",
+            "is_kol_voice": True,
+        }]
+        out = render_html(
+            SAMPLE_ITEMS, "2026-04-20", "en",
+            kol_items=bad_kol, show_kol_section=True,
+        )
+        self.assertNotIn("<script>alert('xss')</script>", out)
+        self.assertIn("&lt;script&gt;", out)
+        self.assertIn("Bad &amp; ugly", out)
+        self.assertIn("https://x.com/path?a=1&amp;b=2", out)
 
 
 if __name__ == "__main__":

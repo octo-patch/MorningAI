@@ -1,20 +1,38 @@
-"""Reddit collector for morning-ai (public JSON, no API key needed).
+"""Reddit collector for morning-ai (public Atom RSS feeds, no API key needed).
 
-Adapted from last30days reddit_public.py.
+History: originally hit the public ``*.json`` endpoints, but Reddit started
+returning 403 to all unauthenticated JSON requests in late 2024. The
+``*.rss`` (Atom) feeds remain open and serve the same posts — at the cost of
+losing per-post engagement (score / num_comments / upvote_ratio), which
+RSS does not expose. We fall back to a flat relevance and zero engagement;
+ranking degrades gracefully because Reddit pre-orders the feed by hotness
+or relevance server-side.
+
+Switch back to JSON only if Reddit re-opens the endpoint, or migrate to
+OAuth (oauth.reddit.com) and add REDDIT_CLIENT_ID/SECRET env vars.
 """
 
-import json
+import html
+import re
 import sys
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Any, Dict, List, Optional
+from contextlib import nullcontext
+from typing import Dict, List, Optional
 
+from .net import force_ipv4_only, is_ipv6_unreachable
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_REDDIT
 
 USER_AGENT = "morning-ai/1.0 (AI Industry Tracker)"
+ATOM_NS = {"atom": "http://www.w3.org/2005/Atom"}
+
+# Without per-post score we can't rank — give every RSS-sourced item the same
+# mid-band relevance so downstream score.py still has a numeric to work with.
+RSS_DEFAULT_RELEVANCE = 0.3
 
 DEPTH_LIMITS = {
     "quick": 10,
@@ -35,39 +53,92 @@ def _log(msg: str):
         sys.stderr.flush()
 
 
-def _fetch_json(url: str, timeout: int = 15) -> Optional[Dict[str, Any]]:
-    headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
+def _fetch_text(url: str, timeout: int = 15) -> Optional[str]:
+    """Fetch a URL and return the response body as text (or None on failure).
+
+    Honors HTTPS_PROXY via stdlib urllib defaults. Retries on 429 with
+    exponential backoff and falls back to IPv4-only DNS on broken v6 routing.
+    """
+    headers = {
+        "User-Agent": USER_AGENT,
+        "Accept": "application/atom+xml, application/xml, text/xml",
+    }
     req = urllib.request.Request(url, headers=headers)
 
+    ipv4_fallback = False
     for attempt in range(MAX_RETRIES):
+        ctx = force_ipv4_only() if ipv4_fallback else nullcontext()
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                content_type = resp.headers.get("Content-Type", "")
-                if "json" not in content_type and "text/html" in content_type:
-                    return None
-                body = resp.read().decode("utf-8")
-                return json.loads(body)
+            with ctx, urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.read().decode("utf-8", errors="replace")
         except urllib.error.HTTPError as e:
             if e.code == 429 and attempt < MAX_RETRIES - 1:
                 delay = BASE_BACKOFF * (2 ** attempt)
                 _log(f"429 rate limited, retry after {delay:.1f}s")
                 time.sleep(delay)
                 continue
+            _log(f"HTTP {e.code} on {url}")
             return None
-        except (urllib.error.URLError, OSError, json.JSONDecodeError):
+        except (urllib.error.URLError, OSError) as e:
+            # Broken IPv6 routing: retry once IPv4-only without burning the backoff.
+            if not ipv4_fallback and is_ipv6_unreachable(e):
+                _log(f"IPv6 unreachable on {url}, switching to IPv4-only DNS")
+                ipv4_fallback = True
+                continue
+            _log(f"network error on {url}: {type(e).__name__}: {e}")
             return None
     return None
 
 
-def _parse_date(created_utc: Any) -> Optional[str]:
-    if not created_utc:
-        return None
+def _extract_summary(content_html: str) -> str:
+    """Pull a short plain-text snippet out of an Atom <content type=html> body.
+
+    Reddit wraps the post body in ``<!-- SC_OFF --> ... <!-- SC_ON -->``,
+    followed by a "submitted by ..." footer we don't want.
+    """
+    if not content_html:
+        return ""
+    decoded = html.unescape(content_html)
+    if "<!-- SC_ON -->" in decoded:
+        decoded = decoded.split("<!-- SC_ON -->", 1)[0]
+    if "<!-- SC_OFF -->" in decoded:
+        decoded = decoded.split("<!-- SC_OFF -->", 1)[1]
+    text = re.sub(r"<[^>]+>", " ", decoded)
+    return " ".join(text.split())[:300]
+
+
+def _parse_rss(xml_text: str) -> List[Dict[str, str]]:
+    """Parse a Reddit Atom feed into a list of normalized post dicts.
+
+    Returns dicts with: id (t3_xxx), title, url, date (YYYY-MM-DD), summary.
+    """
+    if not xml_text:
+        return []
     try:
-        from datetime import datetime, timezone
-        dt = datetime.fromtimestamp(float(created_utc), tz=timezone.utc)
-        return dt.strftime("%Y-%m-%d")
-    except (ValueError, TypeError, OSError):
-        return None
+        root = ET.fromstring(xml_text)
+    except ET.ParseError as e:
+        _log(f"RSS parse error: {e}")
+        return []
+
+    out: List[Dict[str, str]] = []
+    for entry in root.findall("atom:entry", ATOM_NS):
+        title = (entry.findtext("atom:title", default="", namespaces=ATOM_NS) or "").strip()
+        post_id = (entry.findtext("atom:id", default="", namespaces=ATOM_NS) or "").strip()
+        link_el = entry.find("atom:link", ATOM_NS)
+        url = link_el.get("href", "").strip() if link_el is not None else ""
+        if not url or "/comments/" not in url:
+            continue
+        published = (entry.findtext("atom:published", default="", namespaces=ATOM_NS) or "")
+        date = published[:10] if len(published) >= 10 else None
+        content = entry.findtext("atom:content", default="", namespaces=ATOM_NS) or ""
+        out.append({
+            "id": post_id,
+            "title": title,
+            "url": url,
+            "date": date or "",
+            "summary": _extract_summary(content),
+        })
+    return out
 
 
 def search_subreddit(
@@ -77,53 +148,39 @@ def search_subreddit(
     to_date: str,
     depth: str = "default",
 ) -> List[TrackerItem]:
-    """Search a subreddit via public JSON endpoint."""
+    """Search a subreddit via the public Atom RSS endpoint."""
     limit = DEPTH_LIMITS.get(depth, DEPTH_LIMITS["default"])
     encoded = urllib.parse.quote_plus(query)
     url = (
-        f"https://www.reddit.com/r/{subreddit}/search.json"
-        f"?q={encoded}&restrict_sr=on&sort=relevance&t=month&limit={limit}&raw_json=1"
+        f"https://www.reddit.com/r/{subreddit}/search.rss"
+        f"?q={encoded}&restrict_sr=on&sort=relevance&t=month&limit={limit}"
     )
 
-    data = _fetch_json(url)
-    if not data:
-        return []
+    body = _fetch_text(url)
+    posts = _parse_rss(body) if body else []
 
-    children = data.get("data", {}).get("children", [])
-    items = []
-
-    for i, child in enumerate(children):
-        if child.get("kind") != "t3":
-            continue
-        post = child.get("data", {})
-        permalink = str(post.get("permalink", "")).strip()
-        if not permalink or "/comments/" not in permalink:
-            continue
-
-        date = _parse_date(post.get("created_utc"))
+    items: List[TrackerItem] = []
+    for i, post in enumerate(posts):
+        date = post["date"] or None
         if date and (date < from_date or date > to_date):
             continue
-
-        score_val = int(post.get("score", 0) or 0)
-        num_comments = int(post.get("num_comments", 0) or 0)
-
         items.append(TrackerItem(
             id=f"R-{subreddit}-{i}",
-            title=str(post.get("title", "")).strip(),
-            summary=str(post.get("selftext", ""))[:300],
+            title=post["title"],
+            summary=post["summary"],
             entity=query,
             source=SOURCE_REDDIT,
-            source_url=f"https://www.reddit.com{permalink}",
+            source_url=post["url"],
             source_label=f"r/{subreddit}",
             date=date,
             date_confidence="high" if date else "low",
-            raw_text=str(post.get("selftext", "")),
+            raw_text=post["summary"],
             engagement=Engagement(
-                score=score_val,
-                num_comments=num_comments,
-                upvote_ratio=float(post.get("upvote_ratio", 0) or 0),
+                score=0,
+                num_comments=0,
+                upvote_ratio=0.0,
             ),
-            relevance=_compute_relevance(score_val, num_comments),
+            relevance=RSS_DEFAULT_RELEVANCE,
         ))
 
     _log(f"r/{subreddit} '{query}': {len(items)} posts")
@@ -131,6 +188,11 @@ def search_subreddit(
 
 
 def _compute_relevance(score: int, num_comments: int) -> float:
+    """Legacy JSON-era relevance scorer.
+
+    Kept for callers that still pass real engagement numbers; RSS path now
+    uses RSS_DEFAULT_RELEVANCE because score/num_comments are unavailable.
+    """
     score_c = min(1.0, max(0.0, score / 500.0))
     comments_c = min(1.0, max(0.0, num_comments / 200.0))
     return round(score_c * 0.6 + comments_c * 0.4, 3)
@@ -147,54 +209,33 @@ def fetch_subreddit(
     Used for entity-specific subreddits where all posts are relevant.
     """
     limit = DEPTH_LIMITS.get(depth, DEPTH_LIMITS["default"])
-    url = (
-        f"https://www.reddit.com/r/{subreddit}/hot.json"
-        f"?limit={limit}&raw_json=1"
-    )
+    url = f"https://www.reddit.com/r/{subreddit}/hot.rss?limit={limit}"
 
-    data = _fetch_json(url)
-    if not data:
-        return []
+    body = _fetch_text(url)
+    posts = _parse_rss(body) if body else []
 
-    children = data.get("data", {}).get("children", [])
-    items = []
-
-    for i, child in enumerate(children):
-        if child.get("kind") != "t3":
-            continue
-        post = child.get("data", {})
-        permalink = str(post.get("permalink", "")).strip()
-        if not permalink or "/comments/" not in permalink:
-            continue
-
-        # Skip pinned/stickied posts
-        if post.get("stickied"):
-            continue
-
-        date = _parse_date(post.get("created_utc"))
+    items: List[TrackerItem] = []
+    for i, post in enumerate(posts):
+        date = post["date"] or None
         if date and (date < from_date or date > to_date):
             continue
-
-        score_val = int(post.get("score", 0) or 0)
-        num_comments = int(post.get("num_comments", 0) or 0)
-
         items.append(TrackerItem(
             id=f"R-{subreddit}-h{i}",
-            title=str(post.get("title", "")).strip(),
-            summary=str(post.get("selftext", ""))[:300],
+            title=post["title"],
+            summary=post["summary"],
             entity="",  # filled by caller
             source=SOURCE_REDDIT,
-            source_url=f"https://www.reddit.com{permalink}",
+            source_url=post["url"],
             source_label=f"r/{subreddit}",
             date=date,
             date_confidence="high" if date else "low",
-            raw_text=str(post.get("selftext", "")),
+            raw_text=post["summary"],
             engagement=Engagement(
-                score=score_val,
-                num_comments=num_comments,
-                upvote_ratio=float(post.get("upvote_ratio", 0) or 0),
+                score=0,
+                num_comments=0,
+                upvote_ratio=0.0,
             ),
-            relevance=_compute_relevance(score_val, num_comments),
+            relevance=RSS_DEFAULT_RELEVANCE,
         ))
 
     _log(f"r/{subreddit} (hot): {len(items)} posts")

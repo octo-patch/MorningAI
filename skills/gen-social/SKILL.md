@@ -314,7 +314,6 @@ The recommended style is a default — channels can override via `image_style` f
 
 ```
 {ASPECT} infographic, {HEADER_TEXT} {YYYY-MM-DD}, ALL text content in {LANG}.
-Platform: {PLATFORM}
 
 Total news items: {N}
 
@@ -330,6 +329,7 @@ Card 1: {Entity name} {Event subject} {Core event verb phrase}
 CRITICAL RULES:
 - ALL text on this image MUST be in {LANG} — titles, bullet points, headers, labels, everything
 - Entity names are proper nouns (OpenAI, DeepSeek, Cursor) — keep as-is, do NOT translate
+- Do NOT display ANY platform names on the image (no "小红书", "Xiaohongshu", "特刊", "Twitter", "X" etc.) — the image is content, not an ad for the platform
 - Header text: "{HEADER_TEXT}"
 - Each card title MUST include: Entity name + Event subject + Event description
 - Display complete titles, do NOT truncate
@@ -337,6 +337,19 @@ CRITICAL RULES:
 - Do NOT invent items not listed
 - Display ALL bullet points for each card
 - Maximize content area — card titles and bullet points are the primary focus
+
+ANTI-AI-SLOP RULES (mandatory — ref: huashu-design):
+- NO purple/lavender/violet gradients — this is the #1 "AI-generated" tell
+- NO emoji as bullet markers or icons — use typographic bullets (·, —, or numbered)
+- NO rounded-corner cards with colored left border accent — the 2020-2024 AI slop archetype
+- NO Inter/Roboto/Arial/system fonts as display — use serif display fonts (Noto Serif, Source Serif, Georgia)
+- NO neon glow, glassmorphism, or frosted glass effects
+- NO decorative icons per heading — if an icon doesn't carry information, remove it
+- NO flat digital color blocks — use paper/material texture feel
+- Color restraint: black + cream/white + ONE accent color max. Do NOT invent extra colors
+- Typography IS the visual language — let font weight, size, and spacing create hierarchy, not color/shape decoration
+- One detail at 120%, everything else at 80% — not uniformly polished, but sharp where it counts
+- Describe mood, not pixel coordinates — "feels like a morning broadsheet" beats "title at top, 36pt, centered"
 
 {STYLE_BLOCK}
 {PLATFORM_STYLE_ADDON}
@@ -367,29 +380,38 @@ Additional Xiaohongshu adaptation (glassmorphism):
 ```
 Additional Xiaohongshu adaptation (newspaper):
 - ALL text must be in Chinese (except entity proper nouns)
-- Warm cream background (#FFF8E7) with subtle paper texture
-- Bold serif typography for headers (Georgia/Times feel)
-- Thin black hairline rules (1px) between content sections
-- NO card backgrounds, NO rounded corners, NO shadows — pure typographic layout
-- Color palette: cream, deep black, crimson (#DC143C) accent only
-- Classic broadsheet newspaper aesthetic — professional and information-dense
-- DO NOT use warm accent colors (coral, pink, lavender), frosted glass, or gradient backgrounds
-- Larger font for mobile readability, generous line spacing
+- Mood: feels like unfolding a quality morning broadsheet — authoritative, calm, information-dense, zero decoration
+- Warm cream background (#FFF8E7) with subtle paper grain texture — NOT flat digital white
+- Typography IS the design: bold serif headers (Noto Serif CJK / Source Han Serif / Georgia feel), clean sans-serif body
+- Typographic hierarchy through font weight (700 headers, 400 body) and size contrast — NOT through color or shape
+- Thin black hairline rules (1px) between sections, like column dividers in a broadsheet
+- NO card backgrounds, NO rounded corners, NO shadows, NO colored borders — pure typographic layout
+- Color: cream + deep black + crimson (#DC143C) accent ONLY — crimson used sparingly (dateline, one key number, or a thin rule)
+- Bullet markers: typographic only (· or —), NEVER emoji
+- One signature detail at 120%: the headline typography should feel crafted, like a newspaper masthead
+- Generous line spacing (1.6+) for mobile readability, but information-dense — fill the space with content, not decoration
+- DO NOT use gradients, frosted glass, glow effects, or any "digital" aesthetic
+- The image should look like it was typeset, not generated
 ```
 
 **When `image_style` = `cover-hook`:** (FIRST image of XHS carousel ONLY — this is the discovery-feed thumbnail)
 ```
 Additional Xiaohongshu adaptation (cover-hook):
-- THUMBNAIL-OPTIMIZED COVER — single bold statement, scroll-stopping contrast
 - ALL text must be in Chinese (except entity proper nouns)
+- Mood: a newspaper EXTRA edition headline — urgent, bold, one statement that demands attention, but with editorial class, not digital loudness
 - 3:4 single card, super-large title text occupying ≥ 50% of canvas
 - Title text = the post title or its strongest 1-line variant (e.g., "Cursor 估值飙到 500 亿")
 - ONE single subtitle line below with the most striking concrete data point (e.g., "3 年达 20 亿 ARR · 史上最快 B2B")
-- High-contrast color block: solid dark background (#1A1A1A) with bright accent text, OR solid bright background (#FFD700 / #FF6B35) with dark text
-- Sans-serif bold typography, weight ≥ 700, large enough to be readable in feed thumbnail
-- NO bullet points, NO logos, NO small annotations, NO multiple data points — single message only
-- NO body text, NO list of items, NO date stamps, NO MorningAI header — only the title statement + one subtitle line
-- DO NOT use newspaper aesthetic, frosted glass, or magazine layout — this is a poster, not a card
+- Newspaper headline poster aesthetic:
+  - Warm cream (#FFF8E7) with bold black serif title, OR deep charcoal (#1A1A1A) with cream/off-white serif title
+  - Bold serif typography (Noto Serif CJK / Source Han Serif / Georgia feel), weight ≥ 700
+  - Paper grain texture — NOT flat digital color blocks
+- Thin crimson (#DC143C) hairline rule above or below the headline — the ONE signature detail at 120%
+- Optional: small "MorningAI" masthead at very top in small caps, like a newspaper nameplate — restrained, not decorative
+- NO bullet points, NO emoji, NO icons, NO small annotations — single statement only
+- NO body text, NO list of items, NO date stamps — only the headline + one subtitle line
+- NO gradients, NO glow, NO frosted glass, NO rounded corners — this is typeset, not generated
+- The cover should look like a broadsheet front page that was photographed, not a Canva template
 ```
 
 **When `image_style` = `classic`:**

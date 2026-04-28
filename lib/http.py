@@ -6,8 +6,11 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from contextlib import nullcontext
 from typing import Any, Dict, Optional
 from urllib.parse import urlencode
+
+from .net import force_ipv4_only, is_ipv6_unreachable
 
 DEFAULT_TIMEOUT = 30
 MAX_RETRIES = 5
@@ -50,9 +53,11 @@ def request(
     log(f"{method} {url}")
 
     last_error = None
+    ipv4_fallback = False
     for attempt in range(retries):
+        ctx = force_ipv4_only() if ipv4_fallback else nullcontext()
         try:
-            with urllib.request.urlopen(req, timeout=timeout) as response:
+            with ctx, urllib.request.urlopen(req, timeout=timeout) as response:
                 body = response.read().decode("utf-8")
                 log(f"Response: {response.status} ({len(body)} bytes)")
                 if raw:
@@ -87,6 +92,11 @@ def request(
         except urllib.error.URLError as e:
             log(f"URL Error: {e.reason}")
             last_error = HTTPError(f"URL Error: {e.reason}")
+            # Broken IPv6 routing: retry once IPv4-only without burning the backoff.
+            if not ipv4_fallback and is_ipv6_unreachable(e):
+                log("IPv6 unreachable, switching to IPv4-only DNS for remaining retries")
+                ipv4_fallback = True
+                continue
             if attempt < retries - 1:
                 time.sleep(RETRY_DELAY * (attempt + 1))
         except json.JSONDecodeError as e:
@@ -95,6 +105,10 @@ def request(
         except (OSError, TimeoutError, ConnectionResetError) as e:
             log(f"Connection error: {type(e).__name__}: {e}")
             last_error = HTTPError(f"Connection error: {type(e).__name__}: {e}")
+            if not ipv4_fallback and is_ipv6_unreachable(e):
+                log("IPv6 unreachable, switching to IPv4-only DNS for remaining retries")
+                ipv4_fallback = True
+                continue
             if attempt < retries - 1:
                 time.sleep(RETRY_DELAY * (attempt + 1))
 

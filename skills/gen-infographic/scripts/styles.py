@@ -37,17 +37,17 @@ STYLE_PRESETS = {
         'Pack content tightly \u2014 minimize whitespace within and between cards.'
     ),
     "glassmorphism": (
-        'Style: Glassmorphism editorial layout. Soft gradient background blending from lavender (#E8EAF6) top-left '
-        'to pale rose (#FCE4EC) bottom-right. Bold sans-serif header "MorningAI" in dark charcoal (#212121) '
-        'with warm coral (#FF6B6B) accent underline. Each card is a semi-transparent frosted white panel '
-        '(rgba(255,255,255,0.65)) with backdrop blur effect, rounded corners (16px), and subtle white border '
-        '(1px, 30% opacity). Accent palette: charcoal (#212121) for card titles, soft indigo (#5C6BC0) for bullet icons, '
-        'medium gray (#546E7A) for body text. Soft diffused shadows (8px blur, 5% black) behind each card.\n'
+        'Style: Glassmorphism editorial layout. Soft gradient background blending from pale apricot (#FFF5EE) top-left '
+        'to warm cream (#F5E6D3) bottom-right. Bold sans-serif header "MorningAI" in deep brown (#3E2723) '
+        'with warm amber (#E8A87C) accent underline. Each card is a semi-transparent frosted white panel '
+        '(rgba(255,255,255,0.70)) with backdrop blur effect, rounded corners (16px), and subtle white border '
+        '(1px, 30% opacity). Accent palette: deep brown (#3E2723) for card titles, warm taupe (#8D6E63) for bullet icons, '
+        'rich brown (#5D4037) for body text. Soft diffused shadows (8px blur, 5% black) behind each card.\n'
         'Layout: Information-dense. Cards arranged in a balanced grid with tight gutters (16px). '
         'Maximize space for card content (titles and bullet points). '
         'Do NOT display score numbers or score badges \u2014 let card size and content density convey importance.\n'
-        'Card design: Card title in 15pt bold charcoal sans-serif, subtitle in 10pt gray italic. '
-        'Bullet points with small indigo dot markers, 12pt regular weight, tight line spacing (1.2x). '
+        'Card design: Card title in 15pt bold brown sans-serif, subtitle in 10pt gray italic. '
+        'Bullet points with small taupe dot markers, 12pt regular weight, tight line spacing (1.2x). '
         'NO hard borders \u2014 rely on frosted glass contrast for separation. '
         'Pack content tightly \u2014 minimize whitespace within and between cards.'
     ),
@@ -124,7 +124,7 @@ SECTION_STYLE_OVERRIDES = {
 STYLE_BG_COLORS = {
     "classic":        (245, 245, 240),   # #F5F5F0
     "dark":           (26, 26, 46),      # #1A1A2E
-    "glassmorphism":  (232, 234, 246),   # #E8EAF6
+    "glassmorphism":  (255, 245, 238),   # #FFF5EE
     "newspaper":      (255, 248, 231),   # #FFF8E7
     "tech":           (13, 17, 23),      # #0D1117
 }

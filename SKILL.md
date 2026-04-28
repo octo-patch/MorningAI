@@ -197,18 +197,18 @@ cd {SKILL_DIR} && python3 skills/tracking-list/scripts/collect.py --date {YYYY-M
 **Parameters:**
 - `--date`: Target date, default today (YYYY-MM-DD)
 - `--depth`: Collection depth — `quick` (fast, fewer results), `default`, or `deep` (comprehensive)
-- `--sources`: Specific sources only, e.g. `--sources reddit hackernews github`
+- `--skip`: Sources to deliberately skip — e.g. `--skip arxiv`. **Default: skip nothing.** Deny-list on purpose: previous `--sources` allow-list let agents silently drop a collector by forgetting to list it (arxiv was missing from prod for 5 days that way). Naming the skipped source makes the omission visible.
 - `-o`: Output JSON file path
 
 **What it does:**
-- Runs 5 collectors concurrently (Reddit, HN, GitHub, HuggingFace, arXiv)
+- Runs 6 collectors concurrently (Reddit, HN, GitHub, HuggingFace, arXiv, X/Twitter via sub-agent)
 - Time window: `[Yesterday 08:00, Today 08:00) UTC+8`
 - Pipeline: collect → score (1-10) → deduplicate → cross-source link → verification bonus
 - Returns structured JSON with all items, stats, and collection metadata
 
-**Timeout:** Allow up to 3 minutes for default depth, 5 minutes for deep.
+**Timeout:** Allow up to 5 minutes for default depth, 10 minutes for deep.
 
-If the user provides `--exclude` types (e.g. `--exclude Funding`), note which types to filter out in Step 3.
+If the user provides `--exclude` types (e.g. `--exclude Funding`), note which **content type** to filter out in Step 3 (this is a Step 3 filter on item types, not a `collect.py` flag).
 
 ### X/Twitter Search
 

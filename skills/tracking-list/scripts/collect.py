@@ -80,8 +80,26 @@ def collect_arxiv(config: Dict[str, Any], from_date: str, to_date: str, depth: s
     return arxiv.collect(entities.ARXIV_QUERIES, from_date, to_date, depth)
 
 
+def collect_x(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
+    """Collect from X/Twitter via sub-agent web search.
+
+    Uses two parallel `claude -p` sub-agents (official accounts + Key People),
+    each searching x.com via the WebSearch tool. Honours HTTPS_PROXY inherited
+    from the parent process (set by foreman/adapters/daily-report/adapter.py).
+    """
+    from lib import x_agent
+    return x_agent.collect(
+        {
+            "official": entities.X_HANDLES_OFFICIAL,
+            "key_people": entities.X_HANDLES_KEY_PEOPLE,
+        },
+        from_date, to_date, depth,
+    )
+
+
 # All collectors with their names
 COLLECTORS = {
+    "x": collect_x,
     "reddit": collect_reddit,
     "hackernews": collect_hackernews,
     "github": collect_github,
@@ -93,14 +111,19 @@ COLLECTORS = {
 def run_collection(
     date_str: str,
     depth: str = "default",
-    sources: Optional[List[str]] = None,
+    skip: Optional[List[str]] = None,
 ) -> DailyReport:
     """Run full data collection pipeline.
 
     Args:
         date_str: Target date YYYY-MM-DD
         depth: Collection depth (quick|default|deep)
-        sources: Optional list of sources to collect (default: all)
+        skip: Optional list of sources to skip (default: none — all collectors run).
+            Deny-list semantics on purpose: an allow-list (`--sources`) lets
+            callers — including LLM agents reading SKILL.md — silently omit a
+            collector by forgetting to list it. arxiv was dropped from prod for
+            5 days that way. Forcing the caller to *name* what they skip
+            ("--skip arxiv") makes the omission obvious in shell history.
 
     Returns:
         DailyReport with all collected, scored, and deduplicated items
@@ -112,12 +135,23 @@ def run_collection(
     _log(f"Date: {date_str}, Window: {from_date} ~ {to_date}, Depth: {depth}")
     _log(f"Available sources: {[k for k, v in available.items() if v]}")
 
-    # Determine which collectors to run
-    active_collectors = {}
-    for name, func in COLLECTORS.items():
-        if sources and name not in sources:
-            continue
-        active_collectors[name] = func
+    # Determine which collectors to run (skip list is deny-list)
+    skip_set = set(skip or [])
+    unknown = skip_set - COLLECTORS.keys()
+    if unknown:
+        raise ValueError(
+            f"Unknown collector(s) in --skip: {sorted(unknown)}. "
+            f"Valid: {sorted(COLLECTORS.keys())}"
+        )
+    active_collectors = {
+        name: func for name, func in COLLECTORS.items() if name not in skip_set
+    }
+    if skip_set:
+        _log(f"Skipping collectors: {sorted(skip_set)}")
+    if not active_collectors:
+        raise ValueError(
+            f"--skip excluded every collector. Valid sources: {sorted(COLLECTORS.keys())}"
+        )
 
     # Run collectors concurrently
     start_time = time.time()
@@ -213,8 +247,10 @@ def main():
                         help="Target date (default: today)")
     parser.add_argument("--depth", default="default", choices=["quick", "default", "deep"],
                         help="Collection depth")
-    parser.add_argument("--sources", nargs="*",
-                        help="Specific sources to collect (default: all)")
+    parser.add_argument("--skip", nargs="*", default=[],
+                        help="Sources to SKIP (default: none — all 6 collectors run). "
+                             "Use deny-list semantics so omission is explicit, "
+                             "e.g. --skip arxiv reddit")
     parser.add_argument("--output", "-o", default=None,
                         help="Output JSON file path (default: stdout)")
     parser.add_argument("--cache-ttl", type=int, default=1,
@@ -231,9 +267,11 @@ def main():
         _log("Cache cleared")
         return
 
-    # Check cache
+    # Check cache. Include the skip filter in the key so a partial run
+    # (--skip arxiv) can't poison a subsequent full run.
     ttl = 0 if args.no_cache else args.cache_ttl
-    cache_key = cache.get_cache_key("daily", args.date, args.depth)
+    skip_key = ",".join(sorted(args.skip)) if args.skip else "all"
+    cache_key = cache.get_cache_key("daily", args.date, args.depth, skip_key)
     if ttl > 0:
         cached = cache.load_cache(cache_key, ttl)
         if cached:
@@ -245,7 +283,7 @@ def main():
             return
 
     # Run collection
-    report = run_collection(args.date, args.depth, args.sources)
+    report = run_collection(args.date, args.depth, args.skip)
     report_dict = report.to_dict()
 
     # Save cache

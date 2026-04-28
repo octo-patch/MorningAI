@@ -13,6 +13,8 @@ from lib.custom_entities import load_builtin_entities, merge_into_registries
 _builtin = load_builtin_entities()
 
 X_HANDLES = _builtin["x_handles"]
+X_HANDLES_OFFICIAL = _builtin["x_handles_official"]
+X_HANDLES_KEY_PEOPLE = _builtin["x_handles_key_people"]
 GITHUB_SOURCES = _builtin["github_sources"]
 HUGGINGFACE_AUTHORS = _builtin["huggingface_authors"]
 ARXIV_QUERIES = _builtin["arxiv_queries"]
@@ -31,4 +33,6 @@ merge_into_registries(
     REDDIT_KEYWORDS,
     REDDIT_SUBREDDITS,
     HN_KEYWORDS,
+    x_handles_official=X_HANDLES_OFFICIAL,
+    x_handles_key_people=X_HANDLES_KEY_PEOPLE,
 )
