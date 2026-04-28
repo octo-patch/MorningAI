@@ -259,7 +259,7 @@ def parse_builtin_file(path: Path) -> Dict[str, Dict[str, Any]]:
                         parts = [p for p in parts if p]
                         if len(parts) >= 2 and not parts[0].startswith("--"):
                             row_name = parts[0].strip()
-                            _store_tabular_row(result, row_name, col_headers, parts)
+                            _store_tabular_row(result, row_name, col_headers, parts, section_name=entity_name)
                         i += 1
                 else:
                     i += 1
@@ -337,8 +337,18 @@ def _store_attr(result: dict, entity: str, attr_name: str, value: str):
             result["hn_keywords"][entity] = keywords
 
 
-def _store_tabular_row(result: dict, name: str, col_headers: List[str], parts: List[str]):
+def _is_kol_section(section_name: str) -> bool:
+    """Check if a section header indicates KOL / Key People entities."""
+    lower = section_name.lower()
+    return "kol" in lower or "key opinion leader" in lower or "key people" in lower
+
+
+def _store_tabular_row(
+    result: dict, name: str, col_headers: List[str], parts: List[str],
+    section_name: str = "",
+):
     """Store a row from a tabular entity table (Name | X Account | ...)."""
+    is_kol = _is_kol_section(section_name)
     for idx, header in enumerate(col_headers):
         if idx >= len(parts):
             break
@@ -350,8 +360,8 @@ def _store_tabular_row(result: dict, name: str, col_headers: List[str], parts: L
             handles = _extract_x_handles(value)
             if handles:
                 result["x_handles"].setdefault(name, []).extend(handles)
-                # Tabular X Account columns (e.g. KOL files) default to official tier
-                result["x_handles_official"].setdefault(name, []).extend(handles)
+                tier_key = "x_handles_key_people" if is_kol else "x_handles_official"
+                result[tier_key].setdefault(name, []).extend(handles)
         elif header == "github":
             gh = _extract_github(value)
             existing = result["github_sources"].get(name, {"orgs": [], "repos": []})
