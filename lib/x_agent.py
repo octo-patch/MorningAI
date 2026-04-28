@@ -24,7 +24,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Tuple
 from urllib.parse import urlparse, urlunparse
 
-import anthropic
+try:
+    import anthropic
+    _HAS_ANTHROPIC = True
+except ImportError:
+    _HAS_ANTHROPIC = False
 
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_X
 
@@ -189,7 +193,7 @@ _SYSTEM_PROMPT = (
 
 # Module-level singleton client (Anthropic SDK is thread-safe). Reads
 # ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN / ANTHROPIC_BASE_URL from env.
-_CLIENT: anthropic.Anthropic | None = None
+_CLIENT: "anthropic.Anthropic | None" = None
 
 
 def _parse_custom_headers() -> Dict[str, str]:
@@ -214,7 +218,7 @@ def _parse_custom_headers() -> Dict[str, str]:
     return headers
 
 
-def _client() -> anthropic.Anthropic:
+def _client() -> "anthropic.Anthropic":
     global _CLIENT
     if _CLIENT is None:
         _CLIENT = anthropic.Anthropic(default_headers=_parse_custom_headers() or None)
@@ -258,7 +262,7 @@ def _run_subagent(prompt: str, env: Dict[str, str]) -> str:
                 timeout=CLAUDE_TIMEOUT,
             ) as stream:
                 final = stream.get_final_message()
-        except anthropic.APITimeoutError as e:
+        except (anthropic.APITimeoutError if _HAS_ANTHROPIC else _SubagentTimeout) as e:
             raise _SubagentTimeout(str(e)) from e
 
         # Append the full assistant content back so the server can continue
@@ -455,6 +459,9 @@ def collect(
         Never raises — failures land in `errors`.
     """
     result = CollectionResult(source=SOURCE_X)
+    if not _HAS_ANTHROPIC:
+        result.errors.append("anthropic SDK not installed — skipping X collector")
+        return result
     env = dict(os.environ)  # inherit HTTPS_PROXY etc. from parent
 
     official = handles_by_tier.get("official", {}) or {}
