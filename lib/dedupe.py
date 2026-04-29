@@ -5,6 +5,7 @@ Supports within-source dedup and cross-source linking.
 """
 
 import re
+from datetime import date as _date
 from typing import List, Set, Tuple
 from urllib.parse import urlparse
 
@@ -187,11 +188,24 @@ def cross_source_link(
     for item in items:
         domains.append(_extract_url_domain(item.source_url))
 
+    # Pre-parse dates for proximity check
+    parsed_dates = []
+    for item in items:
+        try:
+            parsed_dates.append(_date.fromisoformat(item.date) if item.date else None)
+        except ValueError:
+            parsed_dates.append(None)
+
     for i in range(len(items)):
         for j in range(i + 1, len(items)):
             # Skip same-source comparisons
             if items[i].source == items[j].source:
                 continue
+
+            # Skip items with dates too far apart (>3 days)
+            if parsed_dates[i] and parsed_dates[j]:
+                if abs((parsed_dates[i] - parsed_dates[j]).days) > 3:
+                    continue
 
             similarity = hybrid_similarity(texts[i], texts[j])
 
