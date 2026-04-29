@@ -14,6 +14,7 @@ from urllib.parse import urlencode, quote
 
 from . import http
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_ARXIV
+from .util import log, parse_date
 
 ARXIV_API = "http://export.arxiv.org/api/query"
 
@@ -31,18 +32,10 @@ ATOM_NS = "{http://www.w3.org/2005/Atom}"
 LOOKBACK_DAYS = max(1, int(os.environ.get("ARXIV_LOOKBACK_DAYS", "3")))
 
 
-def _log(msg: str):
-    if sys.stderr.isatty():
-        sys.stderr.write(f"[arXiv] {msg}\n")
-        sys.stderr.flush()
+_log = lambda msg: log("arXiv", msg, tty_only=True)
 
 
-def _parse_date(date_str: Optional[str]) -> Optional[str]:
-    if not date_str:
-        return None
-    if len(date_str) >= 10:
-        return date_str[:10]
-    return None
+_parse_date = parse_date
 
 
 def _clean_text(text: str) -> str:

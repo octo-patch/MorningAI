@@ -11,16 +11,14 @@ from urllib.parse import urlencode
 
 from . import http
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_GITHUB
+from .util import log, parse_date
 
 GITHUB_API = "https://api.github.com"
 
 DEPTH_CONFIG = {"quick": 5, "default": 10, "deep": 20}
 
 
-def _log(msg: str):
-    if sys.stderr.isatty():
-        sys.stderr.write(f"[GitHub] {msg}\n")
-        sys.stderr.flush()
+_log = lambda msg: log("GitHub", msg, tty_only=True)
 
 
 def _gh_headers(token: Optional[str] = None) -> Dict[str, str]:
@@ -33,12 +31,7 @@ def _gh_headers(token: Optional[str] = None) -> Dict[str, str]:
     return headers
 
 
-def _parse_date(date_str: Optional[str]) -> Optional[str]:
-    if not date_str:
-        return None
-    if len(date_str) >= 10:
-        return date_str[:10]
-    return None
+_parse_date = parse_date
 
 
 def get_org_releases(

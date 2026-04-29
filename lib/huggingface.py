@@ -12,6 +12,7 @@ from urllib.parse import urlencode, quote
 
 from . import http
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_HUGGINGFACE
+from .util import log, parse_date
 
 HF_API = "https://huggingface.co/api"
 
@@ -129,18 +130,10 @@ def _fetch_model_description(model_id: str) -> str:
     return ""
 
 
-def _log(msg: str):
-    if sys.stderr.isatty():
-        sys.stderr.write(f"[HF] {msg}\n")
-        sys.stderr.flush()
+_log = lambda msg: log("HF", msg, tty_only=True)
 
 
-def _parse_date(date_str: Optional[str]) -> Optional[str]:
-    if not date_str:
-        return None
-    if len(date_str) >= 10:
-        return date_str[:10]
-    return None
+_parse_date = parse_date
 
 
 def get_author_models(

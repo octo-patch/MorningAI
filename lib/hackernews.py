@@ -13,6 +13,7 @@ from urllib.parse import urlencode
 
 from . import http
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_HACKERNEWS
+from .util import log
 
 ALGOLIA_SEARCH_URL = "https://hn.algolia.com/api/v1/search"
 ALGOLIA_ITEM_URL = "https://hn.algolia.com/api/v1/items"
@@ -57,10 +58,7 @@ def _extract_domain(url: str) -> str:
         return ""
 
 
-def _log(msg: str):
-    if sys.stderr.isatty():
-        sys.stderr.write(f"[HN] {msg}\n")
-        sys.stderr.flush()
+_log = lambda msg: log("HN", msg, tty_only=True)
 
 
 def _date_to_unix(date_str: str) -> int:
