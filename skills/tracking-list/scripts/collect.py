@@ -26,11 +26,10 @@ from lib.score import score_items, apply_verification_bonus
 from lib.dedupe import dedupe_by_source, cross_source_link
 from lib.classify import classify_items
 from lib import entities
+from lib.util import log
 
 
-def _log(msg: str):
-    sys.stderr.write(f"[collect] {msg}\n")
-    sys.stderr.flush()
+_log = lambda msg: log("collect", msg)
 
 
 def get_time_window(date_str: str) -> tuple:

@@ -31,6 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lib import env
+from lib.util import log
 from lib.image_gen import generate, generate_batch, list_providers, ImageGenError
 from lib.image_stitch import stitch_images
 from styles import (
@@ -39,9 +40,7 @@ from styles import (
 )
 
 
-def _log(msg: str):
-    sys.stderr.write(f"[gen-infographic] {msg}\n")
-    sys.stderr.flush()
+_log = lambda msg: log("gen-infographic", msg)
 
 
 def _inject_style(prompt: str, config: dict) -> str:

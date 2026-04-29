@@ -12,10 +12,10 @@ try:
 except ImportError:
     Image = None
 
+from .util import log
 
-def _log(msg: str):
-    sys.stderr.write(f"[ImageStitch] {msg}\n")
-    sys.stderr.flush()
+
+_log = lambda msg: log("ImageStitch", msg)
 
 
 def stitch_images(

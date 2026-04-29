@@ -31,6 +31,7 @@ except ImportError:
     _HAS_ANTHROPIC = False
 
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_X
+from .util import log
 
 # How many handles each tier-agent will search at each depth. Empirically a
 # single WebSearch via `claude -p` takes ~50-70s, but parallel claude
@@ -58,9 +59,7 @@ CLAUDE_MODEL = os.getenv("X_AGENT_MODEL", "sonnet")
 TIER_MAX_PARALLEL = int(os.getenv("X_AGENT_TIER_PARALLEL", "2"))
 
 
-def _log(msg: str) -> None:
-    sys.stderr.write(f"[x-agent] {msg}\n")
-    sys.stderr.flush()
+_log = lambda msg: log("x-agent", msg)
 
 
 # ---------------------------------------------------------------------------

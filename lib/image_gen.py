@@ -15,13 +15,12 @@ from typing import Any, Dict, List, Optional
 
 from . import http
 from .env import get_key
+from .util import log
 
 IMAGE_GEN_TIMEOUT = 120
 
 
-def _log(msg: str):
-    sys.stderr.write(f"[ImageGen] {msg}\n")
-    sys.stderr.flush()
+_log = lambda msg: log("ImageGen", msg)
 
 
 class ImageGenError(Exception):

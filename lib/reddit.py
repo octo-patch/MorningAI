@@ -26,6 +26,7 @@ from typing import Dict, List, Optional
 
 from .net import force_ipv4_only, is_ipv6_unreachable
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_REDDIT
+from .util import log
 
 USER_AGENT = "morning-ai/1.0 (AI Industry Tracker)"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom"}
@@ -47,10 +48,7 @@ MAX_RETRIES = 3
 BASE_BACKOFF = 2.0
 
 
-def _log(msg: str):
-    if sys.stderr.isatty():
-        sys.stderr.write(f"[Reddit] {msg}\n")
-        sys.stderr.flush()
+_log = lambda msg: log("Reddit", msg, tty_only=True)
 
 
 def _fetch_text(url: str, timeout: int = 15) -> Optional[str]:
