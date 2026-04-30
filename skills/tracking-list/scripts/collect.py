@@ -91,6 +91,7 @@ def collect_x(config: Dict[str, Any], from_date: str, to_date: str, depth: str) 
         {
             "official": entities.X_HANDLES_OFFICIAL,
             "key_people": entities.X_HANDLES_KEY_PEOPLE,
+            "kol": entities.X_HANDLES_KOL,
         },
         from_date, to_date, depth,
     )

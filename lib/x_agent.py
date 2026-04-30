@@ -465,16 +465,17 @@ def collect(
 
     official = handles_by_tier.get("official", {}) or {}
     key_people = handles_by_tier.get("key_people", {}) or {}
-    result.entities_checked = len(set(official.keys()) | set(key_people.keys()))
+    kol = handles_by_tier.get("kol", {}) or {}
+    result.entities_checked = len(set(official.keys()) | set(key_people.keys()) | set(kol.keys()))
 
-    if not official and not key_people:
+    if not official and not key_people and not kol:
         result.errors.append("no X handles configured")
         return result
 
     all_items: List[TrackerItem] = []
 
-    # Run both tiers in parallel
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    # Run all tiers in parallel
+    with ThreadPoolExecutor(max_workers=3) as executor:
         futures = {}
         if official:
             futures[executor.submit(
@@ -484,6 +485,10 @@ def collect(
             futures[executor.submit(
                 _collect_tier, key_people, "key_people", from_date, to_date, depth, env
             )] = "key_people"
+        if kol:
+            futures[executor.submit(
+                _collect_tier, kol, "kol", from_date, to_date, depth, env
+            )] = "kol"
 
         for future in as_completed(futures):
             tier = futures[future]

@@ -15,6 +15,7 @@ _builtin = load_builtin_entities()
 X_HANDLES = _builtin["x_handles"]
 X_HANDLES_OFFICIAL = _builtin["x_handles_official"]
 X_HANDLES_KEY_PEOPLE = _builtin["x_handles_key_people"]
+X_HANDLES_KOL = _builtin["x_handles_kol"]
 GITHUB_SOURCES = _builtin["github_sources"]
 HUGGINGFACE_AUTHORS = _builtin["huggingface_authors"]
 ARXIV_QUERIES = _builtin["arxiv_queries"]
@@ -35,4 +36,5 @@ merge_into_registries(
     HN_KEYWORDS,
     x_handles_official=X_HANDLES_OFFICIAL,
     x_handles_key_people=X_HANDLES_KEY_PEOPLE,
+    x_handles_kol=X_HANDLES_KOL,
 )

@@ -28,7 +28,7 @@ Entity registry for AI app-building platforms and consumer AI products.
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@Lovable](https://x.com/Lovable) |
-| **Key People** | [@antonosika](https://x.com/antonosika) - Anton Osika, CEO<br>[@felixhhaas](https://x.com/felixhhaas) - Felix Haas, Co-founder |
+| **Key People** | [@antonosika](https://x.com/antonosika) - Anton Osika, CEO |
 | **Changelog** | https://lovable.dev/changelog |
 
 ### 4. Replit
@@ -44,7 +44,7 @@ Entity registry for AI app-building platforms and consumer AI products.
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@lovart_ai](https://x.com/lovart_ai) |
-| **Key People** | [@Elena_Leung_29](https://x.com/Elena_Leung_29) - Elena Leung, COO |
+| **Key People** | Elena Leung, COO |
 | **Changelog** | https://www.lovart.ai/changelog |
 
 ### 6. Manus
@@ -52,14 +52,14 @@ Entity registry for AI app-building platforms and consumer AI products.
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@ManusAI](https://x.com/ManusAI) |
-| **Key People** | [@Red_Xiao_](https://x.com/Red_Xiao_) - Red Xiao, CEO<br>[@pelotonben](https://x.com/pelotonben) - Yichao Peak Ji, Co-founder |
+| **Key People** | [@Red_Xiao_](https://x.com/Red_Xiao_) - Red Xiao, CEO |
 
 ### 7. Genspark
 
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@genspark_ai](https://x.com/genspark_ai) |
-| **Key People** | [@ericjing_ai](https://x.com/ericjing_ai) - Eric Jing, CEO<br>[@sang_wen](https://x.com/sang_wen) - Wen Sang, COO |
+| **Key People** | [@ericjing_ai](https://x.com/ericjing_ai) - Eric Jing, CEO |
 | **Changelog** | https://www.genspark.ai/docs/ai_slides_changelog |
 
 ### 8. Character.ai

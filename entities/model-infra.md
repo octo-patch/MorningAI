@@ -51,7 +51,7 @@ Entity registry for model providers and inference infrastructure platforms.
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@perplexity_ai](https://x.com/perplexity_ai) |
-| **Key People** | [@AravSrinivas](https://x.com/AravSrinivas) - Aravind Srinivas, CEO<br>[@DenisYarats](https://x.com/DenisYarats) - Denis Yarats, CTO |
+| **Key People** | [@AravSrinivas](https://x.com/AravSrinivas) - Aravind Srinivas, CEO |
 | **Official Blog** | https://www.perplexity.ai/hub/blog |
 | **Reddit Keywords** | Perplexity |
 | **Reddit Community** | [r/perplexity_ai](https://www.reddit.com/r/perplexity_ai/) |

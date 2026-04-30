@@ -14,7 +14,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@midjourney](https://x.com/midjourney) |
-| **Key People** | [@DavidHolz](https://x.com/DavidHolz) - David Holz, CEO |
+| **Key People** | David Holz, CEO |
 | **Official Website** | https://www.midjourney.com |
 | **Discord** | https://discord.gg/midjourney |
 | **Reddit Community** | [r/midjourney](https://www.reddit.com/r/midjourney/) |
@@ -53,7 +53,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@StabilityAI](https://x.com/StabilityAI) |
-| **Key People** | [@robrombach](https://x.com/robrombach) - Robin Rombach |
+| **Key People** | Robin Rombach |
 | **Official Blog** | https://stability.ai/news |
 | **GitHub** | https://github.com/Stability-AI |
 | **HuggingFace** | https://huggingface.co/stabilityai |
@@ -75,7 +75,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@runwayml](https://x.com/runwayml) |
-| **Key People** | [@cpvalenzuela](https://x.com/cpvalenzuela) - Cristobal Valenzuela, CEO |
+| **Key People** | Cristobal Valenzuela, CEO |
 | **Official Blog** | https://runwayml.com/blog |
 | **Changelog** | https://runwayml.com/changelog |
 
@@ -84,7 +84,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@pika_labs](https://x.com/pika_labs) |
-| **Key People** | [@demi_chen](https://x.com/demi_chen) - Demi Chen, Co-founder |
+| **Key People** | Demi Chen, Co-founder |
 | **Official Website** | https://pika.art |
 
 #### 10. Luma AI
@@ -92,7 +92,7 @@ Entity registry for independent visual/audio/video generation vendors (major lab
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@LumaLabsAI](https://x.com/LumaLabsAI) |
-| **Key People** | [@abolishingme](https://x.com/abolishingme) - Amit Jain, CEO |
+| **Key People** | Amit Jain, CEO |
 | **Official Website** | https://lumalabs.ai |
 
 ### Audio/Speech/Music

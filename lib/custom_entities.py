@@ -51,7 +51,7 @@ _SKIP_FILES = {"custom-example.md", "trending-discovery.md"}
 
 # Tier-aware X handle dict keys (populated alongside x_handles for collectors
 # that need to distinguish official accounts from Key People).
-_TIER_KEYS = ("x_handles_official", "x_handles_key_people")
+_TIER_KEYS = ("x_handles_official", "x_handles_key_people", "x_handles_kol")
 
 
 def _empty_registry() -> Dict[str, Dict[str, Any]]:
@@ -360,7 +360,7 @@ def _store_tabular_row(
             handles = _extract_x_handles(value)
             if handles:
                 result["x_handles"].setdefault(name, []).extend(handles)
-                tier_key = "x_handles_key_people" if is_kol else "x_handles_official"
+                tier_key = "x_handles_kol" if is_kol else "x_handles_official"
                 result[tier_key].setdefault(name, []).extend(handles)
         elif header == "github":
             gh = _extract_github(value)
@@ -522,6 +522,7 @@ def merge_into_registries(
     hn_keywords: dict,
     x_handles_official: Optional[dict] = None,
     x_handles_key_people: Optional[dict] = None,
+    x_handles_kol: Optional[dict] = None,
 ) -> None:
     """Load custom entities and merge into the provided registry dicts."""
     custom = load_custom_entities()
@@ -538,3 +539,5 @@ def merge_into_registries(
         x_handles_official.update(custom["x_handles_official"])
     if x_handles_key_people is not None:
         x_handles_key_people.update(custom["x_handles_key_people"])
+    if x_handles_kol is not None:
+        x_handles_kol.update(custom["x_handles_kol"])

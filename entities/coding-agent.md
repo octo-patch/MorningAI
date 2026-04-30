@@ -11,7 +11,7 @@ Entity registry for AI coding agents and developer assistant platforms (agents u
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@cursor_ai](https://x.com/cursor_ai) |
-| **Key People** | [@mntruell](https://x.com/mntruell) - Michael Truell, CEO<br>[@ericzakariasson](https://x.com/ericzakariasson) - Eric Zakariasson |
+| **Key People** | [@mntruell](https://x.com/mntruell) - Michael Truell, CEO |
 | **Changelog** | https://cursor.com/changelog |
 | **Reddit Keywords** | Cursor AI |
 | **Reddit Community** | [r/cursor](https://www.reddit.com/r/cursor/) |
@@ -31,7 +31,7 @@ Entity registry for AI coding agents and developer assistant platforms (agents u
 
 | Attribute | Info |
 |------|------|
-| **Key People** | [@thdxr](https://x.com/thdxr) - Dax Raad, Founder<br>[@fanjiewang](https://x.com/fanjiewang) - Fanjie Wang |
+| **Key People** | [@thdxr](https://x.com/thdxr) - Dax Raad, Founder |
 | **GitHub Releases** | https://github.com/sst/opencode/releases |
 
 ### 4. Droid (Factory AI)
@@ -96,7 +96,7 @@ Entity registry for AI coding agents and developer assistant platforms (agents u
 | Attribute | Info |
 |------|------|
 | **X Official Account** | [@browser_use](https://x.com/browser_use) |
-| **Key People** | [@gregpr07](https://x.com/gregpr07), [@larsencc](https://x.com/larsencc) |
+| **Key People** | [@gregpr07](https://x.com/gregpr07) |
 | **Official Website** | https://browser-use.com |
 | **Changelog** | https://browser-use.com/changelog |
 | **GitHub** | https://github.com/browser-use/browser-use |
