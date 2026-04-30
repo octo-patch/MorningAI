@@ -15,20 +15,15 @@ OAuth (oauth.reddit.com) and add REDDIT_CLIENT_ID/SECRET env vars.
 import html
 import re
 import sys
-import time
-import urllib.error
 import urllib.parse
-import urllib.request
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from contextlib import nullcontext
 from typing import Dict, List, Optional
 
-from .net import force_ipv4_only, is_ipv6_unreachable
+from . import http
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_REDDIT
 from .util import log
 
-USER_AGENT = "morning-ai/1.0 (AI Industry Tracker)"
 ATOM_NS = {"atom": "http://www.w3.org/2005/Atom"}
 
 # Without per-post score we can't rank — give every RSS-sourced item the same
@@ -44,9 +39,6 @@ DEPTH_LIMITS = {
 # AI-focused subreddits
 DEFAULT_SUBREDDITS = ["MachineLearning", "LocalLLaMA", "artificial", "singularity"]
 
-MAX_RETRIES = 3
-BASE_BACKOFF = 2.0
-
 
 _log = lambda msg: log("Reddit", msg, tty_only=True)
 
@@ -54,38 +46,18 @@ _log = lambda msg: log("Reddit", msg, tty_only=True)
 def _fetch_text(url: str, timeout: int = 15) -> Optional[str]:
     """Fetch a URL and return the response body as text (or None on failure).
 
-    Honors HTTPS_PROXY via stdlib urllib defaults. Retries on 429 with
-    exponential backoff and falls back to IPv4-only DNS on broken v6 routing.
+    Delegates retry, backoff, and IPv4 fallback to lib.http.
     """
-    headers = {
-        "User-Agent": USER_AGENT,
-        "Accept": "application/atom+xml, application/xml, text/xml",
-    }
-    req = urllib.request.Request(url, headers=headers)
-
-    ipv4_fallback = False
-    for attempt in range(MAX_RETRIES):
-        ctx = force_ipv4_only() if ipv4_fallback else nullcontext()
-        try:
-            with ctx, urllib.request.urlopen(req, timeout=timeout) as resp:
-                return resp.read().decode("utf-8", errors="replace")
-        except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < MAX_RETRIES - 1:
-                delay = BASE_BACKOFF * (2 ** attempt)
-                _log(f"429 rate limited, retry after {delay:.1f}s")
-                time.sleep(delay)
-                continue
-            _log(f"HTTP {e.code} on {url}")
-            return None
-        except (urllib.error.URLError, OSError) as e:
-            # Broken IPv6 routing: retry once IPv4-only without burning the backoff.
-            if not ipv4_fallback and is_ipv6_unreachable(e):
-                _log(f"IPv6 unreachable on {url}, switching to IPv4-only DNS")
-                ipv4_fallback = True
-                continue
-            _log(f"network error on {url}: {type(e).__name__}: {e}")
-            return None
-    return None
+    try:
+        return http.get_text(
+            url,
+            headers={"Accept": "application/atom+xml, application/xml, text/xml"},
+            timeout=timeout,
+            retries=3,
+        )
+    except http.HTTPError as e:
+        _log(f"fetch failed for {url}: {e}")
+        return None
 
 
 def _extract_summary(content_html: str) -> str:
