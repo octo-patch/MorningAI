@@ -155,7 +155,7 @@ def get_author_models(
     """
     params = urlencode({
         "author": author,
-        "sort": "lastModified",
+        "sort": "createdAt",
         "direction": "-1",
         "limit": str(limit),
     })
@@ -172,20 +172,14 @@ def get_author_models(
 
     models = []
     for model in response:
-        # Prefer lastModified (most models are created once, updated often)
         created = _parse_date(model.get("createdAt"))
         modified = _parse_date(model.get("lastModified"))
-        date = modified or created
+        date = created or modified
 
         if not date:
             continue
 
-        # Check if either created or modified falls in range
-        in_range = (from_date <= date <= to_date)
-        if not in_range and created and (from_date <= created <= to_date):
-            date = created
-            in_range = True
-        if not in_range:
+        if not (from_date <= date <= to_date):
             continue
 
         downloads = model.get("downloads", 0) or 0
@@ -240,7 +234,7 @@ def search_models(
     """Search for models by keyword."""
     params = urlencode({
         "search": query,
-        "sort": "lastModified",
+        "sort": "createdAt",
         "direction": "-1",
         "limit": str(limit),
     })
@@ -259,7 +253,7 @@ def search_models(
     for model in response:
         created = _parse_date(model.get("createdAt"))
         modified = _parse_date(model.get("lastModified"))
-        date = modified or created
+        date = created or modified
         if date and (date < from_date or date > to_date):
             continue
         models.append(model)
