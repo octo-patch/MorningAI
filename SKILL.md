@@ -20,8 +20,6 @@ metadata:
   openclaw:
     emoji: "📰"
     requires:
-      optionalEnv:
-        - GITHUB_TOKEN
       bins:
         - python3
     files:
@@ -74,10 +72,10 @@ If the user passes `--intro`, display the following introduction and **stop** (d
 |--------|--------|---------|
 | Reddit | Public JSON | Not needed |
 | Hacker News | Algolia API | Not needed |
-| GitHub | REST API | Optional (`GITHUB_TOKEN` for higher rate limits) |
+| GitHub | REST API via `gh` CLI when authenticated, else public unauthenticated | Not needed — no PAT setup, ever |
 | HuggingFace | Public API | Not needed |
 | arXiv | Public API | Not needed |
-| X/Twitter | Web search | Not needed |
+| X/Twitter | In-session agent WebSearch (default) or Anthropic API (opt-in, `X_COLLECTOR_MODE=sdk`) | Not needed for the default path |
 
 **Quick start:**
 ```
@@ -126,16 +124,11 @@ if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || 
 Walk the user through setup interactively, waiting for their response at each step:
 
 1. **Welcome** — briefly explain what morning-ai does: tracks 80+ AI entities across 6 sources (Reddit, Hacker News, GitHub, HuggingFace, arXiv, X/Twitter), generates scored daily reports
-2. **Show what works for free** — 6 sources (5 need no API keys, 1 optional):
-   - Reddit (public JSON), Hacker News (Algolia API), HuggingFace (public API), arXiv (public API), X/Twitter (web search)
-   - GitHub (public API, optional `GITHUB_TOKEN` for higher rate limits)
-3. **Ask the user** if they want to enable GitHub with higher rate limits:
-
-| Key | Source | Get it at |
-|-----|--------|-----------|
-| `GITHUB_TOKEN` | GitHub releases & repos (higher rate limit) | https://github.com/settings/tokens |
-
-4. **Ask about infographics** (optional):
+2. **Show what works for free** — all 6 sources need zero configuration and zero API keys:
+   - Reddit (public JSON), Hacker News (Algolia API), HuggingFace (public API), arXiv (public API)
+   - GitHub (public API; automatically uses your `gh` CLI's existing auth for a higher rate limit if it's installed and logged in — **never** prompt the user to create a Personal Access Token, that's redundant on any machine where `gh` is already authenticated, which is the common case for a coding agent)
+   - X/Twitter (the orchestrating agent's own WebSearch tool, by default — see "X/Twitter Search" in Step 1)
+3. **Ask about infographics** (optional):
 
 | Key | Description |
 |-----|-------------|
@@ -145,27 +138,23 @@ Walk the user through setup interactively, waiting for their response at each st
 | `MINIMAX_API_KEY` | MiniMax global(https://www.minimax.io) |
 | `MINIMAX_API_KEY` | MiniMax cn (https://platform.minimaxi.com) |
 
-5. **Ask about social content distribution** (optional):
+4. **Ask about social content distribution** (optional):
    - Enable social content generation? Set `SOCIAL_ENABLED=true`
    - Which platforms? X (Twitter), Xiaohongshu (Little Red Book), or both
    - For advanced multi-account/multi-style setup, create `~/.config/morning-ai/social_channels.json` (see `skills/gen-social/SKILL.md` for schema). For quick single-channel setup, just set `SOCIAL_PLATFORM`, `SOCIAL_STYLE`, and `SOCIAL_LANG` env vars.
 
-6. **Ask about message digest** (optional):
+5. **Ask about message digest** (optional):
    - Enable concise message digest for sharing on messaging platforms (WeChat, Telegram, Slack)?
    - If yes: set `MESSAGE_ENABLED=true`
    - Optional settings: `MESSAGE_MIN_SCORE` (default 5), `MESSAGE_MAX_ITEMS` (default 10), `MESSAGE_LINKS` (`bottom` or `inline`), `MESSAGE_CATEGORY_BALANCE` (default true, distributes slots across content types)
 
-7. **Create the config file** — collect the keys the user provides and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`
-8. **Confirm** — show how many sources are now active (N/9)
-9. **Verify** — re-run the gate check to confirm `CONFIG_STATUS=READY`:
+6. **Create the config file** — collect the keys the user provides (if any — GitHub and X need none) and write them to `~/.config/morning-ai/.env` in `KEY=value` format (one per line). Create the directory if needed: `mkdir -p ~/.config/morning-ai`. If the user wants only the free defaults, an empty/comment-only file is sufficient — its mere existence satisfies the Step 0 gate.
+7. **Confirm** — show how many sources are now active (N/9)
+8. **Verify** — re-run the gate check to confirm `CONFIG_STATUS=READY`:
    ```bash
    if [ -f "$HOME/.config/morning-ai/.env" ] || [ -f ".claude/morning-ai.env" ] || [ -f ".env" ]; then echo "CONFIG_STATUS=READY"; else echo "CONFIG_STATUS=MISSING"; fi
    ```
    Only proceed to Step 1 if the output is `READY`.
-10. If the user wants to skip API key setup and use only free sources, create a minimal config file first, then proceed to Step 1:
-   ```bash
-   mkdir -p ~/.config/morning-ai && echo "# morning-ai config — free sources only" > ~/.config/morning-ai/.env
-   ```
 
 ---
 
@@ -212,7 +201,7 @@ If the user provides `--exclude` types (e.g. `--exclude Funding`), note which **
 
 ### X/Twitter Search
 
-After the automated collection completes, use **web search** to discover recent X/Twitter updates from tracked entities. The tracked X handles are listed in `{SKILL_DIR}/lib/entities.py` under `X_HANDLES`.
+**This is the default X_COLLECTOR_MODE=agent path** (see "X/Twitter Collection Mode" under [Configuration](#configuration)) — `collect.py`'s automated collectors deliberately skip X and return a note instead of calling any API, so the steps below are how X coverage actually happens: after the automated collection completes, use **web search** to discover recent X/Twitter updates from tracked entities. The tracked X handles are listed in `{SKILL_DIR}/lib/entities.py` under `X_HANDLES`.
 
 #### Search Strategy: Multi-Layer Account Checking
 
@@ -537,9 +526,20 @@ With custom schedule:
 ```
 
 **System cron** (manual setup):
-```bash
-0 8 * * * cd /path/to/workspace && claude -p "/morning-ai"
-```
+
+> ⚠️ `claude -p "/morning-ai"` (or `claude --print`) spawns a fresh headless
+> session, which on many setups authenticates via pay-per-token API billing
+> rather than an interactive subscription login — even when the same
+> machine's normal Claude Code sessions run on a flat-rate subscription
+> plan. If you're on a subscription plan and want to avoid unexpected API
+> charges, prefer the `/loop 24h /morning-ai` example above (it runs inside
+> your existing subscription session) or your agent platform's own
+> scheduler (e.g. AI Maestro's `CronCreate`) over a bare `claude -p` cron
+> entry. If your setup is API-billed on purpose (e.g. a CI runner with its
+> own budget), `claude -p` is fine:
+> ```bash
+> 0 8 * * * cd /path/to/workspace && claude -p "/morning-ai"
+> ```
 
 **OpenClaw / always-on bot**:
 ```yaml
@@ -559,10 +559,17 @@ skill: morning-ai
 
 ### Config File Format
 
+No keys are required for the default free-sources run — an empty or
+comment-only file satisfies the Step 0 gate:
+
 ```bash
 # ~/.config/morning-ai/.env
-GITHUB_TOKEN=ghp_xxx
+# morning-ai config — free sources only, no API keys
 ```
+
+Optional keys only apply to opt-in features (infographics, social,
+message digest, email) — see their own sections below. GitHub and X/Twitter
+need **no** key of any kind (see Free Sources table).
 
 ### Free Sources (no API key needed)
 
@@ -570,10 +577,39 @@ GITHUB_TOKEN=ghp_xxx
 |--------|-----|-----------|
 | Reddit | Public JSON | Generous |
 | Hacker News | Algolia API | Generous |
-| GitHub | Public API (optional token for higher limits) | 60 req/hr (unauthenticated) |
+| GitHub | `gh` CLI (when installed + authenticated) or public unauthenticated API | 5,000 req/hr via `gh`'s own auth, else 60 req/hr unauthenticated. Never needs a manually-configured token — see "GitHub Authentication" below. |
 | HuggingFace | Public API | Generous |
 | arXiv | Public API | Generous |
-| X/Twitter | Web search | Generous |
+| X/Twitter | In-session agent WebSearch (default mode) | Generous — no API involved in the default path |
+
+### GitHub Authentication
+
+The GitHub collector never reads, holds, or logs a credential. Resolution order:
+
+1. **`gh` CLI present and authenticated** (`gh auth status` succeeds) — collection
+   runs via `gh api <endpoint>`, so `gh` resolves auth itself (its own stored
+   login, or `GH_TOKEN`/`GITHUB_TOKEN` from the environment if you've set one —
+   see `gh help environment`). This is the common case for a coding agent
+   host, where `gh` is usually already logged in, and gets the higher
+   authenticated rate limit for free.
+2. **Otherwise** — falls back to the plain public API, unauthenticated.
+
+You are never asked to create a GitHub Personal Access Token. If you want the
+higher rate limit and don't already use `gh`, running `gh auth login` once is
+the recommended path — morning-ai will pick it up automatically on the next run.
+
+### X/Twitter Collection Mode
+
+Controlled by the `X_COLLECTOR_MODE` env var:
+
+| Value | Behavior | Cost |
+|-------|----------|------|
+| `agent` (default) | The collector script makes no API call at all. The orchestrating Claude Code agent performs the "X/Twitter Search" procedure (Step 1 above) with its own WebSearch tool and merges the findings in. | Free — runs on your existing subscription/session |
+| `sdk` | `lib/x_agent.py` calls the Anthropic Messages API directly with the server-side `web_search` tool. Requires `pip install anthropic` and `ANTHROPIC_API_KEY` (or an internal gateway's equivalent). | Pay-per-token API billing |
+
+Set `X_COLLECTOR_MODE=sdk` only if you deliberately want the fully-automated,
+unattended SDK path (e.g. a cron job with no agent available to do the
+WebSearch step) and are fine with the API cost it implies.
 
 ### Message Digest Configuration
 

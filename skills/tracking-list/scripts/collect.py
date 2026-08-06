@@ -60,11 +60,16 @@ def collect_hackernews(config: Dict[str, Any], from_date: str, to_date: str, dep
 
 
 def collect_github(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
-    """Collect from GitHub."""
+    """Collect from GitHub.
+
+    No token is read here: lib/github.py resolves auth itself (the `gh`
+    CLI when installed and authenticated, else unauthenticated) so this
+    skill never holds a GitHub credential. `config` is accepted for
+    signature consistency with the other collectors, but unused.
+    """
     from lib import github
 
-    token = env.get_key(config, "GITHUB_TOKEN")
-    return github.collect(entities.GITHUB_SOURCES, from_date, to_date, token, depth)
+    return github.collect(entities.GITHUB_SOURCES, from_date, to_date, depth)
 
 
 def collect_huggingface(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
@@ -80,11 +85,20 @@ def collect_arxiv(config: Dict[str, Any], from_date: str, to_date: str, depth: s
 
 
 def collect_x(config: Dict[str, Any], from_date: str, to_date: str, depth: str) -> CollectionResult:
-    """Collect from X/Twitter via sub-agent web search.
+    """Collect from X/Twitter.
 
-    Uses two parallel `claude -p` sub-agents (official accounts + Key People),
-    each searching x.com via the WebSearch tool. Honours HTTPS_PROXY inherited
-    from the parent process (set by foreman/adapters/daily-report/adapter.py).
+    Two modes, gated by the X_COLLECTOR_MODE env var (default "agent"):
+      - "agent" (default, subscription-native): this function returns
+        immediately with no items and no API/subprocess call of any kind.
+        X coverage is the orchestrating Claude Code agent's job — it should
+        follow the "X/Twitter Search" procedure in SKILL.md using its own
+        WebSearch tool and merge the results into the report data itself.
+      - "sdk" (explicit opt-in, costs money): calls lib.x_agent.collect(),
+        which drives the Anthropic Messages API directly with the
+        server-side web_search tool. Requires the `anthropic` package.
+
+    This function never shells out to `claude -p`/`claude --print` — see
+    lib/x_agent.py's module docstring for why the SDK path exists instead.
     """
     from lib import x_agent
     return x_agent.collect(
@@ -224,6 +238,7 @@ def run_collection(
             "entities_checked": r.entities_checked,
             "entities_with_updates": r.entities_with_updates,
             "errors": r.errors,
+            "notes": r.notes,
         }
         stats["errors"].extend(r.errors)
 

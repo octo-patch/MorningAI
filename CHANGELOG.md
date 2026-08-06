@@ -1,5 +1,20 @@
 # Changelog
 
+## [Unreleased]
+
+### New Features
+- **Subscription-native X collector mode** (`lib/x_agent.py`, `skills/tracking-list/scripts/collect.py`): new `X_COLLECTOR_MODE` env var, default `"agent"`. In the default mode, `collect_x()` makes zero API calls or subprocess invocations — X coverage is deferred entirely to the orchestrating agent's own WebSearch tool via the "X/Twitter Search" procedure already documented in `SKILL.md`, so nobody is billed for X collection unless they explicitly opt in. `X_COLLECTOR_MODE=sdk` restores the previous fully-automated Anthropic-SDK-driven path for unattended/no-agent-available setups. `CollectionResult` gained a `notes` field (informational, distinct from `errors`) so this deliberate no-op is visible in `stats.by_source` without reading as a collector failure.
+- **GitHub collection via the `gh` CLI, no token ever handled by the skill** (`lib/github.py`): when `gh` is installed and authenticated (the common case on a coding-agent host), releases are fetched via `gh api ...` — `gh` resolves its own credentials (stored login, or `GH_TOKEN`/`GITHUB_TOKEN` from the environment) internally; this module never reads, holds, or logs one. Falls back to the existing unauthenticated public API when `gh` isn't available. Removes the `token` parameter from `get_org_releases`/`get_repo_releases`/`collect()` entirely, and the setup flow no longer asks users to mint a Personal Access Token.
+
+### Bug Fixes
+- **`lib/env.py::get_available_sources()` reported GitHub as unavailable without a `GITHUB_TOKEN`**, even though the collector already worked fine unauthenticated (60 req/hr). Now reports GitHub as always available, matching actual behavior.
+- **`collect_x()`'s docstring said it used "two parallel `claude -p` sub-agents"** — stale since 1.4.1 switched the SDK-mode path to the direct Anthropic Messages API. Docstring now describes both modes accurately and states plainly that this module never shells out to `claude -p`/`claude --print`.
+- **`SKILL.md` advertised X/Twitter as needing no key while `collect_x()` unconditionally imported an SDK-only, API-key-requiring module** — a documented-contract-vs-implementation mismatch. `SKILL.md` now documents the `X_COLLECTOR_MODE` split and its cost implications, and its cron example calls out that `claude -p` may bill a separate pay-per-token account rather than an interactive subscription session.
+
+### Tests
+- Added `tests/test_github.py` (gh-CLI detection/caching, `gh api` JSON parsing, the gh-vs-unauthenticated fallback, and a regression guard that `get_repo_releases`/`get_org_releases`/`collect()` reject a `token` argument outright rather than silently accepting and ignoring one).
+- Added `tests/test_x_agent.py` (the `X_COLLECTOR_MODE` gate: default mode never touches `_run_subagent`/the SDK; `sdk` mode without `anthropic` installed fails soft with a clear error; `sdk` mode with the dependency present does reach the sub-agent path).
+
 ## [1.4.2] - 2026-04-21
 
 ### New Features
