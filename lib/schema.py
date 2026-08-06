@@ -127,6 +127,10 @@ class CollectionResult:
     source: str
     items: List[TrackerItem] = field(default_factory=list)
     errors: List[str] = field(default_factory=list)
+    # Informational messages that are NOT failures — e.g. "this collector
+    # deliberately deferred to the orchestrating agent". Kept separate from
+    # `errors` so a deliberate no-op doesn't read as a broken collector.
+    notes: List[str] = field(default_factory=list)
     entities_checked: int = 0
     entities_with_updates: int = 0
 
@@ -135,6 +139,7 @@ class CollectionResult:
             "source": self.source,
             "items": [item.to_dict() for item in self.items],
             "errors": self.errors,
+            "notes": self.notes,
             "entities_checked": self.entities_checked,
             "entities_with_updates": self.entities_with_updates,
         }

@@ -70,11 +70,21 @@ def get_key(config: Dict[str, Any], key: str) -> Optional[str]:
 
 
 def get_available_sources(config: Dict[str, Any]) -> Dict[str, bool]:
-    """Check which data sources are available based on configured API keys."""
+    """Check which data sources are available based on configured API keys.
+
+    GitHub is always available: the collector uses the `gh` CLI when it is
+    installed and authenticated (for a higher rate limit), and falls back to
+    the public unauthenticated API otherwise — no GITHUB_TOKEN is required
+    or read by this skill. See lib/github.py for the resolution order.
+
+    `config` is currently unused (no source in this table is key-gated
+    anymore) but kept in the signature for interface stability — a future
+    source that genuinely needs a configured key would read it here.
+    """
     return {
         "reddit": True,  # public JSON, no key needed
         "hackernews": True,  # Algolia API, free
-        "github": bool(get_key(config, "GITHUB_TOKEN")),
+        "github": True,  # public API, or gh CLI when authenticated — no key needed
         "huggingface": True,  # public API
         "arxiv": True,  # public API
     }

@@ -2,10 +2,21 @@
 
 Monitors releases, trending repos, and commit activity via GitHub API.
 New collector — no last30days equivalent.
+
+Auth resolution order (no token is ever read or held by this module):
+    1. ``gh`` CLI present and authenticated -> shell out to ``gh api``.
+       ``gh`` resolves its own credentials (``GH_TOKEN``, ``GITHUB_TOKEN``,
+       or stored keychain/config auth) — this module never sees the value.
+    2. Otherwise -> plain unauthenticated HTTP against the public API
+       (same behaviour as before, just without a token to attach).
+    3. Users are never prompted to mint a Personal Access Token. A
+       machine with the ``gh`` CLI already authenticated (the common case
+       for a coding agent) gets the higher rate limit for free.
 """
 
-import math
-import sys
+import json
+import shutil
+import subprocess
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlencode
 
@@ -20,32 +31,71 @@ DEPTH_CONFIG = {"quick": 5, "default": 10, "deep": 20}
 
 _log = lambda msg: log("GitHub", msg, tty_only=True)
 
-
-def _gh_headers(token: Optional[str] = None) -> Dict[str, str]:
-    headers = {
-        "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-    }
-    if token:
-        headers["Authorization"] = f"Bearer {token}"
-    return headers
-
-
 _parse_date = parse_date
+
+# Cached at module scope so a single collect() run only pays the
+# `gh auth status` subprocess cost once, not once per repo/org.
+_GH_CLI_READY: Optional[bool] = None
+
+
+def _gh_cli_ready() -> bool:
+    """True if the `gh` CLI is installed AND authenticated.
+
+    Never reads or returns a credential — just a yes/no. Result is cached
+    per-process; a `gh auth login`/`logout` mid-run won't be picked up,
+    which is an acceptable tradeoff for a collector that runs once and exits.
+    """
+    global _GH_CLI_READY
+    if _GH_CLI_READY is not None:
+        return _GH_CLI_READY
+    if not shutil.which("gh"):
+        _GH_CLI_READY = False
+        return False
+    try:
+        proc = subprocess.run(
+            ["gh", "auth", "status"],
+            capture_output=True, timeout=5, check=False,
+        )
+        _GH_CLI_READY = proc.returncode == 0
+    except Exception:
+        _GH_CLI_READY = False
+    return _GH_CLI_READY
+
+
+def _gh_api_json(path_and_query: str) -> Any:
+    """Run `gh api <path_and_query>` and return the parsed JSON, or None on failure.
+
+    `gh` handles auth, rate limiting, and retries internally — no header or
+    token plumbing needed here. Never logs the command's stderr verbatim
+    (it can echo request URLs, not credentials, but keep output terse).
+    """
+    try:
+        proc = subprocess.run(
+            ["gh", "api", path_and_query],
+            capture_output=True, timeout=30, check=False, text=True,
+        )
+    except Exception as e:
+        _log(f"gh api {path_and_query} failed to run: {e}")
+        return None
+    if proc.returncode != 0:
+        _log(f"gh api {path_and_query} exited {proc.returncode}")
+        return None
+    try:
+        return json.loads(proc.stdout)
+    except json.JSONDecodeError as e:
+        _log(f"gh api {path_and_query} returned non-JSON output: {e}")
+        return None
 
 
 def get_org_releases(
     org: str,
     from_date: str,
     to_date: str,
-    token: Optional[str] = None,
     depth: str = "default",
 ) -> List[Dict[str, Any]]:
     """Get recent releases from an org's repos."""
     per_page = DEPTH_CONFIG.get(depth, DEPTH_CONFIG["default"])
-    headers = _gh_headers(token)
 
-    # Search for recent releases via GitHub search API
     query = f"org:{org}"
     params = urlencode({
         "q": query,
@@ -53,25 +103,36 @@ def get_org_releases(
         "order": "desc",
         "per_page": str(per_page),
     })
-    url = f"{GITHUB_API}/search/repositories?{params}"
 
-    try:
-        response = http.get(url, headers=headers, timeout=30)
-    except Exception as e:
-        _log(f"Failed to search org {org}: {e}")
-        return []
+    if _gh_cli_ready():
+        response = _gh_api_json(f"search/repositories?{params}")
+        if response is None:
+            _log(f"Failed to search org {org} via gh api")
+            return []
+    else:
+        url = f"{GITHUB_API}/search/repositories?{params}"
+        try:
+            response = http.get(url, timeout=30)
+        except Exception as e:
+            _log(f"Failed to search org {org}: {e}")
+            return []
 
     repos = response.get("items", [])
     releases = []
 
     for repo in repos[:per_page]:
         repo_name = repo.get("full_name", "")
-        releases_url = f"{GITHUB_API}/repos/{repo_name}/releases?per_page=5"
 
-        try:
-            repo_releases = http.get(releases_url, headers=headers, timeout=15)
-        except Exception:
-            continue
+        if _gh_cli_ready():
+            repo_releases = _gh_api_json(f"repos/{repo_name}/releases?per_page=5")
+            if repo_releases is None:
+                continue
+        else:
+            releases_url = f"{GITHUB_API}/repos/{repo_name}/releases?per_page=5"
+            try:
+                repo_releases = http.get(releases_url, timeout=15)
+            except Exception:
+                continue
 
         if not isinstance(repo_releases, list):
             continue
@@ -96,17 +157,20 @@ def get_repo_releases(
     repo: str,
     from_date: str,
     to_date: str,
-    token: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """Get recent releases from a specific repo."""
-    headers = _gh_headers(token)
-    url = f"{GITHUB_API}/repos/{repo}/releases?per_page=10"
-
-    try:
-        response = http.get(url, headers=headers, timeout=15)
-    except Exception as e:
-        _log(f"Failed to get releases for {repo}: {e}")
-        return []
+    if _gh_cli_ready():
+        response = _gh_api_json(f"repos/{repo}/releases?per_page=10")
+        if response is None:
+            _log(f"Failed to get releases for {repo} via gh api")
+            return []
+    else:
+        url = f"{GITHUB_API}/repos/{repo}/releases?per_page=10"
+        try:
+            response = http.get(url, timeout=15)
+        except Exception as e:
+            _log(f"Failed to get releases for {repo}: {e}")
+            return []
 
     if not isinstance(response, list):
         return []
@@ -155,7 +219,6 @@ def collect(
     entities: Dict[str, Dict[str, Any]],
     from_date: str,
     to_date: str,
-    token: Optional[str] = None,
     depth: str = "default",
 ) -> CollectionResult:
     """Collect GitHub data for tracked entities.
@@ -167,11 +230,13 @@ def collect(
         }
         from_date: Start date YYYY-MM-DD
         to_date: End date YYYY-MM-DD
-        token: GitHub token (optional, increases rate limit)
         depth: Search depth
 
     Returns:
         CollectionResult
+
+    No token argument: auth is resolved internally via `gh` CLI when
+    present and authenticated, else unauthenticated. See module docstring.
     """
     result = CollectionResult(source=SOURCE_GITHUB)
     all_items = []
@@ -182,7 +247,7 @@ def collect(
 
         # Check specific repos
         for repo in sources.get("repos", []):
-            releases = get_repo_releases(repo, from_date, to_date, token)
+            releases = get_repo_releases(repo, from_date, to_date)
             for rel in releases:
                 tag = rel.get("tag", "")
                 name = rel.get("name") or tag
@@ -206,7 +271,7 @@ def collect(
 
         # Check org releases
         for org in sources.get("orgs", []):
-            releases = get_org_releases(org, from_date, to_date, token, depth)
+            releases = get_org_releases(org, from_date, to_date, depth)
             for rel in releases:
                 tag = rel.get("tag", "")
                 name = rel.get("name") or tag

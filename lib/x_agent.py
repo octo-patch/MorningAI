@@ -1,19 +1,37 @@
-"""X/Twitter collector for morning-ai (Anthropic SDK + web_search server tool).
+"""X/Twitter collector for morning-ai.
 
-Calls the Anthropic Messages API directly with the server-side ``web_search``
-tool to find tweets from tracked AI handles, then parses the model's JSON
-output into TrackerItems.
+Two collection modes, selected by the X_COLLECTOR_MODE env var:
 
-Two collector tasks run in parallel — one for official accounts, one for
-Key People — matching the verification policy in
-``skills/tracking-list/SKILL.md`` ("official accounts: accept directly /
-key people: requires cross-verification").
+  "agent" (default — subscription-native, no API billing):
+      collect() returns immediately with zero items and an informational
+      note. No subprocess, no HTTP call, no SDK import is touched. X
+      coverage becomes the orchestrating Claude Code agent's job: follow
+      the "X/Twitter Search" procedure already documented in
+      ``skills/tracking-list/SKILL.md`` using the agent's own WebSearch
+      tool, then merge the findings into the report data. This is the
+      free path and the default, so nobody bills an API account by
+      accident just because the `anthropic` package happens to be
+      installed for something else.
 
-Why direct SDK instead of ``claude -p`` subprocess: Claude Code's default
-system prompt forbids generating URLs, which the model treats as a hard
-guard against this exact task ("Returning tweet URLs is the required
-machine-readable output"). Using the SDK lets us supply our own system
-prompt that frames URL emission as the legitimate ingestion contract.
+  "sdk" (explicit opt-in — calls the Anthropic Messages API, costs money):
+      Calls the Anthropic Messages API directly with the server-side
+      ``web_search`` tool to find tweets from tracked AI handles, then
+      parses the model's JSON output into TrackerItems. Two collector
+      tiers run in parallel — official accounts and Key People — matching
+      the verification policy in ``skills/tracking-list/SKILL.md``
+      ("official accounts: accept directly / key people: requires
+      cross-verification"). Requires the `anthropic` package; if it is
+      not installed, this mode self-reports an error rather than crashing.
+
+Why the SDK path calls the Messages API directly instead of a `claude -p`
+subprocess (kept for historical context — this reasoning does NOT apply to
+the default "agent" mode above, which makes no API call at all): Claude
+Code's default system prompt forbids generating URLs, which the model
+treats as a hard guard against this exact task ("Returning tweet URLs is
+the required machine-readable output"). The SDK path supplies its own
+system prompt that frames URL emission as the legitimate ingestion
+contract. `claude -p` / `claude --print` are never invoked by this module
+in either mode.
 """
 
 import json
@@ -32,6 +50,11 @@ except ImportError:
 
 from .schema import TrackerItem, Engagement, CollectionResult, SOURCE_X
 from .util import log
+
+# "agent" (default, free/subscription-native) or "sdk" (explicit opt-in,
+# calls the Anthropic API). Read once at import time — a mid-run change
+# via os.environ wouldn't be a realistic scenario for a one-shot collector.
+X_COLLECTOR_MODE = os.environ.get("X_COLLECTOR_MODE", "agent").strip().lower()
 
 # How many handles each tier-agent will search at each depth. Empirically a
 # single WebSearch via `claude -p` takes ~50-70s, but parallel claude
@@ -454,12 +477,29 @@ def collect(
         depth: quick | default | deep — controls chunk size
 
     Returns:
-        CollectionResult(source="x", items=[...], errors=[...]).
-        Never raises — failures land in `errors`.
+        CollectionResult(source="x", items=[...], errors=[...], notes=[...]).
+        Never raises — failures land in `errors`; a deliberate no-op (the
+        default "agent" mode) lands in `notes`, not `errors`.
     """
     result = CollectionResult(source=SOURCE_X)
+
+    if X_COLLECTOR_MODE != "sdk":
+        result.notes.append(
+            f"X_COLLECTOR_MODE={X_COLLECTOR_MODE!r} (default 'agent') — X collection "
+            "deferred to the orchestrating agent's own WebSearch tool, per the "
+            "\"X/Twitter Search\" procedure in skills/tracking-list/SKILL.md. "
+            "No API call or subprocess was made. Set X_COLLECTOR_MODE=sdk to "
+            "opt into the paid Anthropic-API-driven path instead."
+        )
+        return result
+
     if not _HAS_ANTHROPIC:
-        result.errors.append("anthropic SDK not installed — skipping X collector")
+        result.errors.append(
+            "X_COLLECTOR_MODE=sdk was requested but the `anthropic` package "
+            "is not installed — skipping X collector. Install it explicitly "
+            "(`pip install anthropic`) to use the SDK path; the default "
+            "'agent' mode needs no such dependency."
+        )
         return result
     env = dict(os.environ)  # inherit HTTPS_PROXY etc. from parent
 
